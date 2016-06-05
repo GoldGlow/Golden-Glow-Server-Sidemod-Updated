@@ -2,8 +2,7 @@ package com.goldenglow.common.util;
 
 import net.minecraft.util.EnumChatFormatting;
 
-public class Reference
-{
+public class Reference {
     public static String bold = EnumChatFormatting.BOLD + "";
     public static String italics = EnumChatFormatting.ITALIC + "";
     public static String colorRed = EnumChatFormatting.RED + "";

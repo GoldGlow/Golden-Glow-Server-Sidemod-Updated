@@ -15,6 +15,18 @@ public class GGLogger
         info(msg);
     }
 
+    public static void cmdInfo(Object msg)
+    {
+        msg="[CMD] "+msg;
+        info(msg);
+    }
+
+    public static void blockInfo(Object msg)
+    {
+        msg="[BLOCK] "+msg;
+        info(msg);
+    }
+
     public static void info(Object msg)
     {
         logger.log(Level.FINE, msg.toString());

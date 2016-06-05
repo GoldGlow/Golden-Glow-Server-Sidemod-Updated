@@ -2,48 +2,40 @@ package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.gyms.Gym;
-import com.goldenglow.common.routes.RouteManager;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.entity.player.EntityPlayer;
 
-public class GGTickHandler
-{
+public class GGTickHandler {
+
     int ticksSinceLastStepCheck;
-    Map<EntityPlayer, Integer> gymChallengers = new HashMap();
+    Map<EntityPlayer, Integer> gymChallengers = new HashMap<EntityPlayer, Integer>();
 
     @SubscribeEvent
-    public void worldTick(TickEvent.PlayerTickEvent event)
-    {
-        if (event.phase == TickEvent.Phase.END)
-        {
-            GoldenGlow.instance.routeManager.update(event.player.field_70170_p);
-            if (this.ticksSinceLastStepCheck == 20) {
-                for (EntityPlayer player : this.gymChallengers.keySet())
-                {
-                    int i = ((Integer)this.gymChallengers.get(player)).intValue();
-                    this.gymChallengers.put(player, Integer.valueOf(i + 1));
+    public void worldTick(TickEvent.PlayerTickEvent event) {
+        if(event.phase == TickEvent.Phase.END) {
+            GoldenGlow.instance.routeManager.update(event.player.worldObj);
+            if(ticksSinceLastStepCheck==20)
+                for(EntityPlayer player : gymChallengers.keySet()) {
+                    int i = gymChallengers.get(player);
+                    gymChallengers.put(player, i+1);
                 }
-            }
             step();
         }
     }
 
-    public void registerChallenger(Gym gym, EntityPlayer player)
-    {
-        this.gymChallengers.put(player, Integer.valueOf(0));
+    public void registerChallenger(Gym gym, EntityPlayer player) {
+        gymChallengers.put(player, 0);
     }
 
-    private void step()
-    {
+    private void step() {
         this.ticksSinceLastStepCheck += 1;
-        if (this.ticksSinceLastStepCheck < 20) {
+        if (this.ticksSinceLastStepCheck < 20)
             return;
-        }
         this.ticksSinceLastStepCheck = 0;
-        GoldenGlow.instance.followerHandler.stepUpdate();
+        //GoldenGlow.instance.followerHandler.stepUpdate();
     }
 }
