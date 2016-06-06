@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import noppes.npcs.CustomNpcs;
+import noppes.npcs.api.wrapper.WrapperNpcAPI;
 
 import java.io.FileNotFoundException;
 
@@ -60,6 +62,7 @@ public class GoldenGlow {
         MinecraftForge.EVENT_BUS.register(proxy);
         FMLCommonHandler.instance().bus().register(tickHandler);
         Pixelmon.EVENT_BUS.register(eventHandler);
+        WrapperNpcAPI.EVENT_BUS.register(eventHandler);
     }
 
     @Mod.EventHandler
@@ -78,5 +81,6 @@ public class GoldenGlow {
     public void serverStopping(FMLServerStoppingEvent event) {
         routeManager.saveRoutes();
         gymManager.saveGyms();
+        factoryManager.saveArrays();
     }
 }

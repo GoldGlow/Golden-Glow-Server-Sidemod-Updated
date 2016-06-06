@@ -3,6 +3,10 @@ package com.goldenglow.common.factory;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsHeld;
@@ -16,10 +20,8 @@ import com.pixelmonmod.pixelmon.enums.EnumNature;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.DimensionManager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class FactoryManager {
     List<EntityPixelmon> pokemonListFirstTier=new ArrayList<EntityPixelmon>();
     List<EntityPixelmon> pokemonListSecondTier = new ArrayList<EntityPixelmon>();
     File firstTier = new File(Reference.configDir, "firstTier.cfg");
-    //File party=new File(Reference.configDir,"factoryParty.json");
+    File factoryParty=new File(Reference.configDir,"factoryParty.json");
 
     public FactoryManager(){
         this.pokemonListFirstTier=new ArrayList<EntityPixelmon>();
@@ -68,10 +70,77 @@ public class FactoryManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if(!factoryParty.exists())
+            try {
+                factoryParty.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        loadArrays();
     }
 
-    public void loadParty(){
+    public void loadArrays(){
+        try{
+            InputStream istream=new FileInputStream(factoryParty);
+            JsonArray json = new JsonParser().parse(new InputStreamReader(istream, StandardCharsets.UTF_8)).getAsJsonArray();
+            for(int i=0;i<json.size();i++){
+                JsonArray array=json.get(i).getAsJsonArray();
+                int[] arr=new int[3];
+                for(int j=0;j<3;j++){
+                    arr[j]=array.get(j).getAsInt();
+                }
+                int[] choice={0, 0, 0};
+                playerChoices.add(choice);
+                playerParties.add(arr);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
+    public void saveArrays(){
+        GGLogger.info("Saving Factory data...");
+        try {
+            JsonWriter file= new JsonWriter(new FileWriter(factoryParty));
+            file.beginArray();
+            for(int[] user: playerParties){
+                file.beginArray();
+                for(int val: user)
+                    file.value(val);
+                file.endArray();
+            }
+            file.endArray();
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadParty(int id){
+        int[] party={-1, -1, -1, -1, -1, -1};
+        int[] chosen={-1, -1, -1};
+        for(int i=0;i<6;i++){
+            do{
+                int random=(int)(Math.random()*pokemonListFirstTier.size());
+                party[i]=random;
+            }while(!this.speciesClause(party, i));
+        }
+        if(playerChoices.size()>(id)){
+            playerChoices.remove(id);
+            playerParties.remove(id);
+        }
+        playerParties.add(id, chosen);
+        playerChoices.add(id, party);
+    }
+
+    public boolean speciesClause(int[] party, int index){
+        for(int i=0;i<index;i++) {
+            EntityPixelmon tested = pokemonListFirstTier.get(party[index]);
+            EntityPixelmon testing = pokemonListFirstTier.get(party[i]);
+            if(tested.getName().equals(testing.getName()))
+                return false;
+        }
+        return true;
     }
 
     public  void loadFirstTier() throws IOException{
@@ -131,15 +200,6 @@ public class FactoryManager {
             if(line.startsWith("Ability:"))
             {
                 pixelmon.setAbility(line.replace("Ability: ",""));
-            }
-            else if(line.startsWith("Level")){
-                int lvl = Integer.parseInt(line.replace("Level: ",""));
-                if(lvl<=100&&lvl>0){
-                    pixelmon.getLvl().setLevel(lvl);
-                    GoldenGlow.instance.logger.info("Set level: "+lvl+" to pokemon: "+pixelmon.getName());
-                }
-                else
-                    GoldenGlow.instance.logger.error("Could not set a pokemons level!");
             }
             else if(line.startsWith("Shiny: ")&&line.contains("Yes"))
             {
@@ -217,6 +277,7 @@ public class FactoryManager {
                     GoldenGlow.instance.logger.error("Move not found: "+move);
             }
         }
+        pixelmon.getLvl().setLevel(100);
         return pixelmon;
     }
 }

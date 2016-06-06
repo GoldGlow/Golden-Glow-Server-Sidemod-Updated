@@ -33,6 +33,7 @@ import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerExtraData;
 import com.pixelmonmod.pixelmon.storage.PlayerNotLoadedException;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
+import com.sun.org.apache.bcel.internal.generic.NOP;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,12 +44,16 @@ import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
+import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.Server;
 import noppes.npcs.api.block.IBlockScripted;
+import noppes.npcs.api.constants.EnumOptionType;
 import noppes.npcs.api.constants.RoleType;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.constants.EnumScriptType;
+import noppes.npcs.controllers.Dialog;
+import noppes.npcs.controllers.DialogOption;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.entity.EntityCustomNpc;
 import noppes.npcs.entity.EntityNPCInterface;
@@ -150,16 +155,159 @@ public class NPCFunctions {
         }
     }
 
-    public static void factoryLoadChoices(PlayerWrapper player){
+    public static void factoryLoadChoices(PlayerWrapper player, EntityNPCInterface npc){
         if(player.getFactionPoints(10)==0){
-            player.addFactionPoints(10, GoldenGlow.instance.factoryManager.playerChoices.size()+1);
+            player.addFactionPoints(10, (GoldenGlow.instance.factoryManager.playerChoices.size()+1));
         }
-        if(player.getFactionPoints(11)%7==0){
-
+        if((player.getFactionPoints(11)%7)==0){
+            int id=player.getFactionPoints(10);
+            GoldenGlow.instance.factoryManager.loadParty(id-1);
         }
         else{
             int[] party=GoldenGlow.instance.factoryManager.playerParties.get(player.getFactionPoints(10)-1);
         }
+    }
+
+    public static void loadFactoryDialog(int dId, PlayerWrapper player, EntityNPCInterface npc){
+        int id=player.getFactionPoints(10);
+        if(dId==10000){
+            int[] choices=GoldenGlow.instance.factoryManager.playerChoices.get(id-1);
+            int[] chosen=GoldenGlow.instance.factoryManager.playerParties.get(id-1);
+            Dialog factory=new Dialog();
+            factory.id=10000;
+            factory.showWheel=true;
+            factory.text="We have stored your pokemon for the duration of your factory challenge.\n\nWe have selected 6 pokemon of our selection that you can choose from.\n\nPick one of your options to see its stats and moves!";
+            for(int i=0;i<choices.length;i++){
+                DialogOption option=new DialogOption();
+                String name=GoldenGlow.instance.factoryManager.getPokemonFirstTier(choices[i]).getName();
+                option.title=name;
+                option.optionType=EnumOptionType.QUIT_OPTION;
+                for(int val:chosen){
+                    if(val==choices[i])
+                        option.optionColor=Integer.parseInt("d800", 16);
+                }
+                factory.options.put(i, option);
+            }
+            NoppesUtilServer.openDialog((EntityPlayerMP)player.getMCEntity(), npc, factory);
+        }
+        else if(dId>=10001&&dId<=10006){
+            int value=GoldenGlow.instance.factoryManager.playerChoices.get(id-1)[dId-10001];
+            boolean chosen=false;
+            for(int choice:GoldenGlow.instance.factoryManager.playerParties.get(id-1)){
+                if(value==choice){
+                    chosen=true;
+                    break;
+                }
+            }
+            EntityPixelmon pixelmon= GoldenGlow.instance.factoryManager.getPokemonFirstTier(value);
+            String question="";
+            if(chosen){
+                question="Would you like to remove that pokemon from your choices?";
+            }
+            else{
+                question="Would you like to choose that pokemon?";
+            }
+            Dialog factory=new Dialog();
+            factory.id=dId;
+            factory.showWheel=true;
+            factory.text="Here's the details of the pokemon!\n" +
+                    "\n" +
+                    "Name: "+pixelmon.getName()+"\n"+
+                    "Level: "+pixelmon.getLvl()+"\n"+
+                    "Item: "+pixelmon.getHeldItem()+"\n"+
+                    "HP: "+pixelmon.stats.HP+"/"+pixelmon.stats.HP+"\n"+
+                    "Atk: "+pixelmon.stats.Attack+"\n"+
+                    "Def: "+pixelmon.stats.Defence+"\n"+
+                    "SpA: "+pixelmon.stats.SpecialAttack+"\n"+
+                    "SpD: "+pixelmon.stats.SpecialDefence+"\n"+
+                    "Spe: "+pixelmon.stats.Speed+"\n"+
+                    "\n"+
+                    question;
+            DialogOption yes=new DialogOption();
+            yes.title="yes";
+            yes.optionType=EnumOptionType.QUIT_OPTION;
+            factory.options.put(0, yes);
+            DialogOption no=new DialogOption();
+            no.title="no";
+            no.optionType=EnumOptionType.QUIT_OPTION;
+            factory.options.put(1, no);
+        }
+        else if(dId>=10007&&dId<=10012){
+            int[] choices=GoldenGlow.instance.factoryManager.playerChoices.get(id-1);
+            int[] chosen=GoldenGlow.instance.factoryManager.playerParties.get(id-1);
+            for(int addition:chosen){
+                if(addition==-1){
+                    addition=choices[dId-10007];
+                    break;
+                }
+            }
+            GoldenGlow.instance.factoryManager.playerParties.remove(id-1);
+            GoldenGlow.instance.factoryManager.playerParties.add(id-1, chosen);
+            boolean finished=true;
+            for(int addition:chosen){
+                if(addition==-1){
+                    finished=false;
+                    break;
+                }
+            }
+            if(finished)
+                loadFactoryDialog(10019, player, npc);
+            else
+                loadFactoryDialog(10000, player, npc);
+        }
+        else if(dId>=10013&&dId<=10018){
+            int[] choices=GoldenGlow.instance.factoryManager.playerChoices.get(id-1);
+            int[] chosen=GoldenGlow.instance.factoryManager.playerParties.get(id-1);
+            for(int choice: chosen){
+                if(choice==choices[dId-10012]){
+                    choice=-1;
+                }
+            }
+            GoldenGlow.instance.factoryManager.playerParties.remove(id-1);
+            GoldenGlow.instance.factoryManager.playerParties.add(id-1, chosen);
+            loadFactoryDialog(10000, player, npc);
+        }
+        else if(dId==10019){
+            Dialog factory=new Dialog();
+            factory.id=dId;
+            factory.showWheel=true;
+            int[] chosen=GoldenGlow.instance.factoryManager.playerParties.get(id-1);
+            factory.text="\n" +
+                    GoldenGlow.instance.factoryManager.getPokemonFirstTier(chosen[0]).getName()+"\n" +
+                    "\n" +
+                    GoldenGlow.instance.factoryManager.getPokemonFirstTier(chosen[1]).getName()+"\n" +
+                    "\n" +
+                    GoldenGlow.instance.factoryManager.getPokemonFirstTier(chosen[2]).getName()+"\n" +
+                    "\n" +
+                    "Are those your choices?";
+            DialogOption yes=new DialogOption();
+            yes.title="yes";
+            yes.optionType=EnumOptionType.QUIT_OPTION;
+            factory.options.put(0, yes);
+            DialogOption no=new DialogOption();
+            no.title="no";
+            no.optionType=EnumOptionType.QUIT_OPTION;
+            factory.options.put(1, no);
+        }
+    }
+
+    public static boolean isChosen(int dId, PlayerWrapper player){
+        int id=player.getFactionPoints(10);
+        int value=GoldenGlow.instance.factoryManager.playerChoices.get(id-1)[dId-10001];
+        for(int choice:GoldenGlow.instance.factoryManager.playerParties.get(id-1)){
+            if(value==choice){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void npcDialogTest(EntityPlayerMP player, EntityNPCInterface npc){
+        Dialog factory=new Dialog();
+        factory.id=10000;
+        factory.showWheel=true;
+        factory.text="Test text. 1 2 3. 1. 2. 3. You failed you big disappointment!";
+        NoppesUtilServer.openDialog(player, npc, factory);
     }
 
     public static void factoryLeave(EntityPlayerMP player){

@@ -5,11 +5,13 @@ import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.routes.Area;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.NPCFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.enums.BattleResults;
 import com.pixelmonmod.pixelmon.api.events.PlayerBattleEndedEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BattleGuiClosed;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.ExitBattle;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,6 +21,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.api.event.DialogEvent;
+import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.entity.EntityNPCInterface;
 
 public class GGEventHandler {
 
@@ -42,7 +47,7 @@ public class GGEventHandler {
         if(event.battleController instanceof CustomNPCBattle && CustomBattleHandler.battles.contains(event.battleController))
         {
             EntityPlayerMP mcPlayer= event.player;
-            Pixelmon.instance.network.sendTo(new BattleGuiClosed(), mcPlayer);
+            Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
             CustomNPCBattle battle = (CustomNPCBattle)event.battleController;
             BattleRegistry.deRegisterBattle(battle);
             CustomBattleHandler.battles.remove(battle);
@@ -52,6 +57,25 @@ public class GGEventHandler {
             if(event.result==BattleResults.DEFEAT){
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onDialogOption(DialogEvent.OptionEvent event){
+        GGLogger.info("option selected");
+        if(event.dialog.getId()==10000){
+            NPCFunctions.loadFactoryDialog(10001+event.option.getSlot(), (PlayerWrapper)event.player, (EntityNPCInterface) event.npc.getMCEntity());
+        }
+        else if(event.dialog.getId()>=10001&&event.dialog.getId()<=10006){
+            if(event.option.getSlot()==0){
+                boolean chosen = NPCFunctions.isChosen(event.dialog.getId(), (PlayerWrapper)event.player);
+                if(chosen)
+                    NPCFunctions.loadFactoryDialog(event.dialog.getId()+12, (PlayerWrapper)event.player, (EntityNPCInterface)event.npc.getMCEntity());
+                else
+                    NPCFunctions.loadFactoryDialog(event.dialog.getId()+6, (PlayerWrapper)event.player, (EntityNPCInterface)event.npc.getMCEntity());
+            }
+            else
+                NPCFunctions.loadFactoryDialog(10000, (PlayerWrapper)event.player, (EntityNPCInterface)event.npc.getMCEntity());
         }
     }
 
