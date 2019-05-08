@@ -3,27 +3,17 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
-import com.goldenglow.common.routes.Area;
-import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.NPCFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.enums.BattleResults;
-import com.pixelmonmod.pixelmon.api.events.PlayerBattleEndedEvent;
+import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.BattleGuiClosed;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.ExitBattle;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.util.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.api.event.DialogEvent;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-import noppes.npcs.entity.EntityNPCInterface;
 
 public class GGEventHandler {
 
@@ -37,46 +27,42 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        GoldenGlow.instance.gymManager.checkPlayer(event.player);
+        //GoldenGlow.instance.gymManager.checkPlayer(event.player);
     }
 
     @SubscribeEvent
-    public void onPlayerBattleEnded(PlayerBattleEndedEvent event)
+    public void onBattleEnd(BattleEndEvent event)
     {
-        GGLogger.info("Battle Ended!");
-        if(event.battleController instanceof CustomNPCBattle && CustomBattleHandler.battles.contains(event.battleController))
+        if(event.bc instanceof CustomNPCBattle && CustomBattleHandler.battles.contains(event.bc))
         {
-            EntityPlayerMP mcPlayer= event.player;
+            EntityPlayerMP mcPlayer= event.getPlayers().get(0);
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
-            CustomNPCBattle battle = (CustomNPCBattle)event.battleController;
+            CustomNPCBattle battle = (CustomNPCBattle)event.bc;
             BattleRegistry.deRegisterBattle(battle);
             CustomBattleHandler.battles.remove(battle);
-            if(event.result== BattleResults.VICTORY) {
+            if(event.results.get(mcPlayer)== BattleResults.VICTORY) {
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
-            if(event.result==BattleResults.DEFEAT){
+            if(event.results.get(mcPlayer)==BattleResults.DEFEAT){
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onDialogOption(DialogEvent.OptionEvent event){
-        GGLogger.info("option selected");
-        if(event.dialog.getId()==10000){
-            NPCFunctions.loadFactoryDialog(10001+event.option.getSlot(), (PlayerWrapper)event.player, (EntityNPCInterface) event.npc.getMCEntity());
-        }
-        else if(event.dialog.getId()>=10001&&event.dialog.getId()<=10006){
-            if(event.option.getSlot()==0){
-                boolean chosen = NPCFunctions.isChosen(event.dialog.getId(), (PlayerWrapper)event.player);
-                if(chosen)
-                    NPCFunctions.loadFactoryDialog(event.dialog.getId()+12, (PlayerWrapper)event.player, (EntityNPCInterface)event.npc.getMCEntity());
-                else
-                    NPCFunctions.loadFactoryDialog(event.dialog.getId()+6, (PlayerWrapper)event.player, (EntityNPCInterface)event.npc.getMCEntity());
+        /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){
+            EntityPlayerMP mcPlayer= event.player;
+            Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
+            FactoryBattle battle = (FactoryBattle)event.battleController;
+            BattleRegistry.deRegisterBattle(battle);
+            CustomBattleHandler.factoryBattles.remove(battle);
+            PlayerWrapper player = new PlayerWrapper(mcPlayer);
+            if(event.result==BattleResults.VICTORY){
+                player.addFactionPoints(11, 1);
+                NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
-            else
-                NPCFunctions.loadFactoryDialog(10000, (PlayerWrapper)event.player, (EntityNPCInterface)event.npc.getMCEntity());
-        }
+            else if(event.result==BattleResults.DEFEAT){
+                player.addFactionPoints(11, -player.getFactionPoints(11));
+                NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
+            }
+        }*/
     }
 
     @SubscribeEvent

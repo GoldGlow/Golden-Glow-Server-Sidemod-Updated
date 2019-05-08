@@ -3,17 +3,16 @@ package com.goldenglow.common.teams;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsHeld;
-import com.pixelmonmod.pixelmon.database.DatabaseMoves;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.DimensionManager;
 
@@ -41,6 +40,7 @@ public class TeamManager {
         otherMoves.put("Extreme Speed", "ExtremeSpeed");
         otherMoves.put("Dragon Breath", "DragonBreath");
         otherMoves.put("Grass Whistle", "GrassWhistle");
+        otherMoves.put("Solar Beam", "SolarBeam");
 
         otherPixelmon.add("Ralts");
         otherPixelmon.add("Misdreavus");
@@ -84,14 +84,13 @@ public class TeamManager {
                 teamName = readLine.replace("===","");
                 teamName = teamName.replace(" ","");
                 createTeam(teamName);
-                GoldenGlow.instance.logger.teamInfo("Created new Team: " + teamName + "!");
             }
             if(readLine.contains("@")){
 
                 pokemonSequence=true;
                 pokemon.add(readLine);
             }
-            if(readLine.equals("")){
+            if(readLine.equals("")&&pokemonSequence){
                 team.add(pokemon);
                 pokemon.clear();
                 pokemonSequence=false;
@@ -100,14 +99,17 @@ public class TeamManager {
                 pokemon.add(readLine);
             }
         }
-        team.add(pokemon);
-        for(int i=0;i<team.size();i++){
-            getTeam(teamName).addMember(convertPokemon(team.get(i)));
+        if(pokemonSequence)
+            team.add(pokemon);
+        if(team.size()>0) {
+            for (int i = 0; i < team.size(); i++) {
+                getTeam(teamName).addMember(convertPokemon(team.get(i)));
+            }
+            teams.add(getTeam(teamName));
         }
-        teams.add(getTeam(teamName));
     }
 
-    public EntityPixelmon convertPokemon(ArrayList<String> pokemon){
+    public Pokemon convertPokemon(ArrayList<String> pokemon){
         String line=pokemon.get(0);
         String name=line.split(" @ ")[0];
         String genderString="";
@@ -122,14 +124,15 @@ public class TeamManager {
         }
         GGLogger.info("Creating Pokemon -"+name+"-");
         EntityPixelmon pixelmon=(EntityPixelmon) PixelmonEntityList.createEntityByName(name, DimensionManager.getWorld(0));
+        Pokemon pokemonData=pixelmon.getStoragePokemonData();
         if(genderString.equals("m")){
-            pixelmon.gender=Gender.Male;
+            pokemonData.setGender(Gender.Male);
         }
         else if(genderString.equals("f"))
-            pixelmon.gender=Gender.Female;
+            pokemonData.setGender(Gender.Female);
         if((PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1]))!=null)
         {
-            pixelmon.setHeldItem(new ItemStack(PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1])));
+            pokemonData.setHeldItem(new ItemStack(PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1])));
         }else{
             GoldenGlow.instance.logger.error("HeldItem not found: '" + line.split(" @ ")[1] + "' on Pokemon: " + name);
         }
@@ -139,12 +142,12 @@ public class TeamManager {
             line=line.replace("  ","");
             if(line.startsWith("Ability:"))
             {
-                pixelmon.setAbility(line.replace("Ability: ",""));
+                pokemonData.setAbility(line.replace("Ability: ",""));
             }
             else if(line.startsWith("Level")){
                 int lvl = Integer.parseInt(line.replace("Level: ",""));
                 if(lvl<=100&&lvl>0){
-                    pixelmon.getLvl().setLevel(lvl);
+                    pokemonData.setLevel(lvl);
                     GoldenGlow.instance.logger.info("Set level: "+lvl+" to pokemon: "+pixelmon.getName());
                 }
                 else
@@ -152,73 +155,74 @@ public class TeamManager {
             }
             else if(line.startsWith("Shiny: ")&&line.contains("Yes"))
             {
-                pixelmon.setIsShiny(true);
+                pokemonData.setShiny(true);
                 GoldenGlow.instance.logger.teamInfo("Made pokemon: "+pixelmon.getName()+" a shiny!");
             }
             else if(line.startsWith("Happiness:")){
                 int happiness = Integer.parseInt(line.replace("Happiness: ",""));
                 if(happiness<=255&&happiness>=0){
-                    pixelmon.friendship.setFriendship(happiness);
+                    pokemonData.setFriendship(happiness);
                 }
             }
             else if(line.startsWith("EVs")){
                 line = line.replace("EVs: ","");
-                EVsStore evStore = pixelmon.stats.EVs;
+                EVStore evStore = pokemonData.getStats().evs;
                 for(String evs : line.split(" / ")) {
                     int ev = Integer.parseInt(evs.split(" ")[0]);
                     if (evs.split(" ")[1].equalsIgnoreCase("hp") && ev <= 255 && ev > 0)
-                        evStore.HP = ev;
+                        evStore.hp = ev;
                     if (evs.split(" ")[1].equalsIgnoreCase("atk") && ev <= 255 && ev > 0)
-                        evStore.Attack = ev;
+                        evStore.attack = ev;
                     if (evs.split(" ")[1].equalsIgnoreCase("def") && ev <= 255 && ev > 0)
-                        evStore.Defence = ev;
+                        evStore.defence = ev;
                     if (evs.split(" ")[1].equalsIgnoreCase("spa") && ev <= 255 && ev > 0)
-                        evStore.SpecialAttack = ev;
+                        evStore.specialAttack = ev;
                     if (evs.split(" ")[1].equalsIgnoreCase("spd") && ev <= 255 && ev > 0)
-                        evStore.SpecialDefence = ev;
+                        evStore.specialDefence = ev;
                     if (evs.split(" ")[1].equalsIgnoreCase("spe") && ev <= 255 && ev > 0)
-                        evStore.Speed = ev;
+                        evStore.speed = ev;
                     GoldenGlow.instance.logger.teamInfo("Added EV: '" + evs.split(" ")[1] + "-" + ev + "' to pokemon: " + pixelmon.getName());
                 }
+                pokemonData.getStats().evs=evStore;
             }
             else if(line.startsWith("IVs:"))
             {
                 line = line.replace("IVs: ","");
-                IVStore ivStore = pixelmon.stats.IVs;
+                IVStore ivStore = pokemonData.getStats().ivs;
                 for(String ivs : line.split(" / "))
                 {
                     int iv = Integer.parseInt(ivs.split(" ")[0]);
                     if(ivs.split(" ")[1].equalsIgnoreCase("hp")&&iv<=31&&iv>0)
-                        ivStore.HP=iv;
+                        ivStore.hp=iv;
                     if(ivs.split(" ")[1].equalsIgnoreCase("atk")&&iv<=31&&iv>0)
-                        ivStore.Attack=iv;
+                        ivStore.attack=iv;
                     if(ivs.split(" ")[1].equalsIgnoreCase("def")&&iv<=31&&iv>0)
-                        ivStore.Defence=iv;
+                        ivStore.defence=iv;
                     if(ivs.split(" ")[1].equalsIgnoreCase("spa")&&iv<=31&&iv>0)
-                        ivStore.SpAtt=iv;
+                        ivStore.specialAttack=iv;
                     if(ivs.split(" ")[1].equalsIgnoreCase("spd")&&iv<=31&&iv>0)
-                        ivStore.SpDef=iv;
+                        ivStore.specialDefence=iv;
                     if(ivs.split(" ")[1].equalsIgnoreCase("spe")&&iv<=31&&iv>0)
-                        ivStore.Speed=iv;
+                        ivStore.speed=iv;
                     GoldenGlow.instance.logger.teamInfo("Added IV: '"+ivs.split(" ")[1]+"-"+iv+"' to pokemon: "+pixelmon.getName());
                 }
-                pixelmon.stats.IVs = ivStore;
+                pokemonData.getStats().ivs = ivStore;
             }
             else if(line.contains(" Nature")&&!line.contains("Nature Power"))
             {
                 line = line.replace(" Nature","");
                 if(EnumNature.hasNature(line))
                 {
-                    pixelmon.setNature(EnumNature.natureFromString(line));
+                    pokemonData.setNature(EnumNature.natureFromString(line));
                     GoldenGlow.instance.logger.teamInfo("Added Nature: '"+line+"' to pokemon: "+pixelmon.getName());
                 }
             }
-            else if(line.startsWith("- ")&&moveset.size()>4){
+            else if(line.startsWith("- ")&&moveset.size()<4){
                 String move=line.replace("- ","");
                 if(otherMoves.containsKey(move))
                     move=otherMoves.get(move);
 
-                Attack attack = DatabaseMoves.getAttack(move);
+                Attack attack = new Attack(move);
                 GGLogger.info("Found move: -"+move+"-");
                 if(attack!=null)
                         moveset.add(attack);
@@ -226,7 +230,12 @@ public class TeamManager {
                     GoldenGlow.instance.logger.error("Move not found: "+move);
             }
         }
-        return pixelmon;
+        if(moveset!=null){
+            for(int i=0;i<moveset.size();i++){
+                pokemonData.getMoveset().set(i, moveset.get(i));
+            }
+        }
+        return pokemonData;
     }
 
     public void createTeam(String name)

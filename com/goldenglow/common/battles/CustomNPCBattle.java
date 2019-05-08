@@ -5,8 +5,9 @@ import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
+import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayer;
-import noppes.npcs.controllers.Dialog;
+import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.entity.EntityNPCInterface;
 
 public class CustomNPCBattle extends BattleControllerBase
@@ -18,7 +19,7 @@ public class CustomNPCBattle extends BattleControllerBase
 
     public CustomNPCBattle(PlayerParticipant player, TrainerParticipant trainer, EntityNPCInterface npc, Dialog winDialog, Dialog loseDialog) throws Exception
     {
-        super(player,trainer);
+        super(new BattleParticipant[] {player}, new BattleParticipant[] {trainer}, new BattleRules());
         this.npc=npc;
         this.winDiag=winDialog;
         this.loseDiag=loseDialog;
