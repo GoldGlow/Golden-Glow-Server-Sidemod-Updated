@@ -50,6 +50,7 @@ public class TeamManager {
     }
     
     public void init() {
+        GoldenGlow.logger.teamInfo("Loading teams!");
         if(!teamFile.exists())
             try {
                 teamFile.createNewFile();
@@ -83,6 +84,7 @@ public class TeamManager {
                 }
                 teamName = readLine.replace("===","");
                 teamName = teamName.replace(" ","");
+                GoldenGlow.logger.teamInfo("Creating team: -"+teamName+"-");
                 createTeam(teamName);
             }
             if(readLine.contains("@")){
@@ -258,5 +260,11 @@ public class TeamManager {
     public ArrayList<Team> getTeams()
     {
         return this.teams;
+    }
+
+    public void printTeams(){
+        for(int i=0;i<this.getTeams().size();i++){
+            GoldenGlow.logger.info(this.getTeams().get(i).name);
+        }
     }
 }

@@ -3,8 +3,10 @@ package com.goldenglow.common.battles;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.teams.Team;
 import com.goldenglow.common.util.Reference;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.PixelmonMethods;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.IStorageManager;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
@@ -37,6 +39,7 @@ public class CustomBattleHandler
     public static void createCustomBattle(EntityPlayerMP player, String teamName, int winDialogID, int loseDialogID, EntityNPCInterface npc) {
         Team npcTeam;
         if(teamName!=null) {
+            GoldenGlow.instance.teamManager.printTeams();
             npcTeam = GoldenGlow.instance.teamManager.getTeam(teamName);
         }else{
             npcTeam = new Team("");
@@ -53,9 +56,9 @@ public class CustomBattleHandler
                 trainer.loadPokemon(npcTeam.getMembers());
                 trainer.setPosition(player.posX,player.posY,player.posZ);
                 ArrayList<Pokemon> playerParty = new ArrayList<Pokemon>();
-                ArrayList<EntityPixelmon> pixelmon=PixelmonMethods.getAllActivePokemon(player);
-                for(EntityPixelmon pokemon : pixelmon){
-                    playerParty.add(pokemon.getStoragePokemonData());
+                List<Pokemon> pixelmon= Pixelmon.storageManager.getParty(player).getTeam();
+                for(Pokemon pokemon : pixelmon){
+                    playerParty.add(pokemon);
                 }
                 if(playerParty.size()>0)
                 {
