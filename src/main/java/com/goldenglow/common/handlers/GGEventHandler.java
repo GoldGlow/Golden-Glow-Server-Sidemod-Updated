@@ -4,15 +4,21 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.SPacketCustomSound;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 
 public class GGEventHandler {
@@ -31,20 +37,30 @@ public class GGEventHandler {
     }
 
     @SubscribeEvent
+    public void onBattleStart(BattleStartedEvent event){
+        BattleParticipant[] participants=event.participant1;
+        for(BattleParticipant participant: participants){
+            if(participant instanceof PlayerParticipant){
+                ((PlayerParticipant) participant).player.connection.sendPacket(new SPacketCustomSound("customnpcs:songs/TrainerBattle", SoundCategory.MUSIC, ((PlayerParticipant) participant).player.getPosition().getX(), ((PlayerParticipant) participant).player.getPosition().getY(), ((PlayerParticipant) participant).player.getPosition().getZ(), 1, 1));
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onBattleEnd(BattleEndEvent event)
     {
-        if(event.bc instanceof CustomNPCBattle && CustomBattleHandler.battles.contains(event.bc))
+        if(event.bc.rules instanceof CustomNPCBattle)
         {
             EntityPlayerMP mcPlayer= event.getPlayers().get(0);
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
-            CustomNPCBattle battle = (CustomNPCBattle)event.bc;
-            BattleRegistry.deRegisterBattle(battle);
-            CustomBattleHandler.battles.remove(battle);
+            CustomNPCBattle battle = (CustomNPCBattle)event.bc.rules;
+            BattleRegistry.deRegisterBattle(event.bc);
             if(event.results.get(mcPlayer)== BattleResults.VICTORY) {
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if(event.results.get(mcPlayer)==BattleResults.DEFEAT){
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
+                ((IPlayer)mcPlayer).removeDialog(battle.getInitDiag().getId());
             }
         }
         /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){

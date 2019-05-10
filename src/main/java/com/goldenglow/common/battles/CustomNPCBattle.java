@@ -10,17 +10,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.entity.EntityNPCInterface;
 
-public class CustomNPCBattle extends BattleControllerBase
+public class CustomNPCBattle extends BattleRules
 {
     private Dialog winDiag;
     private Dialog loseDiag;
+    private Dialog initDiag;
     public static EntityPlayer player;
     private static EntityNPCInterface npc;
 
-    public CustomNPCBattle(PlayerParticipant player, TrainerParticipant trainer, EntityNPCInterface npc, Dialog winDialog, Dialog loseDialog) throws Exception
+    public CustomNPCBattle(EntityNPCInterface npc, Dialog initDialog, Dialog winDialog, Dialog loseDialog) throws Exception
     {
-        super(new BattleParticipant[] {player}, new BattleParticipant[] {trainer}, new BattleRules());
+        super();
         this.npc=npc;
+        this.initDiag=initDialog;
         this.winDiag=winDialog;
         this.loseDiag=loseDialog;
     }
@@ -44,6 +46,8 @@ public class CustomNPCBattle extends BattleControllerBase
     {
         return this.loseDiag;
     }
+
+    public Dialog getInitDiag() {return this.initDiag;}
 
     public EntityNPCInterface getNpc()
     {

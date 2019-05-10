@@ -3,6 +3,7 @@ package com.goldenglow;
 import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.handlers.*;
+import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -29,6 +30,7 @@ public class GoldenGlow {
 
     public GGEventHandler eventHandler = new GGEventHandler();
 
+    public static SongManager songManager=new SongManager();
     public static GGLogger logger = new GGLogger();
     public static TeamManager teamManager = new TeamManager();
     public ConfigHandler configHandler = new ConfigHandler();

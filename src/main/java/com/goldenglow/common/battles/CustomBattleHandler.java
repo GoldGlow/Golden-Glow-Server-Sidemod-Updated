@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.PixelmonMethods;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.IStorageManager;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
 import com.pixelmonmod.pixelmon.comm.SetTrainerData;
@@ -36,7 +37,7 @@ public class CustomBattleHandler
         this.instance = this;
     }
 
-    public static void createCustomBattle(EntityPlayerMP player, String teamName, int winDialogID, int loseDialogID, EntityNPCInterface npc) {
+    public static void createCustomBattle(EntityPlayerMP player, String teamName, int initDialogID, int winDialogID, int loseDialogID, EntityNPCInterface npc) {
         Team npcTeam;
         if(teamName!=null) {
             GoldenGlow.instance.teamManager.printTeams();
@@ -56,20 +57,17 @@ public class CustomBattleHandler
                 trainer.loadPokemon(npcTeam.getMembers());
                 trainer.setPosition(player.posX,player.posY,player.posZ);
                 ArrayList<Pokemon> playerParty = new ArrayList<Pokemon>();
-                List<Pokemon> pixelmon= Pixelmon.storageManager.getParty(player).getTeam();
-                for(Pokemon pokemon : pixelmon){
-                    playerParty.add(pokemon);
-                }
-                if(playerParty.size()>0)
+                EntityPixelmon pixelmon= Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player);
+                if(pixelmon!=null)
                 {
-                    PlayerParticipant playerParticipant = new PlayerParticipant(player, playerParty, 6);
+                    PlayerParticipant playerParticipant = new PlayerParticipant(player, pixelmon);
                     TrainerParticipant trainerParticipant = new TrainerParticipant(trainer, player, 1);
 
                     Dialog winDialog = DialogController.instance.dialogs.get(winDialogID);
                     Dialog loseDialog = DialogController.instance.dialogs.get(loseDialogID);
-
-                    CustomNPCBattle customNPCBattle = new CustomNPCBattle(playerParticipant, trainerParticipant, npc, winDialog, loseDialog);
-                    battles.add(customNPCBattle);
+                    Dialog initDialog = DialogController.instance.dialogs.get(initDialogID);
+                    CustomNPCBattle rules=new CustomNPCBattle(npc, initDialog, winDialog, loseDialog);
+                    BattleRegistry.startBattle(new BattleParticipant[]{playerParticipant}, new BattleParticipant[] {trainerParticipant}, rules);
                 }else{
                     player.sendMessage(new TextComponentString(Reference.messagePrefix + Reference.red + "You have no pokemon that are able to battle!"));
                 }
