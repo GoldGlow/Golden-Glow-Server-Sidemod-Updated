@@ -1,19 +1,17 @@
 package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
-import com.goldenglow.common.battles.CustomBattleHandler;
-import com.goldenglow.common.handlers.*;
+import com.goldenglow.common.command.CommandInstanceInv;
+import com.goldenglow.common.handlers.ConfigHandler;
+import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import noppes.npcs.CustomNpcs;
-import noppes.npcs.api.wrapper.WrapperNpcAPI;
 
 import java.io.FileNotFoundException;
 
@@ -59,6 +57,7 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         teamManager.init();
+        event.registerServerCommand(new CommandInstanceInv());
     }
 
     @Mod.EventHandler

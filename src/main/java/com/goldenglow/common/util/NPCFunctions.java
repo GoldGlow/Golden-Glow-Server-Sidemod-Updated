@@ -1,15 +1,20 @@
 package com.goldenglow.common.util;
 
 import com.goldenglow.common.battles.CustomBattleHandler;
+import com.goldenglow.common.inventory.InstancedContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import noppes.npcs.CustomNpcs;
+import net.minecraft.network.play.server.SPacketOpenWindow;
 import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.data.Dialog;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.entity.EntityNPCInterface;
 
 public class NPCFunctions {
@@ -64,5 +69,27 @@ public class NPCFunctions {
     public static void releaseCamera(EntityPlayer player)
     {
         //BetterStorage.networkChannel.sendTo(new PacketGGSidemod(EnumGGPacketType.RESET_CAMERA), player);
+    }
+
+    public static void createInstancedInv(EntityPlayerMP playerMP, String[] items) {
+        //Create Inventory with specified items
+        InventoryBasic inv = new InventoryBasic("Title", false, 9);
+        for (String tag : items) {
+            try {
+                ItemStack stack = new ItemStack(JsonToNBT.getTagFromJson(tag));
+                if(stack!=null) {
+                    inv.addItem(stack);
+                }
+            } catch (NBTException e) {
+                e.printStackTrace();
+            }
+        }
+        //Show inventory to player
+        playerMP.getNextWindowId();
+        playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", inv.getDisplayName(), inv.getSizeInventory()));
+        playerMP.openContainer = new InstancedContainer(playerMP.inventory, inv, playerMP);
+        playerMP.openContainer.windowId = playerMP.currentWindowId;
+        playerMP.openContainer.addListener(playerMP);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(playerMP, playerMP.openContainer));
     }
 }
