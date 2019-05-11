@@ -3,8 +3,11 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
+import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.NPCFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.api.events.BeatTrainerEvent;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
@@ -41,7 +44,8 @@ public class GGEventHandler {
         BattleParticipant[] participants=event.participant1;
         for(BattleParticipant participant: participants){
             if(participant instanceof PlayerParticipant){
-                ((PlayerParticipant) participant).player.connection.sendPacket(new SPacketCustomSound("customnpcs:songs/TrainerBattle", SoundCategory.MUSIC, ((PlayerParticipant) participant).player.getPosition().getX(), ((PlayerParticipant) participant).player.getPosition().getY(), ((PlayerParticipant) participant).player.getPosition().getZ(), 1, 1));
+                NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", "customnpcs:songs.rivaltest");
+                NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", "customnpcs:songs.TrainerBattle");
             }
         }
     }
@@ -52,13 +56,16 @@ public class GGEventHandler {
         if(event.bc.rules instanceof CustomNPCBattle)
         {
             EntityPlayerMP mcPlayer= event.getPlayers().get(0);
+            BattleResults results=event.results.get(event.bc.participants.get(0));
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
             CustomNPCBattle battle = (CustomNPCBattle)event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
-            if(event.results.get(mcPlayer)== BattleResults.VICTORY) {
+            NPCFunctions.stopSound(mcPlayer,"music", "customnpcs:songs.TrainerBattle");
+            if(results== BattleResults.VICTORY) {
+                NPCFunctions.playSound(mcPlayer,"music", "customnpcs:songs.victory");
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
-            if(event.results.get(mcPlayer)==BattleResults.DEFEAT){
+            if(results==BattleResults.DEFEAT){
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
                 ((IPlayer)mcPlayer).removeDialog(battle.getInitDiag().getId());
             }

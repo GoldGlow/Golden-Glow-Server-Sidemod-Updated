@@ -52,7 +52,7 @@ public class CustomBattleHandler
         }else
             try {
                 NPCTrainer trainer = (NPCTrainer) PixelmonEntityList.createEntityByName(npc.display.getName(), player.getEntityWorld());
-                SetTrainerData data=new SetTrainerData(npc.display.getName(), " ", " ", " ", 0, null);
+                SetTrainerData data=new SetTrainerData("npc", " ", " ", " ", 0, null);
                 trainer.update(data);
                 trainer.loadPokemon(npcTeam.getMembers());
                 trainer.setPosition(player.posX,player.posY,player.posZ);

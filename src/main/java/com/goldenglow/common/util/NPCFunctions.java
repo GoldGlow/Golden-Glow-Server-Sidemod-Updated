@@ -2,9 +2,14 @@ package com.goldenglow.common.util;
 
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.inventory.InstancedContainer;
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.util.SoundCategory;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
@@ -18,6 +23,17 @@ import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.entity.EntityNPCInterface;
 
 public class NPCFunctions {
+
+	public static void playSound(EntityPlayerMP player, String source, String path){
+        player.connection.sendPacket(new SPacketCustomSound(path, SoundCategory.getByName(source), player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), 1, 1));
+    }
+
+    public static void stopSound(EntityPlayerMP player, String source, String path){
+        PacketBuffer packetBuffer=new PacketBuffer(Unpooled.buffer());
+        packetBuffer.writeString(source);
+        packetBuffer.writeString(path);
+        player.connection.sendPacket(new SPacketCustomPayload("MC|StopSound", packetBuffer));
+    }
 
     public static void openStarterGui(EntityPlayerMP player) {
         //Pixelmon.instance.network.sendTo(new SelectPokemonListPacket(StarterList.getStarterList()), player);
@@ -36,11 +52,15 @@ public class NPCFunctions {
                 if(Math.abs(player.getPosition().getX()-npc.getPosition().getX())<1&&Math.abs(player.getPosition().getY()-npc.getPosition().getY())<3){
                     if(npc.getRotationYawHead()==0&&player.getPosition().getZ()>=npc.getPosition().getZ()){
                         if(!playerWrapper.hasReadDialog(initDialogID)){
+                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
+                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
                             NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
                         }
                     }
                     if(npc.getRotationYawHead()==180&&player.getPosition().getZ()<=npc.getPosition().getZ()){
                         if(!playerWrapper.hasReadDialog(initDialogID)){
+                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
+                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
                             NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
                         }
                     }
@@ -50,11 +70,15 @@ public class NPCFunctions {
                 if(Math.abs(player.getPosition().getZ()-npc.getPosition().getZ())<1&&Math.abs(player.getPosition().getY()-npc.getPosition().getY())<3){
                     if(npc.getRotationYawHead()==90&&player.getPosition().getX()<=npc.getPosition().getX()){
                         if(!playerWrapper.hasReadDialog(initDialogID)){
+                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
+                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
                             NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
                         }
                     }
                     if(npc.getRotationYawHead()==270&&player.getPosition().getX()>=npc.getPosition().getX()){
                         if(!playerWrapper.hasReadDialog(initDialogID)){
+                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
+                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
                             NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
                         }
                     }
