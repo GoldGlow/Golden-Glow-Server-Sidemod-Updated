@@ -2,7 +2,12 @@ package com.goldenglow.common.util;
 
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.inventory.InstancedContainer;
+import com.pixelmonmod.pixelmon.client.models.PixelmonModelSmd;
+import com.pixelmonmod.pixelmon.entities.pixelmon.Entity2Client;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
@@ -14,17 +19,22 @@ import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.client.EntityUtil;
 import noppes.npcs.controllers.DialogController;
+import noppes.npcs.controllers.PixelmonHelper;
 import noppes.npcs.controllers.PlayerQuestController;
 import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerQuestData;
 import noppes.npcs.controllers.data.QuestData;
+import noppes.npcs.entity.EntityCustomNpc;
 import noppes.npcs.entity.EntityNPCInterface;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class NPCFunctions {
@@ -126,5 +136,18 @@ public class NPCFunctions {
                 net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(playerMP, playerMP.openContainer));
             }
         }
+    }
+
+    public static void setPixelmon(EntityCustomNpc npc, String name) {
+        npc.modelData.setEntityClass(EntityPixelmon.class);
+        npc.modelData.extra.setString("Name", name);
+        try {
+            EntityPixelmon mon = EntityPixelmon.class.getConstructor(new Class[]{World.class}).newInstance(new Object[]{npc.world});
+            mon.readEntityFromNBT(npc.modelData.extra);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        npc.display.setSkinTexture(((EntityPixelmon)npc.modelData.getEntity(npc)).getTexture().toString());
+        System.out.println(PixelmonHelper.isPixelmon(npc.modelData.getEntity(npc)));
     }
 }
