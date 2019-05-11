@@ -1,7 +1,5 @@
 package com.goldenglow.common.command;
 
-import com.mrcrayfish.furniture.blocks.BlockFurnitureTile;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
@@ -10,12 +8,10 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -26,7 +22,6 @@ import noppes.npcs.controllers.ScriptContainer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,16 +60,11 @@ public class CommandInstanceInv extends CommandBase {
                     }
                     world.setBlockState(blockpos, newBlock);
                     TileScripted tile = (TileScripted) world.getTileEntity(blockpos);
-                    tile.setItemModel(new ItemStack(originalBlock.getBlock()), originalBlock.getBlock());
-                    for (IProperty p : originalBlock.getPropertyKeys()) {
-                        if (p instanceof PropertyDirection) {
-                            EnumFacing facing = (EnumFacing) originalBlock.getValue(p);
-                            tile.setRotation(0, getRotationForFacing(facing), 0);
-                        }
-                    }
+                    tile.setItemModel(new ItemStack(originalBlock.getBlock(), 1, originalBlock.getBlock().getMetaFromState(originalBlock)), originalBlock.getBlock());
+                    tile.setRotation(0, 270, 0);
                     ScriptContainer script = new ScriptContainer(tile);
-                    script.scripts.add("quests/instancedInventory..js");
-                    script.script = "var items = "+items.toString()+";";
+                    script.scripts.add("quests/inv.js");
+                    script.script = "var name = '"+originalBlock.getBlock().getLocalizedName()+"';\nvar items = "+items.toString()+";\nvar questId = 0;";
                     tile.scripts.add(script);
                     tile.setEnabled(true);
                 }

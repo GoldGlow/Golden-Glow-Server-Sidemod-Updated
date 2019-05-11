@@ -39,28 +39,35 @@ public class InstancedContainer extends ContainerChest {
         Slot slot = getSlot(slotId);
 
         if(!slot.isSameInventory(getSlot(0))) {
-            inventoryplayer.setItemStack(slot.getStack());
-        }
-
-        Iterator<ItemStack> iterator = inventoryplayer.mainInventory.iterator();
-        int freeSlots = 0;
-        while (freeSlots<items.size() && iterator.hasNext()) {
-            if(iterator.next().isEmpty())
-                freeSlots++;
-        }
-
-        if(freeSlots<items.size()) {
-            TextComponentString msg = new TextComponentString("You don't have enough free spaces in your inventory! Make some room!");
-            msg.getStyle().setUnderlined(true).setBold(true).setColor(TextFormatting.DARK_RED);
-            player.sendStatusMessage(msg, true);
+            super.slotClick(slotId, dragType, clickTypeIn, player);
         }
         else {
-            for(ItemStack stack : items) {
-                player.addItemStackToInventory(stack);
-                player.inventoryContainer.detectAndSendChanges();
+
+            Iterator<ItemStack> iterator = inventoryplayer.mainInventory.iterator();
+            int freeSlots = 0;
+            while (freeSlots < items.size() && iterator.hasNext()) {
+                if (iterator.next().isEmpty())
+                    freeSlots++;
             }
+
+            if (freeSlots < items.size()) {
+                TextComponentString msg = new TextComponentString("You don't have enough free spaces in your inventory! Make some room!");
+                msg.getStyle().setUnderlined(true).setBold(true).setColor(TextFormatting.DARK_RED);
+                player.sendStatusMessage(msg, true);
+            } else {
+                for (ItemStack stack : items) {
+                    player.addItemStackToInventory(stack);
+                    player.inventoryContainer.detectAndSendChanges();
+                }
+            }
+            player.closeScreen();
         }
-        player.closeScreen();
         return inventoryItemStacks.get(slotId);
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer playerIn) {
+        super.onContainerClosed(playerIn);
+        playerIn.inventoryContainer.detectAndSendChanges();
     }
 }
