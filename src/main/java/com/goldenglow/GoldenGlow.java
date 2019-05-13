@@ -4,6 +4,7 @@ import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.command.CommandInstanceInv;
 import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
+import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
@@ -27,6 +28,7 @@ public class GoldenGlow {
     public static CommonProxy proxy;
 
     public GGEventHandler eventHandler = new GGEventHandler();
+    public TickHandler tickHandler = new TickHandler();
 
     public static SongManager songManager=new SongManager();
     public static GGLogger logger = new GGLogger();
@@ -47,6 +49,7 @@ public class GoldenGlow {
         logger.info("Init section test");
         MinecraftForge.EVENT_BUS.register(eventHandler);
         MinecraftForge.EVENT_BUS.register(proxy);
+        MinecraftForge.EVENT_BUS.register(TickHandler.class);
         Pixelmon.EVENT_BUS.register(eventHandler);
     }
 
