@@ -1,5 +1,6 @@
 package com.goldenglow.common.handlers;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.NPCFunctions;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -45,8 +46,8 @@ public class TickHandler {
     }
 
     static void npcBattleDialog(EntityPlayerMP player, EntityNPCInterface npc, int initDialogID) {
-        NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
-        NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
+        NPCFunctions.stopSound(player, "music", "PLACEHOLDER ROUTE THEME");
+        NPCFunctions.playSound(player, "music", GoldenGlow.songManager.encounterSong);
         NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
     }
 

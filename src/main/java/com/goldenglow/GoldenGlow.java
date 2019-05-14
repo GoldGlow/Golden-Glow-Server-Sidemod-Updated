@@ -2,10 +2,12 @@ package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.command.CommandInstanceInv;
+import com.goldenglow.common.command.CommandPhone;
 import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -28,11 +30,12 @@ public class GoldenGlow {
     public static CommonProxy proxy;
 
     public GGEventHandler eventHandler = new GGEventHandler();
-    public TickHandler tickHandler = new TickHandler();
+    public TickHandler tickHandler=new TickHandler();
 
     public static SongManager songManager=new SongManager();
     public static GGLogger logger = new GGLogger();
     public static TeamManager teamManager = new TeamManager();
+    public static RouteManager routeManager=new RouteManager();
     public ConfigHandler configHandler = new ConfigHandler();
 
     public GoldenGlow() throws FileNotFoundException {
@@ -61,6 +64,7 @@ public class GoldenGlow {
     public void serverStarting(FMLServerStartingEvent event) {
         teamManager.init();
         event.registerServerCommand(new CommandInstanceInv());
+        event.registerServerCommand(new CommandPhone());
     }
 
     @Mod.EventHandler

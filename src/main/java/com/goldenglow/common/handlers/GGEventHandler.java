@@ -8,8 +8,11 @@ import com.goldenglow.common.util.NPCFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.BeatTrainerEvent;
+import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
+import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
@@ -40,35 +43,75 @@ public class GGEventHandler {
     }
 
     @SubscribeEvent
-    public void onBattleStart(BattleStartedEvent event){
-        BattleParticipant[] participants=event.participant1;
-        for(BattleParticipant participant: participants){
-            if(participant instanceof PlayerParticipant){
-                NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", "customnpcs:songs.rivaltest");
-                NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", "customnpcs:songs.TrainerBattle");
+    public void onEvolution(EvolveEvent event){
+        if(event instanceof EvolveEvent.PostEvolve){
+            NPCFunctions.stopSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
+            NPCFunctions.playSound(event.player, "music", "PLACEHOLDER ROUTE THEME");
+        }
+        else {
+            NPCFunctions.stopSound(event.player, "music", "PLACEHOLDER ROUTE THEME");
+            NPCFunctions.playSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
+            if (event.isCanceled()) {
+                NPCFunctions.stopSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
+                NPCFunctions.playSound(event.player, "music", "PLACEHOLDER ROUTE THEME");
             }
         }
     }
 
     @SubscribeEvent
+    public void onBattleStart(BattleStartedEvent event){
+        BattleParticipant[] participants=event.participant1;
+        BattleParticipant[] opponents=event.participant2;
+        if(event.bc.rules instanceof CustomNPCBattle) {
+            for (BattleParticipant participant : participants) {
+                if (participant instanceof PlayerParticipant) {
+                    NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.encounterSong);
+                    NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.trainerBattleSong);
+                }
+            }
+        }
+        else{
+            for(BattleParticipant opponent: opponents){
+                if(opponent instanceof WildPixelmonParticipant){
+                    for (BattleParticipant participant : participants) {
+                        if (participant instanceof PlayerParticipant) {
+                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", "PLACEHOLDER ROUTE THEME");
+                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.wildBattleSong);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onLevelUp(LevelUpEvent event){
+        NPCFunctions.playSound(event.player, "sound", GoldenGlow.songManager.levelUpSound);
+    }
+
+    @SubscribeEvent
     public void onBattleEnd(BattleEndEvent event)
     {
-        if(event.bc.rules instanceof CustomNPCBattle)
-        {
-            EntityPlayerMP mcPlayer= event.getPlayers().get(0);
-            BattleResults results=event.results.get(event.bc.participants.get(0));
+        if(event.bc.rules instanceof CustomNPCBattle) {
+            EntityPlayerMP mcPlayer = event.getPlayers().get(0);
+            BattleResults results = event.results.get(event.bc.participants.get(0));
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
-            CustomNPCBattle battle = (CustomNPCBattle)event.bc.rules;
+            CustomNPCBattle battle = (CustomNPCBattle) event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
-            NPCFunctions.stopSound(mcPlayer,"music", "customnpcs:songs.TrainerBattle");
-            if(results== BattleResults.VICTORY) {
-                NPCFunctions.playSound(mcPlayer,"music", "customnpcs:songs.victory");
+            NPCFunctions.stopSound(mcPlayer, "music", GoldenGlow.songManager.trainerBattleSong);
+            if (results == BattleResults.VICTORY) {
+                NPCFunctions.playSound(mcPlayer, "music", GoldenGlow.songManager.victorySong);
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
-            if(results==BattleResults.DEFEAT){
+            if (results == BattleResults.DEFEAT) {
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
-                ((IPlayer)mcPlayer).removeDialog(battle.getInitDiag().getId());
+                ((IPlayer) mcPlayer).removeDialog(battle.getInitDiag().getId());
             }
+        }
+        else{
+            EntityPlayerMP mcPlayer = event.getPlayers().get(0);
+            NPCFunctions.stopSound(mcPlayer, "music", GoldenGlow.songManager.wildBattleSong);
+            NPCFunctions.playSound(mcPlayer, "music", "PLACEHOLDER ROUTE THEME");
         }
         /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){
             EntityPlayerMP mcPlayer= event.player;

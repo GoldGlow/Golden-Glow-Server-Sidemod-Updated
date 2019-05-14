@@ -1,46 +1,32 @@
 package com.goldenglow.common.util;
 
-import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.inventory.InstancedContainer;
-import com.pixelmonmod.pixelmon.client.models.PixelmonModelSmd;
-import com.pixelmonmod.pixelmon.entities.pixelmon.Entity2Client;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.api.entity.IEntity;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-import noppes.npcs.client.EntityUtil;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.PixelmonHelper;
-import noppes.npcs.controllers.PlayerQuestController;
 import noppes.npcs.controllers.data.Dialog;
-import noppes.npcs.controllers.data.PlayerData;
-import noppes.npcs.controllers.data.PlayerQuestData;
-import noppes.npcs.controllers.data.QuestData;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.entity.EntityCustomNpc;
 import noppes.npcs.entity.EntityNPCInterface;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 
 public class NPCFunctions {
 
@@ -68,42 +54,44 @@ public class NPCFunctions {
     public static void standardNPCBattle(PlayerWrapper playerWrapper, NPCWrapper npcWrapper, int initDialogID){
         EntityNPCInterface npc=(EntityNPCInterface) npcWrapper.getMCEntity();
         EntityPlayerMP player=(EntityPlayerMP)playerWrapper.getMCEntity();
-            if(npc.getRotationYawHead()==0||npc.getRotationYawHead()==180){
-                if(Math.abs(player.getPosition().getX()-npc.getPosition().getX())<1&&Math.abs(player.getPosition().getY()-npc.getPosition().getY())<3){
-                    if(npc.getRotationYawHead()==0&&player.getPosition().getZ()>=npc.getPosition().getZ()){
-                        if(!playerWrapper.hasReadDialog(initDialogID)){
+        EntityPixelmon pixelmon= Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player);
+        if(pixelmon!=null) {
+            if (npc.getRotationYawHead() == 0 || npc.getRotationYawHead() == 180) {
+                if (Math.abs(player.getPosition().getX() - npc.getPosition().getX()) < 1 && Math.abs(player.getPosition().getY() - npc.getPosition().getY()) < 3) {
+                    if (npc.getRotationYawHead() == 0 && player.getPosition().getZ() >= npc.getPosition().getZ()) {
+                        if (!playerWrapper.hasReadDialog(initDialogID)) {
                             NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
                             NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
+                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
                         }
                     }
-                    if(npc.getRotationYawHead()==180&&player.getPosition().getZ()<=npc.getPosition().getZ()){
-                        if(!playerWrapper.hasReadDialog(initDialogID)){
+                    if (npc.getRotationYawHead() == 180 && player.getPosition().getZ() <= npc.getPosition().getZ()) {
+                        if (!playerWrapper.hasReadDialog(initDialogID)) {
                             NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
                             NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
+                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
+                        }
+                    }
+                }
+            } else if (npc.getRotationYawHead() == 90 || npc.getRotationYawHead() == 270) {
+                if (Math.abs(player.getPosition().getZ() - npc.getPosition().getZ()) < 1 && Math.abs(player.getPosition().getY() - npc.getPosition().getY()) < 3) {
+                    if (npc.getRotationYawHead() == 90 && player.getPosition().getX() <= npc.getPosition().getX()) {
+                        if (!playerWrapper.hasReadDialog(initDialogID)) {
+                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
+                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
+                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
+                        }
+                    }
+                    if (npc.getRotationYawHead() == 270 && player.getPosition().getX() >= npc.getPosition().getX()) {
+                        if (!playerWrapper.hasReadDialog(initDialogID)) {
+                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
+                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
+                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
                         }
                     }
                 }
             }
-            else if(npc.getRotationYawHead()==90||npc.getRotationYawHead()==270){
-                if(Math.abs(player.getPosition().getZ()-npc.getPosition().getZ())<1&&Math.abs(player.getPosition().getY()-npc.getPosition().getY())<3){
-                    if(npc.getRotationYawHead()==90&&player.getPosition().getX()<=npc.getPosition().getX()){
-                        if(!playerWrapper.hasReadDialog(initDialogID)){
-                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
-                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
-                        }
-                    }
-                    if(npc.getRotationYawHead()==270&&player.getPosition().getX()>=npc.getPosition().getX()){
-                        if(!playerWrapper.hasReadDialog(initDialogID)){
-                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
-                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog)DialogController.instance.get(initDialogID));
-                        }
-                    }
-                }
-            }
+        }
     }
 
     public static void registerLOSBattle(NPCWrapper npc, int initDialogID) {
