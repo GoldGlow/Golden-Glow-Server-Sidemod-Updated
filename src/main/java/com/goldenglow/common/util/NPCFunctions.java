@@ -1,13 +1,19 @@
 package com.goldenglow.common.util;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.inventory.InstancedContainer;
+import com.goldenglow.common.routes.Route;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomSound;
@@ -20,13 +26,12 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.PixelmonHelper;
 import noppes.npcs.controllers.data.Dialog;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.util.text.TextComponentString;
+import noppes.npcs.controllers.data.PlayerData;
+import noppes.npcs.controllers.data.QuestData;
 import noppes.npcs.entity.EntityCustomNpc;
 import noppes.npcs.entity.EntityNPCInterface;
+
+import java.util.HashMap;
 
 public class NPCFunctions {
 
@@ -146,5 +151,16 @@ public class NPCFunctions {
         }
         npc.display.setSkinTexture(((EntityPixelmon)npc.modelData.getEntity(npc)).getTexture().toString());
         System.out.println(PixelmonHelper.isPixelmon(npc.modelData.getEntity(npc)));
+    }
+
+    public static void checkRoute(EntityPlayerMP playerMP) {
+        Route currentRoute = null;
+	    if(playerMP.getEntityData().hasKey("Route")) {
+	        currentRoute = GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route"));
+        }
+        Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
+	    if(actualRoute!=null && currentRoute != actualRoute) {
+	        actualRoute.addPlayer(playerMP);
+        }
     }
 }
