@@ -13,16 +13,23 @@ import java.util.List;
 
 public class Route {
     public String routeName;
+    public String song;
     public int priority;
     public Polygonal2DRegion region;
 
     List<EntityPlayerMP> players = new ArrayList<>();
 
     public Route(String name, Polygonal2DRegion region) {
-        this(name, region, 0);
+        this(name, "", region, 0);
     }
-    public Route(String name, Polygonal2DRegion region, int priority) {
+
+    public Route(String name, String songName, Polygonal2DRegion region) {
+        this(name, songName, region, 0);
+    }
+
+    public Route(String name, String song, Polygonal2DRegion region, int priority) {
         this.routeName = name;
+        this.song = song;
         this.region = region;
         this.priority = priority;
     }

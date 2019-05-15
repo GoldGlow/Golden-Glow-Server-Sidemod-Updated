@@ -4,7 +4,7 @@ package com.goldenglow.common.music;
  * Created by JeanMarc on 5/9/2019.
  */
 public class Song {
-    /*public int priority;
+    public int priority;
     public String name;
     public String path;
 
@@ -24,5 +24,5 @@ public class Song {
 
     public int getPriority(){
         return this.priority;
-    }*/
+    }
 }

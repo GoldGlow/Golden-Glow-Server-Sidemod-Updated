@@ -42,21 +42,21 @@ public class GGEventHandler {
         //GoldenGlow.instance.gymManager.checkPlayer(event.player);
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onEvolution(EvolveEvent event){
         if(event instanceof EvolveEvent.PostEvolve){
             NPCFunctions.stopSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
-            NPCFunctions.playSound(event.player, "music", "PLACEHOLDER ROUTE THEME");
+            NPCFunctions.playSound(event.player, "music", GoldenGlow.routeManager.getRoute(event.player).song);
         }
         else {
-            NPCFunctions.stopSound(event.player, "music", "PLACEHOLDER ROUTE THEME");
+            NPCFunctions.stopSound(event.player, "music", GoldenGlow.routeManager.getRoute(event.player).song);
             NPCFunctions.playSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
             if (event.isCanceled()) {
                 NPCFunctions.stopSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
-                NPCFunctions.playSound(event.player, "music", "PLACEHOLDER ROUTE THEME");
+                NPCFunctions.playSound(event.player, "music", GoldenGlow.routeManager.getRoute(event.player).song);
             }
         }
-    }
+    }*/
 
     @SubscribeEvent
     public void onBattleStart(BattleStartedEvent event){
@@ -71,12 +71,59 @@ public class GGEventHandler {
             }
         }
         else{
+            boolean wildBattle=false;
             for(BattleParticipant opponent: opponents){
                 if(opponent instanceof WildPixelmonParticipant){
+                    wildBattle=true;
                     for (BattleParticipant participant : participants) {
                         if (participant instanceof PlayerParticipant) {
-                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", "PLACEHOLDER ROUTE THEME");
+                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
                             NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.wildBattleSong);
+
+                        }
+                    }
+                }
+            }
+            if(!wildBattle){
+                String participantTheme=CustomBattleHandler.getCustomTheme(participants);
+                String opponentTheme=CustomBattleHandler.getCustomTheme(opponents);
+                if(!opponentTheme.equals("")){
+                    for(BattleParticipant participant:participants){
+                        if (participant instanceof PlayerParticipant) {
+                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
+                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                        }
+                    }
+                    if(participantTheme.equals("")){
+                        for(BattleParticipant participant:opponents){
+                            if (participant instanceof PlayerParticipant) {
+                                NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
+                                NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                            }
+                        }
+                    }
+                }
+                if(!participantTheme.equals("")) {
+                    for (BattleParticipant participant : opponents) {
+                        if (participant instanceof PlayerParticipant) {
+                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
+                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                        }
+                    }
+                    if (opponentTheme.equals("")) {
+                        for (BattleParticipant participant : participants) {
+                            if (participant instanceof PlayerParticipant) {
+                                NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
+                                NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                            }
+                        }
+                    }
+                }
+                if(participantTheme.equals("")&&opponentTheme.equals("")){
+                    for (BattleParticipant participant : participants) {
+                        if (participant instanceof PlayerParticipant) {
+                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
+                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.trainerBattleSong);
                         }
                     }
                 }
@@ -109,9 +156,11 @@ public class GGEventHandler {
             }
         }
         else{
-            EntityPlayerMP mcPlayer = event.getPlayers().get(0);
-            NPCFunctions.stopSound(mcPlayer, "music", GoldenGlow.songManager.wildBattleSong);
-            NPCFunctions.playSound(mcPlayer, "music", "PLACEHOLDER ROUTE THEME");
+            for(EntityPlayerMP player:event.getPlayers()){
+                NPCFunctions.stopSound(player, "music", GoldenGlow.songManager.wildBattleSong);
+                NPCFunctions.stopSound(player, "music", GoldenGlow.songManager.trainerBattleSong);
+                NPCFunctions.playSound(player, "music", GoldenGlow.routeManager.getRoute(player).song);
+            }
         }
         /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){
             EntityPlayerMP mcPlayer= event.player;

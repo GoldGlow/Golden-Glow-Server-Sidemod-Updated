@@ -3,6 +3,7 @@ package com.goldenglow;
 import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.command.CommandInstanceInv;
 import com.goldenglow.common.command.CommandPhone;
+import com.goldenglow.common.command.CommandRoute;
 import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.handlers.TickHandler;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.common.event.*;
 
 import java.io.FileNotFoundException;
 
-@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;", acceptableRemoteVersions = "*")
+@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
 public class GoldenGlow {
 
     public String VERSION = "1.0.0";
@@ -63,11 +64,19 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         teamManager.init();
+        songManager.init();
         event.registerServerCommand(new CommandInstanceInv());
         event.registerServerCommand(new CommandPhone());
+        event.registerServerCommand(new CommandRoute());
+    }
+
+    @Mod.EventHandler
+    public void serverLoaded(FMLServerStartedEvent event){
+        routeManager.init();
     }
 
     @Mod.EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
+        routeManager.saveRoutes();
     }
 }

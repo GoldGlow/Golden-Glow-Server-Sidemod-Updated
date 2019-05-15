@@ -2,6 +2,7 @@ package com.goldenglow.common.battles;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.teams.Team;
+import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.PixelmonMethods;
@@ -73,6 +74,18 @@ public class CustomBattleHandler
                 }
             }
             catch (Exception e){}
+    }
+
+    public static String getCustomTheme(BattleParticipant[] participants){
+        for (BattleParticipant participant : participants) {
+            if (participant instanceof PlayerParticipant) {
+                NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
+                if (GoldenGlow.songManager.playerThemes.containsKey(((PlayerParticipant) participant).player.getName())){
+                    return GoldenGlow.songManager.playerThemes.get(((PlayerParticipant) participant).player.getName());
+                }
+            }
+        }
+        return "";
     }
 
 }

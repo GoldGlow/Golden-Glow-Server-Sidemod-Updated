@@ -20,7 +20,7 @@ public class CommandRoute extends CommandBase {
     }
 
     public String getUsage(ICommandSender sender) {
-        return "/route name [priority]";
+        return "/route name [song] [priority]";
     }
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -31,9 +31,12 @@ public class CommandRoute extends CommandBase {
                 if(region!=null && region instanceof Polygonal2DRegion) {
                     Polygonal2DRegion selection = (Polygonal2DRegion)region;
                     Route route;
-                    if(args.length>1 && Integer.parseInt(args[1])>0) {
-                         route = new Route(args[0], selection, Integer.parseInt(args[1]));
-                    }else {
+                    if(args.length>2 && Integer.parseInt(args[2])>0) {
+                         route = new Route(args[0], args[1], selection, Integer.parseInt(args[2]));
+                    }else if(args.length==2){
+                        route = new Route(args[0], args[1], selection);
+                    }
+                    else {
                         route = new Route(args[0], selection);
                     }
                     GoldenGlow.routeManager.addRoute(route);

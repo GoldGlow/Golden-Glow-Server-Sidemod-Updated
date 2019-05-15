@@ -56,49 +56,6 @@ public class NPCFunctions {
         CustomBattleHandler.createCustomBattle(player, teamName, initDialogID, winDialogID, loseDialogID, npc);
     }
 
-    public static void standardNPCBattle(PlayerWrapper playerWrapper, NPCWrapper npcWrapper, int initDialogID){
-        EntityNPCInterface npc=(EntityNPCInterface) npcWrapper.getMCEntity();
-        EntityPlayerMP player=(EntityPlayerMP)playerWrapper.getMCEntity();
-        EntityPixelmon pixelmon= Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player);
-        if(pixelmon!=null) {
-            if (npc.getRotationYawHead() == 0 || npc.getRotationYawHead() == 180) {
-                if (Math.abs(player.getPosition().getX() - npc.getPosition().getX()) < 1 && Math.abs(player.getPosition().getY() - npc.getPosition().getY()) < 3) {
-                    if (npc.getRotationYawHead() == 0 && player.getPosition().getZ() >= npc.getPosition().getZ()) {
-                        if (!playerWrapper.hasReadDialog(initDialogID)) {
-                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
-                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
-                        }
-                    }
-                    if (npc.getRotationYawHead() == 180 && player.getPosition().getZ() <= npc.getPosition().getZ()) {
-                        if (!playerWrapper.hasReadDialog(initDialogID)) {
-                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
-                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
-                        }
-                    }
-                }
-            } else if (npc.getRotationYawHead() == 90 || npc.getRotationYawHead() == 270) {
-                if (Math.abs(player.getPosition().getZ() - npc.getPosition().getZ()) < 1 && Math.abs(player.getPosition().getY() - npc.getPosition().getY()) < 3) {
-                    if (npc.getRotationYawHead() == 90 && player.getPosition().getX() <= npc.getPosition().getX()) {
-                        if (!playerWrapper.hasReadDialog(initDialogID)) {
-                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
-                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
-                        }
-                    }
-                    if (npc.getRotationYawHead() == 270 && player.getPosition().getX() >= npc.getPosition().getX()) {
-                        if (!playerWrapper.hasReadDialog(initDialogID)) {
-                            NPCFunctions.stopSound(player, "music", "customnpcs:songs.route3");
-                            NPCFunctions.playSound(player, "music", "customnpcs:songs.rivaltest");
-                            NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public static void registerLOSBattle(NPCWrapper npc, int initDialogID) {
         TickHandler.battleNPCs.put(npc, initDialogID);
     }
@@ -153,6 +110,17 @@ public class NPCFunctions {
         System.out.println(PixelmonHelper.isPixelmon(npc.modelData.getEntity(npc)));
     }
 
+    public static void getRouteLogin(EntityPlayerMP playerMP){
+        Route currentRoute = null;
+        if(playerMP.getEntityData().hasKey("Route")) {
+            currentRoute = GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route"));
+        }
+        else{
+            currentRoute = GoldenGlow.routeManager.getRoute(playerMP);
+        }
+        NPCFunctions.playSound(playerMP, "music", currentRoute.song);
+    }
+
     public static void checkRoute(EntityPlayerMP playerMP) {
         Route currentRoute = null;
 	    if(playerMP.getEntityData().hasKey("Route")) {
@@ -161,6 +129,9 @@ public class NPCFunctions {
         Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
 	    if(actualRoute!=null && currentRoute != actualRoute) {
 	        actualRoute.addPlayer(playerMP);
+            NPCFunctions.stopSound(playerMP, "music", currentRoute.song);
+            NPCFunctions.playSound(playerMP, "music", actualRoute.song);
+	        currentRoute.removePlayer(playerMP);
         }
     }
 }

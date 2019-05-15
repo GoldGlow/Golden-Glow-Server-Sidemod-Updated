@@ -46,7 +46,7 @@ public class TickHandler {
     }
 
     static void npcBattleDialog(EntityPlayerMP player, EntityNPCInterface npc, int initDialogID) {
-        NPCFunctions.stopSound(player, "music", "PLACEHOLDER ROUTE THEME");
+        NPCFunctions.stopSound(player, "music", GoldenGlow.routeManager.getRoute(player).song);
         NPCFunctions.playSound(player, "music", GoldenGlow.songManager.encounterSong);
         NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
     }
