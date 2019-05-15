@@ -31,4 +31,5 @@ public class Reference {
     public static String gymMessagePrefix =aqua+bold+"[GG-Gym] "+TextFormatting.RESET;
 
     public static String configDir="config/GoldenGlow";
+    public static String routeDir=configDir+"/routes";
 }
