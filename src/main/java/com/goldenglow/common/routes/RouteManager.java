@@ -148,11 +148,12 @@ public class RouteManager {
     }
 
     public Route getRoute(BlockPos pos) {
-        Route highestPrio = null;
+        int highestPrio = -1;
+        Route r = null;
         for(Route route : routes) {
-            if(route.region.contains(new Vector(pos.getX(), pos.getY(), pos.getZ())) && (highestPrio==null || route.priority>highestPrio.priority))
-                highestPrio = route;
+            if(route.region.contains(new Vector(pos.getX(), pos.getY(), pos.getZ())) && route.priority>highestPrio)
+                r = route;
         }
-        return highestPrio;
+        return r;
     }
 }

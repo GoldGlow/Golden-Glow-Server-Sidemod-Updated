@@ -133,8 +133,15 @@ public class NPCFunctions {
 	        actualRoute.addPlayer(playerMP);
             NPCFunctions.stopSong(playerMP);
             NPCFunctions.playSong(playerMP, actualRoute.song);
-            Server.sendData(playerMP, EnumPacketClient.MESSAGE, new Object[]{actualRoute.displayName, "", Integer.valueOf(0)});
-	        currentRoute.removePlayer(playerMP);
+            Server.sendData(playerMP, EnumPacketClient.MESSAGE, actualRoute.displayName!=null ? actualRoute.displayName : actualRoute.unlocalizedName, "", Integer.valueOf(0));
+	        if(currentRoute!=null)
+	            currentRoute.removePlayer(playerMP);
+        } else if(actualRoute==null) {
+	        playerMP.getEntityData().removeTag("Route");
         }
+    }
+
+    public static void removeRouteLogout(EntityPlayerMP playerMP) {
+	    playerMP.getEntityData().removeTag("Route");
     }
 }

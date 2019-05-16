@@ -14,6 +14,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 public class CommandRoute extends CommandBase {
 
@@ -42,7 +44,13 @@ public class CommandRoute extends CommandBase {
                         route = new Route(args[0], selection);
                     }
                     GoldenGlow.routeManager.addRoute(route);
-                    GGLogger.info("Added route "+args[0]);
+                    TextComponentString msg = new TextComponentString("New Route '"+route.unlocalizedName+"' created successfully!");
+                    msg.getStyle().setColor(TextFormatting.AQUA);
+                    sender.sendMessage(msg);
+                } else {
+                    TextComponentString msg = new TextComponentString("ERROR: Make sure you make a WorldEdit selection, using poly selection mode. (//sel poly)!");
+                    msg.getStyle().setColor(TextFormatting.RED);
+                    sender.sendMessage(msg);
                 }
             } catch (IncompleteRegionException e) {
                 e.printStackTrace();
