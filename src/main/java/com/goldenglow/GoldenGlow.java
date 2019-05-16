@@ -8,6 +8,7 @@ import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
@@ -73,6 +74,10 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
+        GGLogger.info("Routes:");
+        for(Route route:routeManager.getRoutes()){
+            GGLogger.info(route.unlocalizedName);
+        }
     }
 
     @Mod.EventHandler

@@ -32,9 +32,10 @@ public class RouteManager {
         if(!dir.exists()) {
             if (!dir.getParentFile().exists())
                 dir.getParentFile().mkdirs();
+            dir.mkdirs();
         }
         else
-            loadRoutes();
+            this.loadRoutes();
     }
 
     public void loadRoutes() {
@@ -71,7 +72,11 @@ public class RouteManager {
         }
         Route route = new Route(name, song, new Polygonal2DRegion(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(0)), points, minY, maxY), priority);
 
-        routes.add(route);
+        this.routes.add(route);
+    }
+
+    public List<Route> getRoutes(){
+        return this.routes;
     }
 
     public void saveRoutes() {
@@ -108,6 +113,7 @@ public class RouteManager {
         file.beginObject();
         file.name("minY").value(route.region.getMinimumY());
         file.name("maxY").value(route.region.getMaximumY());
+        file.endObject();
         file.name("points");
         file.beginArray();
         for (BlockVector2D vec : route.region.getPoints()) {
@@ -117,7 +123,6 @@ public class RouteManager {
             file.endObject();
         }
         file.endArray();
-        file.endObject();
         file.endObject();
         file.close();
     }

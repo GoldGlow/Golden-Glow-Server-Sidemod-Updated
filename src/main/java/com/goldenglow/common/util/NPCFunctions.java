@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.inventory.InstancedContainer;
+import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -21,8 +22,10 @@ import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.Server;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.PixelmonHelper;
 import noppes.npcs.controllers.data.Dialog;
@@ -36,14 +39,15 @@ import java.util.HashMap;
 public class NPCFunctions {
 
 	public static void playSound(EntityPlayerMP player, String source, String path){
-        player.connection.sendPacket(new SPacketCustomSound(path, SoundCategory.getByName(source), player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), 1, 1));
+        SongManager.playSound(player, source, path);
     }
 
-    public static void stopSound(EntityPlayerMP player, String source, String path){
-        PacketBuffer packetBuffer=new PacketBuffer(Unpooled.buffer());
-        packetBuffer.writeString(source);
-        packetBuffer.writeString(path);
-        player.connection.sendPacket(new SPacketCustomPayload("MC|StopSound", packetBuffer));
+    public static void playSong(EntityPlayerMP player, String path){
+	    SongManager.playSong(player, path);
+    }
+
+    public static void stopSong(EntityPlayerMP player){
+	    SongManager.stopSong(player);
     }
 
     public static void openStarterGui(EntityPlayerMP player) {
@@ -110,15 +114,13 @@ public class NPCFunctions {
         System.out.println(PixelmonHelper.isPixelmon(npc.modelData.getEntity(npc)));
     }
 
-    public static void getRouteLogin(EntityPlayerMP playerMP){
-        Route currentRoute = null;
-        if(playerMP.getEntityData().hasKey("Route")) {
-            currentRoute = GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route"));
+    public static void checkRouteLogin(EntityPlayerMP playerMP){
+        Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
+        if(actualRoute!=null){
+            GGLogger.info(playerMP.getDisplayName()+" logged in while in "+actualRoute.displayName);
+            actualRoute.addPlayer(playerMP);
+            NPCFunctions.playSong(playerMP, actualRoute.song);
         }
-        else{
-            currentRoute = GoldenGlow.routeManager.getRoute(playerMP);
-        }
-        NPCFunctions.playSound(playerMP, "music", currentRoute.song);
     }
 
     public static void checkRoute(EntityPlayerMP playerMP) {
@@ -129,8 +131,9 @@ public class NPCFunctions {
         Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
 	    if(actualRoute!=null && currentRoute != actualRoute) {
 	        actualRoute.addPlayer(playerMP);
-            NPCFunctions.stopSound(playerMP, "music", currentRoute.song);
-            NPCFunctions.playSound(playerMP, "music", actualRoute.song);
+            NPCFunctions.stopSong(playerMP);
+            NPCFunctions.playSong(playerMP, actualRoute.song);
+            Server.sendData(playerMP, EnumPacketClient.MESSAGE, new Object[]{actualRoute.displayName, "", Integer.valueOf(0)});
 	        currentRoute.removePlayer(playerMP);
         }
     }

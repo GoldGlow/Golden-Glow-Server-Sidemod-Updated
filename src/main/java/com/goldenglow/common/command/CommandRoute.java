@@ -3,6 +3,7 @@ package com.goldenglow.common.command;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
+import com.goldenglow.common.util.GGLogger;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -11,6 +12,7 @@ import com.sk89q.worldedit.regions.Region;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 
 public class CommandRoute extends CommandBase {
@@ -40,10 +42,14 @@ public class CommandRoute extends CommandBase {
                         route = new Route(args[0], selection);
                     }
                     GoldenGlow.routeManager.addRoute(route);
+                    GGLogger.info("Added route "+args[0]);
                 }
             } catch (IncompleteRegionException e) {
                 e.printStackTrace();
             }
+        }
+        else {
+            throw new WrongUsageException(getUsage(sender), new Object[0]);
         }
     }
 }

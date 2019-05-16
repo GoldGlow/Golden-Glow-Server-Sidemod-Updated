@@ -3,6 +3,8 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
+import com.goldenglow.common.music.Song;
+import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -65,8 +67,8 @@ public class GGEventHandler {
         if(event.bc.rules instanceof CustomNPCBattle) {
             for (BattleParticipant participant : participants) {
                 if (participant instanceof PlayerParticipant) {
-                    NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.encounterSong);
-                    NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.trainerBattleSong);
+                    SongManager.stopSong(((PlayerParticipant) participant).player);
+                    SongManager.playSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
                 }
             }
         }
@@ -77,11 +79,12 @@ public class GGEventHandler {
                     wildBattle=true;
                     for (BattleParticipant participant : participants) {
                         if (participant instanceof PlayerParticipant) {
-                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
-                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.wildBattleSong);
-
+                            SongManager.stopSong(((PlayerParticipant) participant).player);
+                            SongManager.playSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.wildBattleSong);
                         }
                     }
+                    if(wildBattle)
+                        break;
                 }
             }
             if(!wildBattle){
@@ -90,15 +93,15 @@ public class GGEventHandler {
                 if(!opponentTheme.equals("")){
                     for(BattleParticipant participant:participants){
                         if (participant instanceof PlayerParticipant) {
-                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
-                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                            SongManager.stopSong(((PlayerParticipant) participant).player);
+                            SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
                         }
                     }
                     if(participantTheme.equals("")){
                         for(BattleParticipant participant:opponents){
                             if (participant instanceof PlayerParticipant) {
-                                NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
-                                NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                                SongManager.stopSong(((PlayerParticipant) participant).player);
+                                SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
                             }
                         }
                     }
@@ -106,15 +109,15 @@ public class GGEventHandler {
                 if(!participantTheme.equals("")) {
                     for (BattleParticipant participant : opponents) {
                         if (participant instanceof PlayerParticipant) {
-                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
-                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                            SongManager.stopSong(((PlayerParticipant) participant).player);
+                            SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
                         }
                     }
                     if (opponentTheme.equals("")) {
                         for (BattleParticipant participant : participants) {
                             if (participant instanceof PlayerParticipant) {
-                                NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
-                                NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", opponentTheme);
+                                SongManager.stopSong(((PlayerParticipant) participant).player);
+                                SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
                             }
                         }
                     }
@@ -122,8 +125,8 @@ public class GGEventHandler {
                 if(participantTheme.equals("")&&opponentTheme.equals("")){
                     for (BattleParticipant participant : participants) {
                         if (participant instanceof PlayerParticipant) {
-                            NPCFunctions.stopSound(((PlayerParticipant) participant).player, "music", GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player).song);
-                            NPCFunctions.playSound(((PlayerParticipant) participant).player, "music", GoldenGlow.songManager.trainerBattleSong);
+                            SongManager.stopSong(((PlayerParticipant) participant).player);
+                            SongManager.playSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
                         }
                     }
                 }
@@ -133,7 +136,7 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void onLevelUp(LevelUpEvent event){
-        NPCFunctions.playSound(event.player, "sound", GoldenGlow.songManager.levelUpSound);
+        SongManager.playSound(event.player, "neutral", GoldenGlow.songManager.levelUpSound);
     }
 
     @SubscribeEvent
@@ -145,21 +148,21 @@ public class GGEventHandler {
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
             CustomNPCBattle battle = (CustomNPCBattle) event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
-            NPCFunctions.stopSound(mcPlayer, "music", GoldenGlow.songManager.trainerBattleSong);
+            SongManager.stopSong(mcPlayer);
             if (results == BattleResults.VICTORY) {
-                NPCFunctions.playSound(mcPlayer, "music", GoldenGlow.songManager.victorySong);
+                SongManager.playSong(mcPlayer, GoldenGlow.songManager.victorySong);
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if (results == BattleResults.DEFEAT) {
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
                 ((IPlayer) mcPlayer).removeDialog(battle.getInitDiag().getId());
+                SongManager.playRouteSong(mcPlayer);
             }
         }
         else{
             for(EntityPlayerMP player:event.getPlayers()){
-                NPCFunctions.stopSound(player, "music", GoldenGlow.songManager.wildBattleSong);
-                NPCFunctions.stopSound(player, "music", GoldenGlow.songManager.trainerBattleSong);
-                NPCFunctions.playSound(player, "music", GoldenGlow.routeManager.getRoute(player).song);
+                SongManager.stopSong(player);
+                SongManager.playRouteSong(player);
             }
         }
         /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){

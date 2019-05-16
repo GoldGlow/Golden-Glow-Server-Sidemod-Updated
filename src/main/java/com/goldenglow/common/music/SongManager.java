@@ -1,15 +1,21 @@
 package com.goldenglow.common.music;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import noppes.npcs.client.controllers.MusicController;
@@ -70,8 +76,14 @@ public class SongManager {
 
     }
 
-    public static void playSong(EntityPlayerMP player, String sound) {
-        MusicController.Instance.playStreaming(sound, player);
+    public static void playSound(EntityPlayerMP player, String source, String path) {
+        player.connection.sendPacket(new SPacketCustomSound(path, SoundCategory.getByName(source), player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), 1000, 1));
+        if(source.equals("music"))
+            player.getEntityData().setString("Song", path);
+    }
+
+    public static void playSong(EntityPlayerMP player, String path) {
+        playSound(player, "music", path);
     }
 
     public static void playSongFromName(EntityPlayerMP playerMP, String songName){
@@ -101,7 +113,13 @@ public class SongManager {
                 victorySong=readLine.replace("victorySong=","").replace(" ","");
             }
             else if(readLine.startsWith("encounterSong=")){
-                victorySong=readLine.replace("encounterSong=","").replace(" ","");
+                encounterSong=readLine.replace("encounterSong=","").replace(" ","");
+            }
+            else if(readLine.startsWith("evolutionSong=")){
+                evolutionSong=readLine.replace("evolutionSong=","").replace(" ","");
+            }
+            else if(readLine.startsWith("levelUpSound=")){
+                levelUpSound=readLine.replace("levelUpSound=","").replace(" ","");
             }
         }
     }
@@ -129,9 +147,11 @@ public class SongManager {
         bw.newLine();
         bw.write("victorySong=customnpcs:songs.victory");
         bw.newLine();
-        bw.write("levelUpSound=customnpcs:songs.rivaltest");
+        bw.write("encounterSong=customnpcs:songs.rivaltest");
         bw.newLine();
         bw.write("evolutionSong=customnpcs:songs.evolution");
+        bw.newLine();
+        bw.write("levelUpSound=customnpcs:songs.levelUp");
 
         bw.close();
     }
@@ -147,5 +167,26 @@ public class SongManager {
         file.endObject();
         file.endArray();
         file.close();
+    }
+
+    public static void playRouteSong(EntityPlayerMP player){
+        Route currentRoute = null;
+        if(player.getEntityData().hasKey("Route")) {
+            currentRoute = GoldenGlow.routeManager.getRoute(player.getEntityData().getString("Route"));
+        }
+        if(currentRoute!=null&&!currentRoute.equals("")){
+            SongManager.playSong(player, GoldenGlow.routeManager.getRoute(player).song);
+        }
+    }
+
+    public static void stopSong(EntityPlayerMP player){
+        if(player.getEntityData().hasKey("Song")){
+            if(!player.getEntityData().getString("Song").equals("")) {
+                PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer());
+                packetBuffer.writeString("music");
+                packetBuffer.writeString(player.getEntityData().getString("Song"));
+                player.connection.sendPacket(new SPacketCustomPayload("MC|StopSound", packetBuffer));
+            }
+        }
     }
 }
