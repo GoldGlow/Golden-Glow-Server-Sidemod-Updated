@@ -57,6 +57,9 @@ public class NPCFunctions {
     public static void createCustomBattle(PlayerWrapper playerWrapper, String teamName, int initDialogID, int winDialogID, int loseDialogID, NPCWrapper npcWrapper) {
         EntityNPCInterface npc=(EntityNPCInterface) npcWrapper.getMCEntity();
         EntityPlayerMP player=(EntityPlayerMP)playerWrapper.getMCEntity();
+        if(playerWrapper.hasPermission("hard")){
+            teamName+="-hard";
+        }
         CustomBattleHandler.createCustomBattle(player, teamName, initDialogID, winDialogID, loseDialogID, npc);
     }
 
@@ -114,15 +117,6 @@ public class NPCFunctions {
         System.out.println(PixelmonHelper.isPixelmon(npc.modelData.getEntity(npc)));
     }
 
-    public static void checkRouteLogin(EntityPlayerMP playerMP){
-        Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
-        if(actualRoute!=null){
-            GGLogger.info(playerMP.getDisplayName()+" logged in while in "+actualRoute.displayName);
-            actualRoute.addPlayer(playerMP);
-            NPCFunctions.playSong(playerMP, actualRoute.song);
-        }
-    }
-
     public static void checkRoute(EntityPlayerMP playerMP) {
         Route currentRoute = null;
 	    if(playerMP.getEntityData().hasKey("Route")) {
@@ -133,7 +127,7 @@ public class NPCFunctions {
 	        actualRoute.addPlayer(playerMP);
             NPCFunctions.stopSong(playerMP);
             NPCFunctions.playSong(playerMP, actualRoute.song);
-            Server.sendData(playerMP, EnumPacketClient.MESSAGE, actualRoute.displayName!=null ? actualRoute.displayName : actualRoute.unlocalizedName, "", Integer.valueOf(0));
+            Server.sendData(playerMP, EnumPacketClient.MESSAGE, actualRoute.displayName!=null ? actualRoute.displayName : actualRoute.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
 	        if(currentRoute!=null)
 	            currentRoute.removePlayer(playerMP);
         } else if(actualRoute==null) {
@@ -142,6 +136,7 @@ public class NPCFunctions {
     }
 
     public static void removeRouteLogout(EntityPlayerMP playerMP) {
-	    playerMP.getEntityData().removeTag("Route");
+        GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route")).removePlayer(playerMP);
+        playerMP.getEntityData().removeTag("Route");
     }
 }

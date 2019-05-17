@@ -4,6 +4,7 @@ import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.command.CommandInstanceInv;
 import com.goldenglow.common.command.CommandPhone;
 import com.goldenglow.common.command.CommandRoute;
+import com.goldenglow.common.command.CommandRouteNotificationOption;
 import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.handlers.TickHandler;
@@ -69,6 +70,7 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandInstanceInv());
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRoute());
+        event.registerServerCommand(new CommandRouteNotificationOption());
     }
 
     @Mod.EventHandler

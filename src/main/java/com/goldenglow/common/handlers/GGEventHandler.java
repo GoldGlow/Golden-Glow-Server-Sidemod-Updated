@@ -38,10 +38,11 @@ public class GGEventHandler {
             GoldenGlow.instance.followerHandler.followMap.remove(event.player);
         }
     }*/
-
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        //GoldenGlow.instance.gymManager.checkPlayer(event.player);
+        if(!event.player.getEntityData().hasKey("RouteNotification")){
+            event.player.getEntityData().setInteger("RouteNotification", 0);
+        }
     }
 
     /*@SubscribeEvent
@@ -79,6 +80,7 @@ public class GGEventHandler {
                     wildBattle=true;
                     for (BattleParticipant participant : participants) {
                         if (participant instanceof PlayerParticipant) {
+                            GGLogger.info("Playing wild theme!");
                             SongManager.stopSong(((PlayerParticipant) participant).player);
                             SongManager.playSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.wildBattleSong);
                         }
