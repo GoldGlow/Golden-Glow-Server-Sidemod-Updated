@@ -8,7 +8,16 @@ import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.sun.jna.Library;
 import io.netty.buffer.Unpooled;
+import moe.plushie.armourers_workshop.common.library.LibraryFile;
+import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
+import moe.plushie.armourers_workshop.common.skin.data.Skin;
+import moe.plushie.armourers_workshop.common.skin.data.SkinDescriptor;
+import moe.plushie.armourers_workshop.common.skin.data.SkinDye;
+import moe.plushie.armourers_workshop.common.skin.data.SkinIdentifier;
+import moe.plushie.armourers_workshop.utils.SkinIOUtils;
+import moe.plushie.armourers_workshop.utils.SkinNBTHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
@@ -23,6 +32,10 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.Server;
+import noppes.npcs.api.NpcAPI;
+import noppes.npcs.api.item.IItemStack;
+import noppes.npcs.api.wrapper.BlockScriptedWrapper;
+import noppes.npcs.api.wrapper.ItemStackWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.constants.EnumPacketClient;
@@ -102,6 +115,16 @@ public class NPCFunctions {
                 net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(playerMP, playerMP.openContainer));
             }
         }
+    }
+
+    public static void setAWModel(BlockScriptedWrapper block, String awItem){
+        LibraryFile file=new LibraryFile(awItem);
+        Skin skin = SkinIOUtils.loadSkinFromLibraryFile(file);
+        CommonSkinCache.INSTANCE.addEquipmentDataToCache(skin, file);
+        SkinIdentifier identifier = new SkinIdentifier(0, file, 0, skin.getSkinType());
+        ItemStack item = SkinNBTHelper.makeEquipmentSkinStack(new SkinDescriptor(identifier));
+        IItemStack itemStack= NpcAPI.Instance().getIItemStack(item);
+        block.setModel(itemStack);
     }
 
     public static void setPixelmon(EntityCustomNpc npc, String name) {

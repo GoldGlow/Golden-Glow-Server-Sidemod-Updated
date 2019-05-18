@@ -74,3 +74,7 @@ function flashingRedstone(time){
 		}
 	}
 }
+
+function setAWModel(block, file){
+	Packages.com.goldenglow.common.util.NPCFunctions.setAWModel(block, file);
+}

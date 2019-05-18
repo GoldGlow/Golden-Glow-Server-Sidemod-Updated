@@ -40,9 +40,8 @@ public class GGEventHandler {
     }*/
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        if(!event.player.getEntityData().hasKey("RouteNotification")){
+        if(!event.player.getEntityData().hasKey("RouteNotification"))
             event.player.getEntityData().setInteger("RouteNotification", 0);
-        }
     }
 
     /*@SubscribeEvent
