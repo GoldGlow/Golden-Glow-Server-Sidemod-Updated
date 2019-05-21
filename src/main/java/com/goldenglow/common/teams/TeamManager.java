@@ -9,6 +9,7 @@ import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsHeld;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
@@ -143,7 +144,10 @@ public class TeamManager {
             line=line.replace("  ","");
             if(line.startsWith("Ability:"))
             {
-                pokemonData.setAbility(line.replace("Ability: ",""));
+                String a = line.replace("Ability: ","");
+                if(AbilityBase.getAbility(a)==null)
+                    a = a.replaceAll("\\s+", "");
+                pokemonData.setAbility(a);
             }
             else if(line.startsWith("Level")){
                 int lvl = Integer.parseInt(line.replace("Level: ","").replace(" ",""));
