@@ -146,7 +146,7 @@ public class TeamManager {
                 pokemonData.setAbility(line.replace("Ability: ",""));
             }
             else if(line.startsWith("Level")){
-                int lvl = Integer.parseInt(line.replace("Level: ",""));
+                int lvl = Integer.parseInt(line.replace("Level: ","").replace(" ",""));
                 if(lvl<=100&&lvl>0){
                     pokemonData.setLevel(lvl);
                     GoldenGlow.instance.logger.info("Set level: "+lvl+" to pokemon: "+name);
@@ -220,10 +220,11 @@ public class TeamManager {
             }
             else if(line.startsWith("- ")&&moveset.size()<4){
                 String move=line.replace("- ","");
-                if(otherMoves.containsKey(move))
+                Attack attack = new Attack(move);
+                if(attack==null && otherMoves.containsKey(move))
                     move=otherMoves.get(move);
 
-                Attack attack = new Attack(move);
+                attack = new Attack(move);
                 GGLogger.info("Found move: -"+move+"-");
                 if(attack!=null)
                         moveset.add(attack);
@@ -236,6 +237,8 @@ public class TeamManager {
                 pokemonData.getMoveset().set(i, moveset.get(i));
             }
         }
+        GGLogger.info(pokemonData.getLevel());
+        GGLogger.info(pokemonData.getLevelContainer());
         return pokemonData;
     }
 

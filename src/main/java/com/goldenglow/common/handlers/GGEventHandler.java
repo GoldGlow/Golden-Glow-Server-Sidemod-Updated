@@ -3,10 +3,12 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
+import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
+import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.BeatTrainerEvent;
@@ -19,15 +21,26 @@ import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.item.inventory.InventoryArchetypes;
+import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
+import org.spongepowered.api.item.inventory.entity.PlayerInventory;
 
 public class GGEventHandler {
 
@@ -42,6 +55,30 @@ public class GGEventHandler {
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         if(!event.player.getEntityData().hasKey("RouteNotification"))
             event.player.getEntityData().setInteger("RouteNotification", 0);
+    }
+
+    @SubscribeEvent
+    public void itemDroppedEvent(ItemTossEvent event){
+        for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
+            int item=Item.getIdFromItem(Item.getByNameOrId(id));
+            if (Item.getIdFromItem(event.getEntityItem().getItem().getItem()) ==item){
+                ItemStack itemStack = event.getEntityItem().getItem();
+                event.setCanceled(true);
+                event.getPlayer().inventory.addItemStackToInventory(itemStack);
+                event.getPlayer().sendMessage(new TextComponentString(Reference.red+"Cannot drop this item!"));
+            }
+        }
+    }
+
+    @Listener
+    public void itemStoredEvent(ClickInventoryEvent event){
+        if(event.getTargetInventory().getArchetype()!= InventoryArchetypes.PLAYER){
+            for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
+                if(event.getTransactions().get(0).getFinal().getType().getName().equals(id)){
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
 
     /*@SubscribeEvent
@@ -159,6 +196,13 @@ public class GGEventHandler {
                 ((IPlayer) mcPlayer).removeDialog(battle.getInitDiag().getId());
                 SongManager.playRouteSong(mcPlayer);
             }
+        }
+        else if(event.bc.rules instanceof DoubleNPCBattle){
+            DoubleNPCBattle rules=(DoubleNPCBattle)event.bc.rules;
+            rules.getFirstNpc().getEntityData().setBoolean("inBattle", false);
+            rules.getSecondNpc().getEntityData().setBoolean("inBattle", false);
+            rules.getSecondPokemon().unloadEntity();
+            rules.getFirstPokemon().unloadEntity();
         }
         else{
             for(EntityPlayerMP player:event.getPlayers()){

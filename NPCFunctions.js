@@ -16,7 +16,7 @@ function stopSong(player){
 
 function createNPCBattle(event, team, initDialog, winDialog, loseDialog){
 	if(event.dialog.getId()==initDialog)
-		Packages.com.goldenglow.common.util.NPCFunctions.createCustomBattle(player, team, initDialog, winDialog, loseDialog);
+		Packages.com.goldenglow.common.util.NPCFunctions.createCustomBattle(event.player, team, initDialog, winDialog, loseDialog, event.npc);
 	else if(event.dialog.getId()==winDialog){
 		stopSong(event.player.getMCEntity());
 		playRouteSong(event.player.getMCEntity());
@@ -41,6 +41,12 @@ function checkRoute(player){
 
 function removeRouteLogout(){
 	Packages.com.goldenglow.common.util.NPCFunctions.removeRouteLogout(player);
+}
+
+function createDoubleNPCBattle(player, firstX, firstY, firstZ, team1, secondX, secondY, secondZ, team2){
+	var world=player.getWorld();
+	var pos=player.getPos();
+	Packages.com.goldenglow.common.util.NPCFunctions.createNPCBattle(world.getClosestEntity(pos.add(firstX-pos.getX(), firstY-player.getPos().getY(), firstZ-pos.getZ()), 1, 2), team1, world.getClosestEntity(pos.add(secondX-pos.getX(), secondY-pos.getY(), secondZ-pos.getZ()), 1, 2), team2);
 }
 
 function flashingRedstone(time){
@@ -74,6 +80,8 @@ function flashingRedstone(time){
 		}
 	}
 }
+
+function set
 
 function setAWModel(block, file){
 	Packages.com.goldenglow.common.util.NPCFunctions.setAWModel(block, file);

@@ -38,6 +38,7 @@ import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.ItemStackWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.blocks.tiles.TileScripted;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.PixelmonHelper;
@@ -65,6 +66,12 @@ public class NPCFunctions {
 
     public static void openStarterGui(EntityPlayerMP player) {
         //Pixelmon.instance.network.sendTo(new SelectPokemonListPacket(StarterList.getStarterList()), player);
+    }
+
+    public static void createNPCBattle(NPCWrapper firstNPC, String firstTeamName, NPCWrapper secondNPC, String secondTeamName){
+        EntityNPCInterface firstNpc=(EntityNPCInterface) firstNPC.getMCEntity();
+        EntityNPCInterface secondNpc=(EntityNPCInterface) secondNPC.getMCEntity();
+        CustomBattleHandler.createCustomNPCBattle(firstNpc, firstTeamName, secondNpc, secondTeamName);
     }
 
     public static void createCustomBattle(PlayerWrapper playerWrapper, String teamName, int initDialogID, int winDialogID, int loseDialogID, NPCWrapper npcWrapper) {
@@ -123,8 +130,10 @@ public class NPCFunctions {
         CommonSkinCache.INSTANCE.addEquipmentDataToCache(skin, file);
         SkinIdentifier identifier = new SkinIdentifier(0, file, 0, skin.getSkinType());
         ItemStack item = SkinNBTHelper.makeEquipmentSkinStack(new SkinDescriptor(identifier));
-        IItemStack itemStack= NpcAPI.Instance().getIItemStack(item);
-        block.setModel(itemStack);
+        TileScripted tile = (TileScripted) block.getWorld().getMCWorld().getTileEntity(block.getPos().getMCBlockPos());
+        tile.setItemModel(item, null);
+        tile.setRotation(330, 180, 0);
+        tile.setScale(1.25f, 1.25f, 1.25f);
     }
 
     public static void setPixelmon(EntityCustomNpc npc, String name) {

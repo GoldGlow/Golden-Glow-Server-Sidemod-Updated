@@ -13,11 +13,13 @@ import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.PhoneItemListHandler;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import org.spongepowered.api.Sponge;
 
 import java.io.FileNotFoundException;
 
@@ -40,6 +42,7 @@ public class GoldenGlow {
     public static TeamManager teamManager = new TeamManager();
     public static RouteManager routeManager=new RouteManager();
     public ConfigHandler configHandler = new ConfigHandler();
+    public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
 
     public GoldenGlow() throws FileNotFoundException {
     }
@@ -76,6 +79,8 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
+        phoneItemListHandler.init();
+        Sponge.getEventManager().registerListeners(this, new GGEventHandler());
         GGLogger.info("Routes:");
         for(Route route:routeManager.getRoutes()){
             GGLogger.info(route.unlocalizedName);
