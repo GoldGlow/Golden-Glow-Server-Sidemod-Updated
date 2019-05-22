@@ -146,7 +146,6 @@ public class NPCFunctions {
             e.printStackTrace();
         }
         npc.display.setSkinTexture(((EntityPixelmon)npc.modelData.getEntity(npc)).getTexture().toString());
-        System.out.println(PixelmonHelper.isPixelmon(npc.modelData.getEntity(npc)));
     }
 
     public static void checkRoute(EntityPlayerMP playerMP) {
@@ -159,7 +158,9 @@ public class NPCFunctions {
 	        actualRoute.addPlayer(playerMP);
             NPCFunctions.stopSong(playerMP);
             NPCFunctions.playSong(playerMP, actualRoute.song);
-            Server.sendData(playerMP, EnumPacketClient.MESSAGE, actualRoute.displayName!=null ? actualRoute.displayName : actualRoute.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+//            if(actualRoute.displayName!=null && !actualRoute.displayName.isEmpty())
+//                Server.sendData(playerMP, EnumPacketClient.MESSAGE, actualRoute.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+            Server.sendData(playerMP, EnumPacketClient.MESSAGE, (actualRoute.displayName!=null && actualRoute.displayName.isEmpty()) ? actualRoute.displayName : actualRoute.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
 	        if(currentRoute!=null)
 	            currentRoute.removePlayer(playerMP);
         } else if(actualRoute==null) {
@@ -170,5 +171,9 @@ public class NPCFunctions {
     public static void removeRouteLogout(EntityPlayerMP playerMP) {
         GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route")).removePlayer(playerMP);
         playerMP.getEntityData().removeTag("Route");
+    }
+
+    public static void joinRaid(EntityPlayerMP player) {
+	    GoldenGlow.raidHandler.createRaidBattle(player);
     }
 }

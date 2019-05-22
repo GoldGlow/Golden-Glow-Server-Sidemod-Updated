@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Route {
     public String unlocalizedName;
-    public String displayName;
+    public String displayName = "";
     public String song;
     public int priority;
     public Polygonal2DRegion region;

@@ -56,6 +56,7 @@ public class RouteManager {
         InputStream iStream = new FileInputStream(new File(dir, routeName+".json"));
         JsonObject json = new JsonParser().parse(new InputStreamReader(iStream, StandardCharsets.UTF_8)).getAsJsonObject();
         String name = json.get("Name").getAsString();
+        String dName = json.get("DisplayName").getAsString();
         String song = json.get("Song").getAsString();
         int priority = json.get("Priority").getAsInt();
 
@@ -71,6 +72,8 @@ public class RouteManager {
             points.add(vec);
         }
         Route route = new Route(name, song, new Polygonal2DRegion(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(0)), points, minY, maxY), priority);
+        if(!dName.isEmpty())
+            route.displayName = dName;
 
         this.routes.add(route);
     }
@@ -107,6 +110,7 @@ public class RouteManager {
         file.setIndent("\t");
         file.beginObject();
         file.name("Name").value(route.unlocalizedName);
+        file.name("DisplayName").value(route.displayName);
         file.name("Song").value(route.song);
         file.name("Priority").value(route.priority);
         file.name("region");
