@@ -49,6 +49,10 @@ function createDoubleNPCBattle(player, firstX, firstY, firstZ, team1, secondX, s
 	Packages.com.goldenglow.common.util.NPCFunctions.createNPCBattle(world.getClosestEntity(pos.add(firstX-pos.getX(), firstY-player.getPos().getY(), firstZ-pos.getZ()), 1, 2), team1, world.getClosestEntity(pos.add(secondX-pos.getX(), secondY-pos.getY(), secondZ-pos.getZ()), 1, 2), team2);
 }
 
+function openBlockDialog(event, dialogId){
+	event.block.executeCommand("noppes dialog show "+event.player.getName()+" "+dialogId+" block");
+}
+
 function flashingRedstone(time){
 	if(time.toLowerCase()==="night"){
 		if(event.block.getWorld().getTime()<13000||event.block.getWorld().getTime()>23000)
@@ -80,8 +84,6 @@ function flashingRedstone(time){
 		}
 	}
 }
-
-function set
 
 function setAWModel(block, file){
 	Packages.com.goldenglow.common.util.NPCFunctions.setAWModel(block, file);
