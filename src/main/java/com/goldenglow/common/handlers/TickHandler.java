@@ -24,6 +24,7 @@ import java.util.Map;
 public class TickHandler {
 
     public static Map<NPCWrapper, Integer> battleNPCs = new HashMap();
+    static int wTick = 0;
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -38,15 +39,20 @@ public class TickHandler {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
-        for(EntityPlayerMP player : GoldenGlow.routeManager.visualPlayers) {
-            Route r = GoldenGlow.routeManager.getRoute(player);
-            if(r!=null) {
-                for (BlockVector2D b : r.region.getPoints()) {
-                    ((WorldServer) event.world).spawnParticle(player, EnumParticleTypes.FLAME, true, b.getX()+0.5, (double) r.region.getMinimumY()+2, b.getZ()+0.5, 1, (double) 0, (double) 0, (double) 0, (double) 0);
-
+        if(wTick==20) {
+            wTick = 0;
+            for(EntityPlayerMP player : GoldenGlow.routeManager.visualPlayers) {
+                Route r = GoldenGlow.routeManager.getRoute(player);
+                if(r!=null) {
+                    for (BlockVector2D b : r.region.getPoints()) {
+                        for(int i = r.region.getMinimumY(); i < r.region.getMaximumY(); i++) {
+                            ((WorldServer) event.world).spawnParticle(player, EnumParticleTypes.FLAME, true, b.getX() + 0.5, i+0.5, b.getZ() + 0.5, 1, (double) 0, (double) 0, (double) 0, (double) 0);
+                        }
+                    }
                 }
             }
         }
+        wTick++;
     }
 
     static void raytraceNPCBattle(NPCWrapper npc, int initDialogID) {

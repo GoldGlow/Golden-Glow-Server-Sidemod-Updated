@@ -159,8 +159,10 @@ public class RouteManager {
         int highestPrio = -1;
         Route r = null;
         for(Route route : routes) {
-            if(route.region.contains(new Vector(pos.getX(), pos.getY(), pos.getZ())) && route.priority>highestPrio)
+            if(route.region.contains(new Vector(pos.getX(), pos.getY(), pos.getZ())) && route.priority>highestPrio) {
+                highestPrio = route.priority;
                 r = route;
+            }
         }
         return r;
     }
