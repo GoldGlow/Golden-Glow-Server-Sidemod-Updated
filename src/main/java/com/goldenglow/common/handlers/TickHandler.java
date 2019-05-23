@@ -2,8 +2,12 @@ package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.util.NPCFunctions;
+import com.sk89q.worldedit.BlockVector2D;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import noppes.npcs.NoppesUtilServer;
@@ -27,6 +31,19 @@ public class TickHandler {
             for(NPCWrapper npc : battleNPCs.keySet()) {
                 if(npc!=null) {
                     raytraceNPCBattle(npc, battleNPCs.get(npc));
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onWorldTick(TickEvent.WorldTickEvent event) {
+        for(EntityPlayerMP player : GoldenGlow.routeManager.visualPlayers) {
+            Route r = GoldenGlow.routeManager.getRoute(player);
+            if(r!=null) {
+                for (BlockVector2D b : r.region.getPoints()) {
+                    ((WorldServer) event.world).spawnParticle(player, EnumParticleTypes.FLAME, true, b.getX()+0.5, (double) r.region.getMinimumY()+2, b.getZ()+0.5, 1, (double) 0, (double) 0, (double) 0, (double) 0);
+
                 }
             }
         }

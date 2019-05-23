@@ -7,6 +7,7 @@ import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.sun.jna.Library;
 import io.netty.buffer.Unpooled;
@@ -149,31 +150,28 @@ public class NPCFunctions {
     }
 
     public static void checkRoute(EntityPlayerMP playerMP) {
-        Route currentRoute = null;
-	    if(playerMP.getEntityData().hasKey("Route")) {
+	    Route currentRoute = null;
+	    Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
+
+	    if(playerMP.getEntityData().hasKey("Route"))
 	        currentRoute = GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route"));
-        }
-        Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
-	    if(actualRoute!=null && currentRoute != actualRoute) {
+
+	    if(actualRoute!=null) {
+	        if(currentRoute!=null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
+	            currentRoute.removePlayer(playerMP);
+            }
 	        actualRoute.addPlayer(playerMP);
-            NPCFunctions.stopSong(playerMP);
-            NPCFunctions.playSong(playerMP, actualRoute.song);
-//            if(actualRoute.displayName!=null && !actualRoute.displayName.isEmpty())
-//                Server.sendData(playerMP, EnumPacketClient.MESSAGE, actualRoute.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
-            Server.sendData(playerMP, EnumPacketClient.MESSAGE, (actualRoute.displayName!=null && actualRoute.displayName.isEmpty()) ? actualRoute.displayName : actualRoute.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+        }
+	    else {
 	        if(currentRoute!=null)
 	            currentRoute.removePlayer(playerMP);
-        } else if(actualRoute==null) {
-	        playerMP.getEntityData().removeTag("Route");
         }
     }
 
     public static void removeRouteLogout(EntityPlayerMP playerMP) {
-        GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route")).removePlayer(playerMP);
+	    if(GoldenGlow.routeManager.getRoute(playerMP)!=null) {
+            GoldenGlow.routeManager.getRoute(playerMP).removePlayer(playerMP);
+        }
         playerMP.getEntityData().removeTag("Route");
-    }
-
-    public static void joinRaid(EntityPlayerMP player) {
-	    GoldenGlow.raidHandler.createRaidBattle(player);
     }
 }

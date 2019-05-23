@@ -12,6 +12,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.DimensionManager;
 
@@ -24,6 +25,7 @@ import java.util.Objects;
 public class RouteManager {
 
     List<Route> routes = new ArrayList<Route>();
+    public List<EntityPlayerMP> visualPlayers = new ArrayList<>();
 
     File dir;
 
@@ -56,7 +58,9 @@ public class RouteManager {
         InputStream iStream = new FileInputStream(new File(dir, routeName+".json"));
         JsonObject json = new JsonParser().parse(new InputStreamReader(iStream, StandardCharsets.UTF_8)).getAsJsonObject();
         String name = json.get("Name").getAsString();
-        String dName = json.get("DisplayName").getAsString();
+        String dName = "";
+        if(json.has("DisplayName"))
+             dName = json.get("DisplayName").getAsString();
         String song = json.get("Song").getAsString();
         int priority = json.get("Priority").getAsInt();
 

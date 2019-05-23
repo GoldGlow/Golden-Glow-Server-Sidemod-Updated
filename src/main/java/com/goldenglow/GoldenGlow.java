@@ -1,7 +1,6 @@
 package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
-import com.goldenglow.common.battles.raids.RaidHandler;
 import com.goldenglow.common.command.CommandInstanceInv;
 import com.goldenglow.common.command.CommandPhone;
 import com.goldenglow.common.command.CommandRoute;
@@ -44,7 +43,6 @@ public class GoldenGlow {
     public static RouteManager routeManager=new RouteManager();
     public ConfigHandler configHandler = new ConfigHandler();
     public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
-    public static RaidHandler raidHandler = new RaidHandler();
 
     public GoldenGlow() throws FileNotFoundException {
     }
@@ -82,7 +80,7 @@ public class GoldenGlow {
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
         phoneItemListHandler.init();
-        //Sponge.getEventManager().registerListeners(this, new GGEventHandler());
+        Sponge.getEventManager().registerListeners(this, new GGEventHandler());
         GGLogger.info("Routes:");
         for(Route route:routeManager.getRoutes()){
             GGLogger.info(route.unlocalizedName);
