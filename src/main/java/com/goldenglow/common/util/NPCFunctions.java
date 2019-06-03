@@ -6,16 +6,10 @@ import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.sun.jna.Library;
-import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.common.library.LibraryFile;
 import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
 import moe.plushie.armourers_workshop.common.skin.data.Skin;
 import moe.plushie.armourers_workshop.common.skin.data.SkinDescriptor;
-import moe.plushie.armourers_workshop.common.skin.data.SkinDye;
 import moe.plushie.armourers_workshop.common.skin.data.SkinIdentifier;
 import moe.plushie.armourers_workshop.utils.SkinIOUtils;
 import moe.plushie.armourers_workshop.utils.SkinNBTHelper;
@@ -25,28 +19,13 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
-import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.Server;
-import noppes.npcs.api.NpcAPI;
-import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
-import noppes.npcs.api.wrapper.ItemStackWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.blocks.tiles.TileScripted;
-import noppes.npcs.constants.EnumPacketClient;
-import noppes.npcs.controllers.DialogController;
-import noppes.npcs.controllers.PixelmonHelper;
-import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.QuestData;
-import noppes.npcs.entity.EntityCustomNpc;
 import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.HashMap;
@@ -135,18 +114,6 @@ public class NPCFunctions {
         tile.setItemModel(item, null);
         tile.setRotation(330, 180, 0);
         tile.setScale(1.25f, 1.25f, 1.25f);
-    }
-
-    public static void setPixelmon(EntityCustomNpc npc, String name) {
-        npc.modelData.setEntityClass(EntityPixelmon.class);
-        npc.modelData.extra.setString("Name", name);
-        try {
-            EntityPixelmon mon = EntityPixelmon.class.getConstructor(new Class[]{World.class}).newInstance(new Object[]{npc.world});
-            mon.readEntityFromNBT(npc.modelData.extra);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        npc.display.setSkinTexture(((EntityPixelmon)npc.modelData.getEntity(npc)).getTexture().toString());
     }
 
     public static void checkRoute(EntityPlayerMP playerMP) {

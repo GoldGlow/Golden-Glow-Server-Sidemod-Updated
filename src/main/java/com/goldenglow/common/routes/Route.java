@@ -3,13 +3,10 @@ package com.goldenglow.common.routes;
 import com.goldenglow.common.util.NPCFunctions;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
 import noppes.npcs.Server;
 import noppes.npcs.constants.EnumPacketClient;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Route {

@@ -4,53 +4,35 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
-import com.goldenglow.common.music.Song;
+import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
-import com.pixelmonmod.pixelmon.api.events.BeatTrainerEvent;
-import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
 import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
+import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
-import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
-import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
-import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
-import net.minecraft.entity.Entity;
+import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketCustomSound;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.entity.IPlayer;
-import noppes.npcs.api.wrapper.PlayerWrapper;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
-import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
-import org.spongepowered.api.item.inventory.entity.PlayerInventory;
 
 public class GGEventHandler {
 
-    /*@SubscribeEvent
-    public void playerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        if(GoldenGlow.instance.followerHandler.followMap.containsKey(event.player)) {
-            GoldenGlow.instance.followerHandler.followMap.get(event.player).despawn();
-            GoldenGlow.instance.followerHandler.followMap.remove(event.player);
-        }
-    }*/
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         if(!event.player.getEntityData().hasKey("RouteNotification"))
@@ -180,7 +162,10 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onBattleEnd(BattleEndEvent event)
     {
-        if(event.bc.rules instanceof CustomNPCBattle) {
+        if(event.bc.rules instanceof RaidBattleRules) {
+            GoldenGlow.raidHandler.endBattle(event.bc);
+        }
+        else if(event.bc.rules instanceof CustomNPCBattle) {
             EntityPlayerMP mcPlayer = event.getPlayers().get(0);
             BattleResults results = event.results.get(event.bc.participants.get(0));
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
@@ -224,30 +209,6 @@ public class GGEventHandler {
             else if(event.result==BattleResults.DEFEAT){
                 player.addFactionPoints(11, -player.getFactionPoints(11));
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
-            }
-        }*/
-    }
-
-    @SubscribeEvent
-    public void playerUseItem(PlayerInteractEvent event) {
-        /*if(event.entityPlayer.getCurrentEquippedItem() != null) {
-            if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) && event.entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemAxe) {
-                BlockPos pos1 = event.pos;
-                Area area = new Area();
-                if (GoldenGlow.instance.tempHandler.playerBlocks.containsKey(event.entityPlayer)) {
-                    area = GoldenGlow.instance.tempHandler.playerBlocks.get(event.entityPlayer);
-                }
-                area.pos1 = pos1;
-                GoldenGlow.instance.tempHandler.playerBlocks.put(event.entityPlayer, area);
-            }
-            if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) && event.entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemAxe) {
-                BlockPos pos2 = event.pos;
-                Area area = new Area();
-                if (GoldenGlow.instance.tempHandler.playerBlocks.containsKey(event.entityPlayer)) {
-                    area = GoldenGlow.instance.tempHandler.playerBlocks.get(event.entityPlayer);
-                }
-                area.pos2 = pos2;
-                GoldenGlow.instance.tempHandler.playerBlocks.put(event.entityPlayer, area);
             }
         }*/
     }

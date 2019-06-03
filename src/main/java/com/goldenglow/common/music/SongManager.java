@@ -2,21 +2,16 @@ package com.goldenglow.common.music;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomSound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import noppes.npcs.client.controllers.MusicController;
 

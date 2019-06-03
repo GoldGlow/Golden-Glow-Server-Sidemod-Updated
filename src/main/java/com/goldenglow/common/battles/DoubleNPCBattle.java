@@ -2,8 +2,6 @@ package com.goldenglow.common.battles;
 
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import net.minecraft.entity.player.EntityPlayer;
-import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.entity.EntityNPCInterface;
 
 /**

@@ -39,6 +39,9 @@ public class TickHandler {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
+        if(event.phase == TickEvent.Phase.END) {
+            GoldenGlow.raidHandler.update();
+        }
         if(wTick==20) {
             wTick = 0;
             for(EntityPlayerMP player : GoldenGlow.routeManager.visualPlayers) {

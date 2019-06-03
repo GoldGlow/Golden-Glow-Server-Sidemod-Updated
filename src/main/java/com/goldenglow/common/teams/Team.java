@@ -1,10 +1,8 @@
 package com.goldenglow.common.teams;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Team {
     public final String name;

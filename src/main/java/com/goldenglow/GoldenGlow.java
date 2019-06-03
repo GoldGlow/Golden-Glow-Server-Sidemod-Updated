@@ -1,6 +1,8 @@
 package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
+import com.goldenglow.common.battles.raids.CommandRaidDebug;
+import com.goldenglow.common.battles.raids.RaidHandler;
 import com.goldenglow.common.command.CommandInstanceInv;
 import com.goldenglow.common.command.CommandPhone;
 import com.goldenglow.common.command.CommandRoute;
@@ -44,6 +46,8 @@ public class GoldenGlow {
     public ConfigHandler configHandler = new ConfigHandler();
     public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
 
+    public static RaidHandler raidHandler = new RaidHandler();
+
     public GoldenGlow() throws FileNotFoundException {
     }
 
@@ -74,6 +78,8 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRoute());
         event.registerServerCommand(new CommandRouteNotificationOption());
+
+        event.registerServerCommand(new CommandRaidDebug());
     }
 
     @Mod.EventHandler

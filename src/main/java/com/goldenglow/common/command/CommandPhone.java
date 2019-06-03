@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import noppes.npcs.NoppesUtilServer;
 
 /**
  * Created by JeanMarc on 5/11/2019.
