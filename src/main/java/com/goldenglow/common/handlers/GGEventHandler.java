@@ -6,32 +6,59 @@ import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
+import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.entity.IPlayer;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 public class GGEventHandler {
+
+    @SubscribeEvent
+    public void onPixelmonSpawner(PixelmonSpawnerEvent event){
+        if(true){
+            for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.dayPokemon){
+                if(event.spec.name.equals(pokemon))
+                    event.setCanceled(true);
+            }
+        }
+        else{
+            for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.nightPokemon){
+                if(event.spec.name.equals(pokemon))
+                    event.setCanceled(true);
+            }
+        }
+    }
 
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
@@ -86,8 +113,7 @@ public class GGEventHandler {
         if(event.bc.rules instanceof CustomNPCBattle) {
             for (BattleParticipant participant : participants) {
                 if (participant instanceof PlayerParticipant) {
-                    SongManager.stopSong(((PlayerParticipant) participant).player);
-                    SongManager.playSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
+                    SongManager.setCurrentSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
                 }
             }
         }
@@ -99,8 +125,7 @@ public class GGEventHandler {
                     for (BattleParticipant participant : participants) {
                         if (participant instanceof PlayerParticipant) {
                             GGLogger.info("Playing wild theme!");
-                            SongManager.stopSong(((PlayerParticipant) participant).player);
-                            SongManager.playSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.wildBattleSong);
+                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.wildBattleSong);
                         }
                     }
                     if(wildBattle)
@@ -113,15 +138,13 @@ public class GGEventHandler {
                 if(!opponentTheme.equals("")){
                     for(BattleParticipant participant:participants){
                         if (participant instanceof PlayerParticipant) {
-                            SongManager.stopSong(((PlayerParticipant) participant).player);
-                            SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
+                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
                         }
                     }
                     if(participantTheme.equals("")){
                         for(BattleParticipant participant:opponents){
                             if (participant instanceof PlayerParticipant) {
-                                SongManager.stopSong(((PlayerParticipant) participant).player);
-                                SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
+                                SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
                             }
                         }
                     }
@@ -129,15 +152,13 @@ public class GGEventHandler {
                 if(!participantTheme.equals("")) {
                     for (BattleParticipant participant : opponents) {
                         if (participant instanceof PlayerParticipant) {
-                            SongManager.stopSong(((PlayerParticipant) participant).player);
-                            SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
+                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
                         }
                     }
                     if (opponentTheme.equals("")) {
                         for (BattleParticipant participant : participants) {
                             if (participant instanceof PlayerParticipant) {
-                                SongManager.stopSong(((PlayerParticipant) participant).player);
-                                SongManager.playSong(((PlayerParticipant) participant).player, opponentTheme);
+                                SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
                             }
                         }
                     }
@@ -145,8 +166,7 @@ public class GGEventHandler {
                 if(participantTheme.equals("")&&opponentTheme.equals("")){
                     for (BattleParticipant participant : participants) {
                         if (participant instanceof PlayerParticipant) {
-                            SongManager.stopSong(((PlayerParticipant) participant).player);
-                            SongManager.playSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
+                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
                         }
                     }
                 }
@@ -171,15 +191,14 @@ public class GGEventHandler {
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
             CustomNPCBattle battle = (CustomNPCBattle) event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
-            SongManager.stopSong(mcPlayer);
             if (results == BattleResults.VICTORY) {
-                SongManager.playSong(mcPlayer, GoldenGlow.songManager.victorySong);
+                SongManager.setCurrentSong(mcPlayer, GoldenGlow.songManager.victorySong);
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if (results == BattleResults.DEFEAT) {
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
                 ((IPlayer) mcPlayer).removeDialog(battle.getInitDiag().getId());
-                SongManager.playRouteSong(mcPlayer);
+                SongManager.setToRouteSong(mcPlayer);
             }
         }
         else if(event.bc.rules instanceof DoubleNPCBattle){
@@ -191,8 +210,7 @@ public class GGEventHandler {
         }
         else{
             for(EntityPlayerMP player:event.getPlayers()){
-                SongManager.stopSong(player);
-                SongManager.playRouteSong(player);
+                SongManager.setToRouteSong(player);
             }
         }
         /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){

@@ -9,6 +9,7 @@ import com.goldenglow.common.command.CommandRoute;
 import com.goldenglow.common.command.CommandRouteNotificationOption;
 import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
+import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
@@ -45,6 +46,7 @@ public class GoldenGlow {
     public static RouteManager routeManager=new RouteManager();
     public ConfigHandler configHandler = new ConfigHandler();
     public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
+    public static PixelmonSpawnerHandler pixelmonSpawnerHandler=new PixelmonSpawnerHandler();
 
     public static RaidHandler raidHandler = new RaidHandler();
 
@@ -74,6 +76,7 @@ public class GoldenGlow {
     public void serverStarting(FMLServerStartingEvent event) {
         teamManager.init();
         songManager.init();
+        pixelmonSpawnerHandler.init();
         event.registerServerCommand(new CommandInstanceInv());
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRoute());

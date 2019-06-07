@@ -20,10 +20,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import noppes.npcs.Server;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.blocks.tiles.TileScripted;
+import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.QuestData;
 import noppes.npcs.entity.EntityNPCInterface;
@@ -35,17 +37,9 @@ public class NPCFunctions {
 	public static void playSound(EntityPlayerMP player, String source, String path){
         SongManager.playSound(player, source, path);
     }
-
-    public static void playSong(EntityPlayerMP player, String path){
-	    SongManager.playSong(player, path);
-    }
-
-    public static void stopSong(EntityPlayerMP player){
-	    SongManager.stopSong(player);
-    }
-
-    public static void openStarterGui(EntityPlayerMP player) {
-        //Pixelmon.instance.network.sendTo(new SelectPokemonListPacket(StarterList.getStarterList()), player);
+    public static void playSong(EntityPlayerMP player){
+	    if(player.getEntityData().hasKey("Song"))
+            Server.sendData(player, EnumPacketClient.PLAY_MUSIC, player.getEntityData().getString("Song"));
     }
 
     public static void createNPCBattle(NPCWrapper firstNPC, String firstTeamName, NPCWrapper secondNPC, String secondTeamName){
@@ -65,15 +59,6 @@ public class NPCFunctions {
 
     public static void registerLOSBattle(NPCWrapper npc, int initDialogID) {
         TickHandler.battleNPCs.put(npc, initDialogID);
-    }
-
-    public static void setCamera(EntityPlayerMP player, int posX, int posY, int posZ, int targetX, int targetY, int targetZ) {
-        //Pixelmon.network.sendTo(new ClientCameraPacket(posX, posY, posZ, targetX, targetY, targetZ), player);
-    }
-
-    public static void releaseCamera(EntityPlayer player)
-    {
-        //BetterStorage.networkChannel.sendTo(new PacketGGSidemod(EnumGGPacketType.RESET_CAMERA), player);
     }
 
     public static void createInstancedInv(EntityPlayerMP playerMP, String[] items, String containerName, int questID) {
@@ -140,5 +125,6 @@ public class NPCFunctions {
             GoldenGlow.routeManager.getRoute(playerMP).removePlayer(playerMP);
         }
         playerMP.getEntityData().removeTag("Route");
+	    playerMP.getEntityData().removeTag("Song");
     }
 }

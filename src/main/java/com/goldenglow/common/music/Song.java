@@ -1,28 +1,27 @@
 package com.goldenglow.common.music;
 
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+
 /**
  * Created by JeanMarc on 5/9/2019.
  */
 public class Song {
-    public int priority;
-    public String name;
+    public PositionedSoundRecord sound;
     public String path;
 
-    public Song(int priority, String name, String path){
-        this.priority=priority;
-        this.name=name;
+    public Song(String path){
+        this.sound=new PositionedSoundRecord(new ResourceLocation(path), SoundCategory.getByName("ambient"), 100000, 1.0F, true, 0, ISound.AttenuationType.NONE, 0, 0, 0);
         this.path=path;
     }
 
-    public String getName(){
-        return this.name;
+    public PositionedSoundRecord getSound(){
+        return this.sound;
     }
 
     public String getPath(){
         return this.path;
-    }
-
-    public int getPriority(){
-        return this.priority;
     }
 }

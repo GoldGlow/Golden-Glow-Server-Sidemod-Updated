@@ -1,5 +1,6 @@
 package com.goldenglow.common.routes;
 
+import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.NPCFunctions;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -37,8 +38,7 @@ public class Route {
         if(!this.players.contains(playerMP)) {
             playerMP.getEntityData().setString("Route", this.unlocalizedName);
             this.players.add(playerMP);
-            NPCFunctions.stopSong(playerMP);
-            NPCFunctions.playSong(playerMP, this.song);
+            SongManager.setCurrentSong(playerMP, this.song);
             Server.sendData(playerMP, EnumPacketClient.MESSAGE, (this.displayName!=null && !this.displayName.isEmpty()) ? this.displayName : this.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
 //          if(this.displayName!=null && !this.displayName.isEmpty())
 //              Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));

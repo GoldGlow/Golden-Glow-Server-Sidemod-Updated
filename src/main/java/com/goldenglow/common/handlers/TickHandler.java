@@ -3,7 +3,6 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.util.NPCFunctions;
 import com.sk89q.worldedit.BlockVector2D;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumParticleTypes;
@@ -73,8 +72,7 @@ public class TickHandler {
     }
 
     static void npcBattleDialog(EntityPlayerMP player, EntityNPCInterface npc, int initDialogID) {
-        SongManager.stopSong(player);
-        NPCFunctions.playSong(player, GoldenGlow.songManager.encounterSong);
+        SongManager.setCurrentSong(player, GoldenGlow.songManager.encounterSong);
         NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
     }
 
