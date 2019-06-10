@@ -153,7 +153,7 @@ public class SongManager {
     }
 
     public static void setCurrentSong(EntityPlayerMP player, String newSong){
-        player.getEntityData().setString("song", newSong);
+        player.getEntityData().setString("Song", newSong);
     }
 
     public static void setToRouteSong(EntityPlayerMP player){
