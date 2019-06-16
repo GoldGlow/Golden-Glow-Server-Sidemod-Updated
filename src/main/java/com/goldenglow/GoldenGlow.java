@@ -3,10 +3,7 @@ package com.goldenglow;
 import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.battles.raids.CommandRaidDebug;
 import com.goldenglow.common.battles.raids.RaidHandler;
-import com.goldenglow.common.command.CommandInstanceInv;
-import com.goldenglow.common.command.CommandPhone;
-import com.goldenglow.common.command.CommandRoute;
-import com.goldenglow.common.command.CommandRouteNotificationOption;
+import com.goldenglow.common.command.*;
 import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
@@ -81,6 +78,8 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRoute());
         event.registerServerCommand(new CommandRouteNotificationOption());
+        event.registerServerCommand(new CommandSetPvpMusicOption());
+        event.registerServerCommand(new CommandSetTheme());
 
         event.registerServerCommand(new CommandRaidDebug());
     }
