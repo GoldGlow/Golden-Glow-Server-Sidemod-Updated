@@ -7,6 +7,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -154,6 +156,66 @@ public class SongManager {
 
     public static void setCurrentSong(EntityPlayerMP player, String newSong){
         player.getEntityData().setString("Song", newSong);
+    }
+
+    public static void setToTrainerMusic(EntityPlayerMP player){
+        player.getEntityData().setString("Song", player.getEntityData().getString("TrainerTheme"));
+    }
+
+    public static void setToWildMusic(EntityPlayerMP player){
+        player.getEntityData().setString("Song", player.getEntityData().getString("WildTheme"));
+    }
+
+    public static String getPvpSong(EntityPlayerMP player){
+        return player.getEntityData().getString("PVPTheme");
+    }
+
+    public static void setToPvpMusic(EntityPlayerMP player, BattleParticipant[] opponents){
+        int pvpOption=player.getEntityData().getInteger("PvpOption");
+        String song="";
+        if(pvpOption==0){
+            for(BattleParticipant opponent:opponents){
+                if(opponent instanceof PlayerParticipant){
+                    song=getPvpSong(((PlayerParticipant) opponent).player);
+                    if(song.startsWith("obscureobsidian:custom")){
+                        setCurrentSong(player, song);
+                        return;
+                    }
+                }
+            }
+        }
+        else if(pvpOption==1){
+            for(BattleParticipant opponent:opponents){
+                if(opponent instanceof PlayerParticipant){
+                    if(!getPvpSong(((PlayerParticipant) opponent).player).equals(GoldenGlow.instance.songManager.trainerBattleSong))
+                        song=getPvpSong(((PlayerParticipant) opponent).player);
+                    if(song.startsWith("obscureobsidian:custom")){
+                        setCurrentSong(player, song);
+                        return;
+                    }
+                }
+            }
+            if(song.equals("")){
+                song=getPvpSong(player);
+            }
+        }
+        else if(pvpOption==2){
+            for(BattleParticipant opponent:opponents){
+                if(opponent instanceof PlayerParticipant){
+                    if(song.startsWith("obscureobsidian:custom")){
+                        setCurrentSong(player, song);
+                        return;
+                    }
+                }
+            }
+            if(song.equals("")){
+                setCurrentSong(player, getPvpSong(player));
+            }
+        }
+        else if(pvpOption==3){
+            song=getPvpSong(player);
+        }
+        setCurrentSong(player, song);
     }
 
     public static void setToRouteSong(EntityPlayerMP player){

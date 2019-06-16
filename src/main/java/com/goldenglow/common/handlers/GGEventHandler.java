@@ -10,6 +10,7 @@ import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
+import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
@@ -46,7 +47,7 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void onPixelmonSpawner(PixelmonSpawnerEvent event){
-        if(true){
+        if(event.spawner.getWorld().isDaytime()){
             for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.dayPokemon){
                 if(event.spec.name.equals(pokemon))
                     event.setCanceled(true);
@@ -64,6 +65,12 @@ public class GGEventHandler {
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         if(!event.player.getEntityData().hasKey("RouteNotification"))
             event.player.getEntityData().setInteger("RouteNotification", 0);
+        if(!event.player.getEntityData().hasKey("WildTheme"))
+            event.player.getEntityData().setString("WildTheme", GoldenGlow.instance.songManager.wildBattleSong);
+        if(!event.player.getEntityData().hasKey("TrainerTheme"))
+            event.player.getEntityData().setString("TrainerTheme", GoldenGlow.instance.songManager.trainerBattleSong);
+        if(!event.player.getEntityData().hasKey("PVPTheme"))
+            event.player.getEntityData().setString("PVPTheme", GoldenGlow.instance.songManager.trainerBattleSong);
     }
 
     @SubscribeEvent
@@ -113,61 +120,28 @@ public class GGEventHandler {
         if(event.bc.rules instanceof CustomNPCBattle) {
             for (BattleParticipant participant : participants) {
                 if (participant instanceof PlayerParticipant) {
-                    SongManager.setCurrentSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
+                    SongManager.setToTrainerMusic(((PlayerParticipant) participant).player);
                 }
             }
         }
         else{
-            boolean wildBattle=false;
-            for(BattleParticipant opponent: opponents){
-                if(opponent instanceof WildPixelmonParticipant){
-                    wildBattle=true;
-                    for (BattleParticipant participant : participants) {
-                        if (participant instanceof PlayerParticipant) {
-                            GGLogger.info("Playing wild theme!");
-                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.wildBattleSong);
-                        }
+            boolean wildBattle= PixelmonBattleUtils.isWildBattle(opponents);
+            if(wildBattle){
+                for (BattleParticipant participant : participants) {
+                    if (participant instanceof PlayerParticipant) {
+                        SongManager.setToWildMusic(((PlayerParticipant) participant).player);
                     }
-                    if(wildBattle)
-                        break;
                 }
             }
             if(!wildBattle){
-                String participantTheme=CustomBattleHandler.getCustomTheme(participants);
-                String opponentTheme=CustomBattleHandler.getCustomTheme(opponents);
-                if(!opponentTheme.equals("")){
-                    for(BattleParticipant participant:participants){
-                        if (participant instanceof PlayerParticipant) {
-                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
-                        }
-                    }
-                    if(participantTheme.equals("")){
-                        for(BattleParticipant participant:opponents){
-                            if (participant instanceof PlayerParticipant) {
-                                SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
-                            }
-                        }
+                for(BattleParticipant participant: participants){
+                    if(participant instanceof PlayerParticipant){
+                        SongManager.setToPvpMusic(((PlayerParticipant) participant).player, opponents);
                     }
                 }
-                if(!participantTheme.equals("")) {
-                    for (BattleParticipant participant : opponents) {
-                        if (participant instanceof PlayerParticipant) {
-                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
-                        }
-                    }
-                    if (opponentTheme.equals("")) {
-                        for (BattleParticipant participant : participants) {
-                            if (participant instanceof PlayerParticipant) {
-                                SongManager.setCurrentSong(((PlayerParticipant) participant).player, opponentTheme);
-                            }
-                        }
-                    }
-                }
-                if(participantTheme.equals("")&&opponentTheme.equals("")){
-                    for (BattleParticipant participant : participants) {
-                        if (participant instanceof PlayerParticipant) {
-                            SongManager.setCurrentSong(((PlayerParticipant) participant).player, GoldenGlow.songManager.trainerBattleSong);
-                        }
+                for(BattleParticipant participant: opponents){
+                    if(participant instanceof PlayerParticipant){
+                        SongManager.setToPvpMusic(((PlayerParticipant) participant).player, participants);
                     }
                 }
             }
