@@ -6,8 +6,6 @@ import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
@@ -23,27 +21,30 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.entity.IPlayer;
-import org.spongepowered.api.Server;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class GGEventHandler {
+
+    Map<UUID, Instant> playerTimes = new HashMap<>();
 
     @SubscribeEvent
     public void onPixelmonSpawner(PixelmonSpawnerEvent event){
@@ -71,6 +72,23 @@ public class GGEventHandler {
             event.player.getEntityData().setString("TrainerTheme", GoldenGlow.instance.songManager.trainerBattleSong);
         if(!event.player.getEntityData().hasKey("PVPTheme"))
             event.player.getEntityData().setString("PVPTheme", GoldenGlow.instance.songManager.trainerBattleSong);
+        if(!event.player.getEntityData().hasKey("PlayTime"))
+            event.player.getEntityData().setLong("PlayTime", 0);
+        playerTimes.put(event.player.getUniqueID(), Instant.now());
+    }
+
+    @SubscribeEvent
+    public void playerLogoutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
+        Instant loginTime = playerTimes.get(event.player.getUniqueID());
+        playerTimes.remove(event.player.getUniqueID());
+        Instant logoutTime = Instant.now();
+        Duration sessionDuration = Duration.between(loginTime, logoutTime);
+        Duration totalDuration = Duration.ofSeconds(event.player.getEntityData().getLong("PlayTime")+sessionDuration.getSeconds());
+        event.player.getEntityData().setLong("PlayTime", totalDuration.getSeconds());
+        String time = String.format("%d:%02d:%02d", (int)totalDuration.getSeconds() / 3600, ((int)totalDuration.getSeconds() % 3600) / 60, ((int)totalDuration.getSeconds() % 60));
+        int dex = Pixelmon.storageManager.getParty((EntityPlayerMP)event.player).pokedex.countCaught();
+        int badges = 0; //ToDo: Change this when we decide how to handle badges.
+        GoldenGlow.dataHandler.sendData(event.player.getName(), dex, badges, time);
     }
 
     @SubscribeEvent

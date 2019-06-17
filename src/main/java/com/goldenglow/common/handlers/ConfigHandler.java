@@ -8,6 +8,7 @@ import java.io.*;
 
 public class ConfigHandler {
     public boolean spawner;
+    public String oAuthToken;
     File dir;
     public ConfigHandler(){
         spawner=true;
@@ -34,6 +35,9 @@ public class ConfigHandler {
                 if(strLine.startsWith("useSpawners=")){
                     spawner=Boolean.parseBoolean(strLine.substring(12));
                     GGLogger.info(strLine.substring(12));
+                }
+                else if (strLine.startsWith("oAuthToken=")) {
+                    oAuthToken=strLine.substring(11);
                 }
             }
             reader.close();

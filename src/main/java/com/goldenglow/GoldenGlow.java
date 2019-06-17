@@ -8,6 +8,11 @@ import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
 import com.goldenglow.common.handlers.TickHandler;
+import com.goldenglow.common.command.CommandInstanceInv;
+import com.goldenglow.common.command.CommandPhone;
+import com.goldenglow.common.command.CommandRoute;
+import com.goldenglow.common.command.CommandRouteNotificationOption;
+import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
@@ -37,15 +42,16 @@ public class GoldenGlow {
     public GGEventHandler eventHandler = new GGEventHandler();
     public TickHandler tickHandler=new TickHandler();
 
-    public static SongManager songManager=new SongManager();
     public static GGLogger logger = new GGLogger();
+    public static SongManager songManager=new SongManager();
+    public static ConfigHandler configHandler = new ConfigHandler();
+    public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
+
     public static TeamManager teamManager = new TeamManager();
     public static RouteManager routeManager=new RouteManager();
-    public ConfigHandler configHandler = new ConfigHandler();
-    public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler=new PixelmonSpawnerHandler();
-
     public static RaidHandler raidHandler = new RaidHandler();
+    public static DataHandler dataHandler = new DataHandler();
 
     public GoldenGlow() throws FileNotFoundException {
     }
@@ -54,6 +60,7 @@ public class GoldenGlow {
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
+        dataHandler.start();
     }
 
     @Mod.EventHandler
