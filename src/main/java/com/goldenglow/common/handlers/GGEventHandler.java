@@ -67,11 +67,11 @@ public class GGEventHandler {
         if(!event.player.getEntityData().hasKey("RouteNotification"))
             event.player.getEntityData().setInteger("RouteNotification", 0);
         if(!event.player.getEntityData().hasKey("WildTheme"))
-            event.player.getEntityData().setString("WildTheme", GoldenGlow.instance.songManager.wildBattleSong);
+            event.player.getEntityData().setString("WildTheme", GoldenGlow.songManager.wildBattleSong);
         if(!event.player.getEntityData().hasKey("TrainerTheme"))
-            event.player.getEntityData().setString("TrainerTheme", GoldenGlow.instance.songManager.trainerBattleSong);
+            event.player.getEntityData().setString("TrainerTheme", GoldenGlow.songManager.trainerBattleSong);
         if(!event.player.getEntityData().hasKey("PVPTheme"))
-            event.player.getEntityData().setString("PVPTheme", GoldenGlow.instance.songManager.trainerBattleSong);
+            event.player.getEntityData().setString("PVPTheme", GoldenGlow.songManager.trainerBattleSong);
         if(!event.player.getEntityData().hasKey("PlayTime"))
             event.player.getEntityData().setLong("PlayTime", 0);
         playerTimes.put(event.player.getUniqueID(), Instant.now());

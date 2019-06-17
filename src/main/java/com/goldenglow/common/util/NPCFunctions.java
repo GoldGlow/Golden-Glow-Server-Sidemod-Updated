@@ -20,6 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 import noppes.npcs.Server;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
@@ -101,7 +104,7 @@ public class NPCFunctions {
         tile.setScale(1.25f, 1.25f, 1.25f);
     }
 
-    public static void checkRoute(EntityPlayerMP playerMP) {
+    public static void checkRoute(EntityPlayerMP playerMP, int lastPosX, int lastPosY, int lastPosZ) {
 	    Route currentRoute = null;
 	    Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
 
@@ -109,10 +112,20 @@ public class NPCFunctions {
 	        currentRoute = GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route"));
 
 	    if(actualRoute!=null) {
-	        if(currentRoute!=null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
-	            currentRoute.removePlayer(playerMP);
+	        if(actualRoute.canPlayerEnter(playerMP)) {
+                if (currentRoute != null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
+                    currentRoute.removePlayer(playerMP);
+                }
+                actualRoute.addPlayer(playerMP);
             }
-	        actualRoute.addPlayer(playerMP);
+	        else {
+	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
+	            TextComponentString msg = new TextComponentString("You don't meet the requirements for this area!");
+	            TextComponentString hoverMsg = new TextComponentString("Required Quest: I made this :)");
+	            hoverMsg.getStyle().setColor(TextFormatting.GOLD);
+	            msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMsg));
+	            playerMP.sendMessage(msg);
+            }
         }
 	    else {
 	        if(currentRoute!=null)

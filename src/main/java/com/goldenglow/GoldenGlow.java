@@ -43,24 +43,23 @@ public class GoldenGlow {
     public TickHandler tickHandler=new TickHandler();
 
     public static GGLogger logger = new GGLogger();
-    public static SongManager songManager=new SongManager();
+    public static SongManager songManager = new SongManager();
     public static ConfigHandler configHandler = new ConfigHandler();
     public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
 
     public static TeamManager teamManager = new TeamManager();
-    public static RouteManager routeManager=new RouteManager();
-    public static PixelmonSpawnerHandler pixelmonSpawnerHandler=new PixelmonSpawnerHandler();
+    public static RouteManager routeManager = new RouteManager();
+    public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
     public static RaidHandler raidHandler = new RaidHandler();
     public static DataHandler dataHandler = new DataHandler();
 
-    public GoldenGlow() throws FileNotFoundException {
+    public GoldenGlow() {
     }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
-        dataHandler.start();
     }
 
     @Mod.EventHandler

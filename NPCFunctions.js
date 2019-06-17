@@ -47,8 +47,8 @@ function createInstancedInv(player, items, containerName, questId){
 	Packages.com.goldenglow.common.util.NPCFunctions.createInstancedInv(player, items, containerName, questId);
 }
 
-function checkRoute(player){
-	Packages.com.goldenglow.common.util.NPCFunctions.checkRoute(player);
+function checkRoute(player, lastPosX, lastPosY, lastPosZ){
+	Packages.com.goldenglow.common.util.NPCFunctions.checkRoute(player, lastPosX, lastPosY, lastPosZ);
 }
 
 function removeRouteLogout(){

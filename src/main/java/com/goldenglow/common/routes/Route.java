@@ -53,4 +53,9 @@ public class Route {
     public List<EntityPlayerMP> getPlayersInRoute() {
         return this.players;
     }
+
+    public boolean canPlayerEnter(EntityPlayerMP playerMP) {
+        //Check if player has requirements
+        return true;
+    }
 }
