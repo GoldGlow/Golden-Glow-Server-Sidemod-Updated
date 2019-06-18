@@ -46,9 +46,9 @@ public class Route {
             playerMP.getEntityData().setString("Route", this.unlocalizedName);
             this.players.add(playerMP);
             SongManager.setCurrentSong(playerMP, this.song);
-//            Server.sendData(playerMP, EnumPacketClient.MESSAGE, (this.displayName!=null && !this.displayName.isEmpty()) ? this.displayName : this.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
-          if(this.displayName!=null && !this.displayName.isEmpty())
-              Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+            Server.sendData(playerMP, EnumPacketClient.MESSAGE, (this.displayName!=null && !this.displayName.isEmpty()) ? this.displayName : this.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+//          if(this.displayName!=null && !this.displayName.isEmpty())
+//              Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
         }
     }
 
@@ -74,15 +74,23 @@ public class Route {
             if(!Requirement.checkRequirement(requirement, player)) {
                 switch (requirement.type) {
                     case QUEST_STARTED:
-                        s.append("Start Quest: ").append(QuestController.instance.get(requirement.id).getName()).append("\n");
+                        if(!s.toString().isEmpty())
+                            s.append("\n");
+                        s.append("Start Quest: ").append(QuestController.instance.get(requirement.id).getName());
                         break;
                     case QUEST_FINISHED:
+                        if(!s.toString().isEmpty())
+                            s.append("\n");
                         s.append("Finish Quest: ").append(QuestController.instance.get(requirement.id).getName()).append("\n");
                         break;
                     case TIME:
+                        if(!s.toString().isEmpty())
+                            s.append("\n");
                         s.append("Time: ").append(requirement.value).append("\n");
                         break;
                     case DIALOG:
+                        if(!s.toString().isEmpty())
+                            s.append("\n");
                         s.append("Read Dialog: ").append(DialogController.instance.get(requirement.id).getName()).append("\n");
                         break;
                 }

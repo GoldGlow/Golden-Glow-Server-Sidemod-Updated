@@ -3,6 +3,7 @@ package com.goldenglow.common.util;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import noppes.npcs.api.entity.IPlayer;
+import noppes.npcs.api.wrapper.PlayerWrapper;
 
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class Requirement {
         this.value=value;
     }
 
-    public static boolean checkRequirement(Requirement requirement, EntityPlayerMP player){
+    public static boolean checkRequirement(Requirement requirement, EntityPlayerMP playerEntity){
+        PlayerWrapper player = new PlayerWrapper(playerEntity);
         if(((IPlayer)player).hasPermission(requirement.override)){
             return true;
         }
@@ -55,10 +57,10 @@ public class Requirement {
         }
         else if(requirement.type == RequirementType.TIME) {
             if(requirement.value.equals("day")) {
-                return player.getEntityWorld().isDaytime();
+                return playerEntity.getEntityWorld().isDaytime();
             }
             else if(requirement.value.equals("night")) {
-                return !player.getEntityWorld().isDaytime();
+                return !playerEntity.getEntityWorld().isDaytime();
             }
         }
         return false;
@@ -74,7 +76,7 @@ public class Requirement {
     }
 
     public static boolean checkRequirements(List<Requirement> requirements, EntityPlayerMP player){
-        for(Requirement requirement:requirements){
+        for(Requirement requirement:requirements) {
             if(!checkRequirement(requirement, player)){
                 return false;
             }
