@@ -37,6 +37,9 @@ public class Requirement {
     }
 
     public static boolean checkRequirement(Requirement requirement, EntityPlayerMP player){
+        if(((IPlayer)player).hasPermission(requirement.override)){
+            return true;
+        }
         if(requirement.type.equalsIgnoreCase("quest-started")){
             return ((IPlayer)player).hasActiveQuest(requirement.id);
         }
