@@ -2,6 +2,7 @@ package com.goldenglow.common.routes;
 
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
+import com.goldenglow.common.util.Requirement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -57,6 +58,7 @@ public class RouteManager {
     public void loadRoute(String routeName) throws IOException {
         InputStream iStream = new FileInputStream(new File(dir, routeName+".json"));
         JsonObject json = new JsonParser().parse(new InputStreamReader(iStream, StandardCharsets.UTF_8)).getAsJsonObject();
+
         String name = json.get("Name").getAsString();
         String dName = "";
         if(json.has("DisplayName"))
@@ -65,9 +67,11 @@ public class RouteManager {
         int priority = json.get("Priority").getAsInt();
 
         List<BlockVector2D> points = new ArrayList<>();
+
         JsonObject regionObj = json.get("region").getAsJsonObject();
         int minY = regionObj.get("minY").getAsInt();
         int maxY = regionObj.get("maxY").getAsInt();
+
         JsonArray pointsArray = json.get("points").getAsJsonArray();
         for(JsonElement o : pointsArray) {
             int posX = o.getAsJsonObject().get("posX").getAsInt();
@@ -75,10 +79,26 @@ public class RouteManager {
             BlockVector2D vec = new BlockVector2D(posX, posZ);
             points.add(vec);
         }
+
         Route route = new Route(name, song, new Polygonal2DRegion(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(0)), points, minY, maxY), priority);
+
         if(!dName.isEmpty())
             route.displayName = dName;
 
+        if(json.has("requirements")) {
+            JsonArray requirementsArray = json.get("requirements").getAsJsonArray();
+            for (JsonElement o : requirementsArray) {
+                Requirement r = new Requirement();
+                r.type = Requirement.RequirementType.valueOf(o.getAsJsonObject().get("type").getAsString());
+                if (r.type == Requirement.RequirementType.TIME || r.type == Requirement.RequirementType.PERMISSION) {
+                    r.value = o.getAsJsonObject().get("value").getAsString();
+                } else {
+                    r.id = o.getAsJsonObject().get("id").getAsInt();
+                }
+                r.override = o.getAsJsonObject().get("override").getAsString();
+                route.requirements.add(r);
+            }
+        }
         this.routes.add(route);
     }
 
@@ -112,16 +132,20 @@ public class RouteManager {
             dir.createNewFile();
         JsonWriter file = new JsonWriter(new FileWriter(dir));
         file.setIndent("\t");
+
         file.beginObject();
+
         file.name("Name").value(route.unlocalizedName);
         file.name("DisplayName").value(route.displayName);
         file.name("Song").value(route.song);
         file.name("Priority").value(route.priority);
+
         file.name("region");
         file.beginObject();
         file.name("minY").value(route.region.getMinimumY());
         file.name("maxY").value(route.region.getMaximumY());
         file.endObject();
+
         file.name("points");
         file.beginArray();
         for (BlockVector2D vec : route.region.getPoints()) {
@@ -131,6 +155,22 @@ public class RouteManager {
             file.endObject();
         }
         file.endArray();
+
+        file.name("requirements");
+        file.beginArray();
+        for(Requirement requirement : route.requirements) {
+            file.beginObject();
+            file.name("type").value(requirement.type.toString());
+            if(requirement.type == Requirement.RequirementType.TIME || requirement.type == Requirement.RequirementType.PERMISSION) {
+                file.name("value").value(requirement.value);
+            } else {
+                file.name("id").value(requirement.id);
+            }
+            file.name("override").value(requirement.override);
+            file.endObject();
+        }
+        file.endArray();
+
         file.endObject();
         file.close();
     }

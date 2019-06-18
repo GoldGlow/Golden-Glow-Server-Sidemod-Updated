@@ -1,9 +1,10 @@
 package com.goldenglow.common.util;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import noppes.npcs.api.entity.IPlayer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JeanMarc on 6/17/2019.
@@ -15,7 +16,7 @@ public class Requirement {
     //dialog
     //permission
     //time (day/night values only)
-    public String type;
+    public RequirementType type;
     //id of the dialog/quest if that's the requirement type, unused otherwise
     public int id;
     //night/day if time is the requirement, permission node if the type is permission, unused otherwise
@@ -26,12 +27,12 @@ public class Requirement {
     public Requirement(){
     }
 
-    public Requirement(String type, int id){
+    public Requirement(RequirementType type, int id){
         this.type=type;
         this.id=id;
     }
 
-    public Requirement(String type, String value){
+    public Requirement(RequirementType type, String value){
         this.type=type;
         this.value=value;
     }
@@ -40,19 +41,19 @@ public class Requirement {
         if(((IPlayer)player).hasPermission(requirement.override)){
             return true;
         }
-        if(requirement.type.equalsIgnoreCase("quest-started")){
+        if(requirement.type == RequirementType.QUEST_STARTED) {
             return ((IPlayer)player).hasActiveQuest(requirement.id);
         }
-        else if(requirement.type.equalsIgnoreCase("quest-finished")){
+        else if(requirement.type == RequirementType.QUEST_FINISHED) {
             return ((IPlayer)player).hasFinishedQuest(requirement.id);
         }
-        else if(requirement.type.equalsIgnoreCase("dialog")){
+        else if(requirement.type == RequirementType.DIALOG) {
             return ((IPlayer)player).hasReadDialog(requirement.id);
         }
-        else if(requirement.type.equalsIgnoreCase("permission")){
+        else if(requirement.type == RequirementType.PERMISSION) {
             return ((IPlayer)player).hasPermission(requirement.value);
         }
-        else if(requirement.type.equalsIgnoreCase("time")){
+        else if(requirement.type == RequirementType.TIME) {
             if(requirement.value.equals("day")) {
                 return player.getEntityWorld().isDaytime();
             }
@@ -72,12 +73,20 @@ public class Requirement {
         return true;
     }
 
-    public static boolean checkRequirements(ArrayList<Requirement> requirements, EntityPlayerMP player){
+    public static boolean checkRequirements(List<Requirement> requirements, EntityPlayerMP player){
         for(Requirement requirement:requirements){
             if(!checkRequirement(requirement, player)){
                 return false;
             }
         }
         return true;
+    }
+
+    public enum RequirementType {
+        QUEST_STARTED,
+        QUEST_FINISHED,
+        DIALOG,
+        PERMISSION,
+        TIME
     }
 }

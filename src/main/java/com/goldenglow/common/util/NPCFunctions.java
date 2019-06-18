@@ -120,10 +120,7 @@ public class NPCFunctions {
             }
 	        else {
 	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
-	            TextComponentString msg = new TextComponentString("You don't meet the requirements for this area!");
-	            TextComponentString hoverMsg = new TextComponentString("Required Quest: I made this :)");
-	            hoverMsg.getStyle().setColor(TextFormatting.GOLD);
-	            msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMsg));
+	            TextComponentString msg = actualRoute.getRequirementMessage(playerMP);
 	            playerMP.sendMessage(msg);
             }
         }

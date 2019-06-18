@@ -2,10 +2,16 @@ package com.goldenglow.common.routes;
 
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.NPCFunctions;
+import com.goldenglow.common.util.Requirement;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 import noppes.npcs.Server;
 import noppes.npcs.constants.EnumPacketClient;
+import noppes.npcs.controllers.DialogController;
+import noppes.npcs.controllers.QuestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +22,7 @@ public class Route {
     public String song;
     public int priority;
     public Polygonal2DRegion region;
+    public List<Requirement> requirements = new ArrayList<>();
 
     List<EntityPlayerMP> players = new ArrayList<>();
 
@@ -39,9 +46,9 @@ public class Route {
             playerMP.getEntityData().setString("Route", this.unlocalizedName);
             this.players.add(playerMP);
             SongManager.setCurrentSong(playerMP, this.song);
-            Server.sendData(playerMP, EnumPacketClient.MESSAGE, (this.displayName!=null && !this.displayName.isEmpty()) ? this.displayName : this.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
-//          if(this.displayName!=null && !this.displayName.isEmpty())
-//              Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+//            Server.sendData(playerMP, EnumPacketClient.MESSAGE, (this.displayName!=null && !this.displayName.isEmpty()) ? this.displayName : this.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+          if(this.displayName!=null && !this.displayName.isEmpty())
+              Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
         }
     }
 
@@ -55,7 +62,37 @@ public class Route {
     }
 
     public boolean canPlayerEnter(EntityPlayerMP playerMP) {
-        //Check if player has requirements
-        return true;
+        return Requirement.checkRequirements(this.requirements, playerMP);
+    }
+
+    public TextComponentString getRequirementMessage(EntityPlayerMP player) {
+        TextComponentString msg = new TextComponentString("You don't meet the requirements for this area!");
+        msg.getStyle().setBold(true);
+
+        StringBuilder s = new StringBuilder();
+        for(Requirement requirement : this.requirements) {
+            if(!Requirement.checkRequirement(requirement, player)) {
+                switch (requirement.type) {
+                    case QUEST_STARTED:
+                        s.append("Start Quest: ").append(QuestController.instance.get(requirement.id).getName()).append("\n");
+                        break;
+                    case QUEST_FINISHED:
+                        s.append("Finish Quest: ").append(QuestController.instance.get(requirement.id).getName()).append("\n");
+                        break;
+                    case TIME:
+                        s.append("Time: ").append(requirement.value).append("\n");
+                        break;
+                    case DIALOG:
+                        s.append("Read Dialog: ").append(DialogController.instance.get(requirement.id).getName()).append("\n");
+                        break;
+                }
+            }
+        }
+        if(!s.toString().isEmpty()) {
+            TextComponentString hoverMsg = new TextComponentString(s.toString());
+            hoverMsg.getStyle().setColor(TextFormatting.DARK_RED);
+            msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMsg));
+        }
+        return msg;
     }
 }

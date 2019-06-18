@@ -24,6 +24,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.spongepowered.api.Sponge;
 
 import java.io.FileNotFoundException;
@@ -88,6 +90,7 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandSetTheme());
 
         event.registerServerCommand(new CommandRaidDebug());
+        event.registerServerCommand(new CommandDebug());
     }
 
     @Mod.EventHandler
