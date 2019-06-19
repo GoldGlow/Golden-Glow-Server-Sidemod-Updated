@@ -103,4 +103,16 @@ public class Route {
         }
         return msg;
     }
+
+    public TextComponentString getRequirementHoverText() {
+        TextComponentString text = new TextComponentString("");
+
+        for (Requirement r : this.requirements) {
+            if(!text.getText().isEmpty())
+                text.appendText("\n");
+            text.appendText(r.toString());
+        }
+
+        return text;
+    }
 }
