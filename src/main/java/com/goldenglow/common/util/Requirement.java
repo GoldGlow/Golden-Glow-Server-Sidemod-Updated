@@ -11,12 +11,6 @@ import java.util.List;
  * Created by JeanMarc on 6/17/2019.
  */
 public class Requirement {
-    //Different types:
-    //quest-started
-    //quest-finished
-    //dialog
-    //permission
-    //time (day/night values only)
     public RequirementType type;
     //id of the dialog/quest if that's the requirement type, unused otherwise
     public int id;
