@@ -19,14 +19,17 @@ import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PhoneItemListHandler;
+import com.goldenglow.common.util.TileEntityCustomApricornTree;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.spongepowered.api.Sponge;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
@@ -63,6 +66,7 @@ public class GoldenGlow {
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
+        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "customApricornTree"));
     }
 
     @Mod.EventHandler
