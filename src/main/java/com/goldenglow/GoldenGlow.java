@@ -10,7 +10,7 @@ import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.command.CommandInstanceInv;
 import com.goldenglow.common.command.CommandPhone;
-import com.goldenglow.common.command.CommandRoute;
+import com.goldenglow.common.command.CommandRoutes;
 import com.goldenglow.common.command.CommandRouteNotificationOption;
 import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.inventory.CustomInventoryHandler;
@@ -20,16 +20,18 @@ import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PhoneItemListHandler;
+import com.goldenglow.common.util.TileEntityCustomApricornTree;
+import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.spongepowered.api.Sponge;
-
-import java.io.FileNotFoundException;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
 public class GoldenGlow {
@@ -57,6 +59,8 @@ public class GoldenGlow {
     public static DataHandler dataHandler = new DataHandler();
     public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
 
+    public static CommandDispatcher<ICommandSender> commandDispatcher = new CommandDispatcher<>();
+
     public GoldenGlow() {
     }
 
@@ -64,6 +68,7 @@ public class GoldenGlow {
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
+        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "customApricornTree"));
     }
 
     @Mod.EventHandler
@@ -86,7 +91,6 @@ public class GoldenGlow {
         pixelmonSpawnerHandler.init();
         event.registerServerCommand(new CommandInstanceInv());
         event.registerServerCommand(new CommandPhone());
-        event.registerServerCommand(new CommandRoute());
         event.registerServerCommand(new CommandRouteNotificationOption());
         event.registerServerCommand(new CommandSetPvpMusicOption());
         event.registerServerCommand(new CommandSetTheme());
@@ -94,14 +98,17 @@ public class GoldenGlow {
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
+
+        event.registerServerCommand(new CommandRoutes());
+        CommandRoutes.register(commandDispatcher);
     }
 
     @Mod.EventHandler
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
         phoneItemListHandler.init();
-        customInventoryHandler.init();
-        Sponge.getEventManager().registerListeners(this, new GGEventHandler());
+        if(Loader.isModLoaded("spongeforge"))
+            Sponge.getEventManager().registerListeners(this, new GGEventHandler());
         GGLogger.info("Routes:");
         for(Route route:routeManager.getRoutes()){
             GGLogger.info(route.unlocalizedName);

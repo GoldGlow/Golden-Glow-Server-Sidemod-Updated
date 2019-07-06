@@ -78,6 +78,14 @@ public class Requirement {
         return true;
     }
 
+    @Override
+    public String toString() {
+        if(this.type==RequirementType.TIME || this.type==RequirementType.PERMISSION)
+            return this.type+" : "+this.value;
+        else
+            return this.type+" : "+this.id;
+    }
+
     public enum RequirementType {
         QUEST_STARTED,
         QUEST_FINISHED,
