@@ -33,4 +33,5 @@ public class Reference {
     public static String configDir="config/GoldenGlow";
     public static String routeDir=configDir+"/routes";
     public static String spawnerDir=configDir+"/spawners";
+    public static String inventoryDir=configDir+"/inventories";
 }

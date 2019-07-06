@@ -3,9 +3,13 @@ package com.goldenglow.common.util;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.handlers.TickHandler;
+import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.inventory.CustomInventoryData;
+import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
+import com.sk89q.worldedit.entity.Player;
 import moe.plushie.armourers_workshop.common.library.LibraryFile;
 import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
 import moe.plushie.armourers_workshop.common.skin.data.Skin;
@@ -24,6 +28,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
 import noppes.npcs.Server;
+import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
@@ -40,9 +45,14 @@ public class NPCFunctions {
 	public static void playSound(EntityPlayerMP player, String source, String path){
         SongManager.playSound(player, source, path);
     }
+
     public static void playSong(EntityPlayerMP player){
 	    if(player.getEntityData().hasKey("Song"))
             Server.sendData(player, EnumPacketClient.PLAY_MUSIC, player.getEntityData().getString("Song"));
+    }
+
+    public static void showAchievement(PlayerWrapper playerWrapper, String firstLine, String secondLine){
+        playerWrapper.sendNotification(firstLine, secondLine, Integer.valueOf(playerWrapper.getMCEntity().getEntityData().getInteger("RouteNotification")));
     }
 
     public static void createNPCBattle(NPCWrapper firstNPC, String firstTeamName, NPCWrapper secondNPC, String secondTeamName){
@@ -62,6 +72,17 @@ public class NPCFunctions {
 
     public static void registerLOSBattle(NPCWrapper npc, int initDialogID) {
         TickHandler.battleNPCs.put(npc, initDialogID);
+    }
+
+    public static void createCustomChest(EntityPlayerMP playerMP, String inventoryName){
+        CustomInventoryData data=null;
+        for(CustomInventoryData inventoryData:GoldenGlow.customInventoryHandler.inventories){
+            if(inventoryData.getName().equals(inventoryName)){
+                data=inventoryData;
+            }
+        }
+        if(data!=null){
+        }
     }
 
     public static void createInstancedInv(EntityPlayerMP playerMP, String[] items, String containerName, int questID) {

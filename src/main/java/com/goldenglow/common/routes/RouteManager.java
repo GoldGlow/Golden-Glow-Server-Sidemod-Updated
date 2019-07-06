@@ -36,7 +36,11 @@ public class RouteManager {
         if(!dir.exists()) {
             if (!dir.getParentFile().exists())
                 dir.getParentFile().mkdirs();
-            dir.mkdirs();
+            try {
+                dir.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else
             this.loadRoutes();

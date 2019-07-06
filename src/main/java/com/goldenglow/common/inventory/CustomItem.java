@@ -10,9 +10,21 @@ import net.minecraft.item.ItemStack;
 public class CustomItem  {
     ItemStack item;
     Requirement[] requirements;
+    Action[] leftClickActions;
+    Action[] rightClickActions;
+    Action[] shiftLeftClickActions;
+    Action[] shiftRightClickActions;
 
     public CustomItem(ItemStack item, Requirement[] requirements){
         this.item=item;
         this.requirements=requirements;
+    }
+
+    public ItemStack getItem(){
+        return this.item;
+    }
+
+    public Requirement[] getRequirements(){
+        return this.requirements;
     }
 }

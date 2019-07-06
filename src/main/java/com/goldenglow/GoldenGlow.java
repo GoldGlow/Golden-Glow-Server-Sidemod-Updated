@@ -13,6 +13,7 @@ import com.goldenglow.common.command.CommandPhone;
 import com.goldenglow.common.command.CommandRoute;
 import com.goldenglow.common.command.CommandRouteNotificationOption;
 import com.goldenglow.common.handlers.*;
+import com.goldenglow.common.inventory.CustomInventoryHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
@@ -33,7 +34,7 @@ import java.io.FileNotFoundException;
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
 public class GoldenGlow {
 
-    public String VERSION = "1.0.0";
+    public String VERSION = "1.0.1";
 
     @Mod.Instance("goldenglow")
     public static GoldenGlow instance;
@@ -54,6 +55,7 @@ public class GoldenGlow {
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
     public static RaidHandler raidHandler = new RaidHandler();
     public static DataHandler dataHandler = new DataHandler();
+    public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
 
     public GoldenGlow() {
     }
@@ -88,6 +90,7 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandRouteNotificationOption());
         event.registerServerCommand(new CommandSetPvpMusicOption());
         event.registerServerCommand(new CommandSetTheme());
+        event.registerServerCommand(new CommandMoneyreward());
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
@@ -97,6 +100,7 @@ public class GoldenGlow {
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
         phoneItemListHandler.init();
+        customInventoryHandler.init();
         Sponge.getEventManager().registerListeners(this, new GGEventHandler());
         GGLogger.info("Routes:");
         for(Route route:routeManager.getRoutes()){

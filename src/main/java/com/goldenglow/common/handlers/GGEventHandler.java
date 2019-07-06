@@ -1,10 +1,11 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
+import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
@@ -33,6 +34,8 @@ import noppes.npcs.api.entity.IPlayer;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.item.inventory.property.SlotPos;
 
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -106,7 +109,10 @@ public class GGEventHandler {
 
     @Listener
     public void itemStoredEvent(ClickInventoryEvent event){
-        if(event.getTargetInventory().getArchetype()!= InventoryArchetypes.PLAYER){
+        if(event.getTargetInventory() instanceof CustomInventory){
+            event.setCancelled(true);
+        }
+        else if(event.getTargetInventory().getArchetype()!= InventoryArchetypes.PLAYER){
             for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
                 if(event.getTransactions().get(0).getFinal().getType().getName().equals(id)){
                     event.setCancelled(true);

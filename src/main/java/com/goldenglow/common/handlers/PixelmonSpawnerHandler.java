@@ -16,17 +16,25 @@ public class PixelmonSpawnerHandler {
     File nightFile;
 
     public void init(){
-        dayFile = new File(Reference.routeDir, "dayPokemon.cfg");
+        dayFile = new File(Reference.spawnerDir, "dayPokemon.cfg");
         if(!dayFile.exists()) {
             if (!dayFile.getParentFile().exists())
                 dayFile.getParentFile().mkdirs();
-            dayFile.mkdirs();
+            try {
+                dayFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        nightFile = new File(Reference.routeDir, "nightPokemon.cfg");
+        nightFile = new File(Reference.spawnerDir, "nightPokemon.cfg");
         if(!nightFile.exists()) {
             if (!nightFile.getParentFile().exists())
                 nightFile.getParentFile().mkdirs();
-            nightFile.mkdirs();
+            try {
+                nightFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         try {
             loadTimePokemon(dayFile, dayPokemon);
