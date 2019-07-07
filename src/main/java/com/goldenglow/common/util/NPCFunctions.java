@@ -9,6 +9,7 @@ import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.routes.RouteManager;
 import com.sk89q.worldedit.entity.Player;
 import moe.plushie.armourers_workshop.common.library.LibraryFile;
 import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
@@ -53,6 +54,12 @@ public class NPCFunctions {
 
     public static void showAchievement(PlayerWrapper playerWrapper, String firstLine, String secondLine){
         playerWrapper.sendNotification(firstLine, secondLine, Integer.valueOf(playerWrapper.getMCEntity().getEntityData().getInteger("RouteNotification")));
+    }
+
+    public static void warpToSafeZone(PlayerWrapper playerWrapper){
+        Route safeZone= GoldenGlow.routeManager.getRoute(playerWrapper.getMCEntity().getEntityData().getString("safeZone"));
+        safeZone.warp((EntityPlayerMP)playerWrapper.getMCEntity());
+        playerWrapper.message("You whited out!");
     }
 
     public static void createNPCBattle(NPCWrapper firstNPC, String firstTeamName, NPCWrapper secondNPC, String secondTeamName){
@@ -137,7 +144,13 @@ public class NPCFunctions {
                 if (currentRoute != null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
                     currentRoute.removePlayer(playerMP);
                 }
+                if(actualRoute.isSafeZone){
+                    playerMP.getEntityData().setString("safeZone", actualRoute.unlocalizedName);
+                }
                 actualRoute.addPlayer(playerMP);
+            }
+            else if(currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)){
+	            currentRoute.warp(playerMP);
             }
 	        else {
 	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
