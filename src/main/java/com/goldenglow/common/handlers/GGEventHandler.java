@@ -7,6 +7,7 @@ import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.TileEntityCustomApricornTree;
@@ -76,13 +77,13 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onPixelmonSpawner(PixelmonSpawnerEvent event){
         if(event.spawner.getWorld().isDaytime()){
-            for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.dayPokemon){
+            for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.nightPokemon){
                 if(event.spec.name.equals(pokemon))
                     event.setCanceled(true);
             }
         }
         else{
-            for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.nightPokemon){
+            for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.dayPokemon){
                 if(event.spec.name.equals(pokemon))
                     event.setCanceled(true);
             }
@@ -101,6 +102,8 @@ public class GGEventHandler {
             event.player.getEntityData().setString("PVPTheme", GoldenGlow.songManager.trainerBattleSong);
         if(!event.player.getEntityData().hasKey("PlayTime"))
             event.player.getEntityData().setLong("PlayTime", 0);
+        if(!event.player.getEntityData().hasKey("safeZone"))
+            event.player.getEntityData().setString("safeZone", "Home");
         playerTimes.put(event.player.getUniqueID(), Instant.now());
     }
 
@@ -218,9 +221,8 @@ public class GGEventHandler {
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if (results == BattleResults.DEFEAT) {
-                NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
-                ((IPlayer) mcPlayer).removeDialog(battle.getInitDiag().getId());
                 SongManager.setToRouteSong(mcPlayer);
+                NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
             }
         }
         else if(event.bc.rules instanceof DoubleNPCBattle){
@@ -231,8 +233,14 @@ public class GGEventHandler {
             rules.getFirstPokemon().unloadEntity();
         }
         else{
-            for(EntityPlayerMP player:event.getPlayers()){
-                SongManager.setToRouteSong(player);
+            for(BattleParticipant participant:event.bc.participants){
+                if(participant instanceof PlayerParticipant){
+                    if(event.results.get(participant)==BattleResults.DEFEAT){
+                        GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player.getEntityData().getString("safeZone")).warp(((PlayerParticipant) participant).player);
+                        new PlayerWrapper(((PlayerParticipant) participant).player).message("You whited out!");
+                    }
+                }
+                SongManager.setToRouteSong(((PlayerParticipant) participant).player);
             }
         }
         /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){

@@ -90,6 +90,22 @@ public class RouteManager {
         if(!dName.isEmpty())
             route.displayName = dName;
 
+        if(json.has("safeZone")){
+            route.isSafeZone=json.get("safeZone").getAsBoolean();
+        }
+
+        if(json.has("warpX")){
+            route.warpX=json.get("warpX").getAsInt();
+        }
+
+        if(json.has("warpY")){
+            route.warpY=json.get("warpY").getAsInt();
+        }
+
+        if(json.has("warpZ")){
+            route.warpZ=json.get("warpZ").getAsInt();
+        }
+
         if(json.has("requirements")) {
             JsonArray requirementsArray = json.get("requirements").getAsJsonArray();
             for (JsonElement o : requirementsArray) {
@@ -160,6 +176,11 @@ public class RouteManager {
             file.endObject();
         }
         file.endArray();
+
+        file.name("safeZone").value(route.isSafeZone);
+        file.name("warpX").value(route.warpX);
+        file.name("warpY").value(route.warpY);
+        file.name("warpZ").value(route.warpZ);
 
         file.name("requirements");
         file.beginArray();

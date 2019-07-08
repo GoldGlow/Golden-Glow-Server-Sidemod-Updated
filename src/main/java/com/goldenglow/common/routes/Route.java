@@ -4,6 +4,7 @@ import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Requirement;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -23,6 +24,10 @@ public class Route {
     public int priority;
     public Polygonal2DRegion region;
     public List<Requirement> requirements = new ArrayList<>();
+    public boolean isSafeZone = false;
+    public int warpX=0;
+    public int warpY=100;
+    public int warpZ=0;
 
     List<EntityPlayerMP> players = new ArrayList<>();
 
@@ -41,14 +46,17 @@ public class Route {
         this.priority = priority;
     }
 
+    public void warp(EntityPlayer player){
+        player.setPosition(this.warpX, this.warpY, this.warpZ);
+    }
+
     public void addPlayer(EntityPlayerMP playerMP) {
         if(!this.players.contains(playerMP)) {
             playerMP.getEntityData().setString("Route", this.unlocalizedName);
             this.players.add(playerMP);
             SongManager.setCurrentSong(playerMP, this.song);
-            Server.sendData(playerMP, EnumPacketClient.MESSAGE, (this.displayName!=null && !this.displayName.isEmpty()) ? this.displayName : this.unlocalizedName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
-//          if(this.displayName!=null && !this.displayName.isEmpty())
-//              Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+            if(this.displayName!=null && !this.displayName.isEmpty())
+                Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
         }
     }
 

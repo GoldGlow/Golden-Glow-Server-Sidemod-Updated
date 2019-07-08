@@ -49,15 +49,15 @@ public class CustomInventory extends ContainerChest {
 
     public static void openCustomInventory(EntityPlayerMP playerMP, CustomInventoryData data){
         InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
-        for(int i=0;i<data.getRows()*9;i++){
-            if(i<data.getItems().length){
-                CustomItem item= CustomInventory.getItem(data.getItems()[i], playerMP);
-                if(item.getItem()!=null){
-                    chestInventory.setInventorySlotContents(i, item.getItem());
+        if(Requirement.checkRequirements(data.requirements, playerMP)) {
+            for(int i=0;i<data.getRows()*9;i++){
+                if(i<data.getItems().length){
+                    CustomItem item= CustomInventory.getItem(data.getItems()[i], playerMP);
+                    if(item.getItem()!=null){
+                        chestInventory.setInventorySlotContents(i, item.getItem());
+                    }
                 }
             }
-        }
-        if(Requirement.checkRequirements(data.requirements, playerMP)) {
             playerMP.getNextWindowId();
             playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getName()), data.getRows() * 9));
             playerMP.openContainer = new CustomInventory(playerMP.inventory, chestInventory, playerMP);
