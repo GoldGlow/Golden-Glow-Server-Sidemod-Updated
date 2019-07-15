@@ -18,9 +18,11 @@ import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.teams.TeamManager;
+import com.goldenglow.common.tiles.TileEntityCustomAW;
+import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PhoneItemListHandler;
-import com.goldenglow.common.util.TileEntityCustomApricornTree;
+import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.ICommandSender;
@@ -31,6 +33,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import noppes.npcs.CustomNpcs;
 import org.spongepowered.api.Sponge;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
@@ -68,7 +71,9 @@ public class GoldenGlow {
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
-        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "customApricornTree"));
+        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
+        GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
+        GameRegistry.registerTileEntity(TileEntityCustomAW.class, new ResourceLocation("obscureobsidian", "custom_aw"));
     }
 
     @Mod.EventHandler
@@ -82,6 +87,7 @@ public class GoldenGlow {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        CustomNpcs.Channel.register(eventHandler);
     }
 
     @Mod.EventHandler
@@ -99,6 +105,7 @@ public class GoldenGlow {
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
+        event.registerServerCommand(new CommandScriptable());
 
         event.registerServerCommand(new CommandRoutes());
         CommandRoutes.register(commandDispatcher);
