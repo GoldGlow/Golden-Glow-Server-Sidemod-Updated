@@ -1,6 +1,7 @@
 package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.util.Requirement;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -12,8 +13,6 @@ public class CustomItem  {
     Requirement[] requirements;
     Action[] leftClickActions;
     Action[] rightClickActions;
-    Action[] shiftLeftClickActions;
-    Action[] shiftRightClickActions;
 
     public CustomItem(ItemStack item, Requirement[] requirements){
         this.item=item;
@@ -26,5 +25,30 @@ public class CustomItem  {
 
     public Requirement[] getRequirements(){
         return this.requirements;
+    }
+
+    public Action[] getLeftClickActions(){
+        return this.leftClickActions;
+    }
+
+    public void setLeftClickActions(Action[] actions){
+        this.leftClickActions=actions;
+    }
+
+    public Action[] getRightClickActions(){
+        return this.rightClickActions;
+    }
+
+    public void setRightClickActions(Action[] actions){
+        this.rightClickActions=actions;
+    }
+
+    public Action getAction(Action[] actions, EntityPlayerMP playerMP){
+        for(Action action:actions){
+            if(Requirement.checkRequirements(action.requirements, playerMP)){
+                return action;
+            }
+        }
+        return null;
     }
 }

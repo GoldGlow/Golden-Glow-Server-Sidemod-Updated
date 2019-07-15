@@ -2,6 +2,7 @@ package com.goldenglow.common.routes;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.ParseJson;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.google.gson.JsonArray;
@@ -109,14 +110,7 @@ public class RouteManager {
         if(json.has("requirements")) {
             JsonArray requirementsArray = json.get("requirements").getAsJsonArray();
             for (JsonElement o : requirementsArray) {
-                Requirement r = new Requirement();
-                r.type = Requirement.RequirementType.valueOf(o.getAsJsonObject().get("type").getAsString());
-                if (r.type == Requirement.RequirementType.TIME || r.type == Requirement.RequirementType.PERMISSION) {
-                    r.value = o.getAsJsonObject().get("value").getAsString();
-                } else {
-                    r.id = o.getAsJsonObject().get("id").getAsInt();
-                }
-                r.override = o.getAsJsonObject().get("override").getAsString();
+                Requirement r = ParseJson.parseRequirement((JsonObject)o);
                 route.requirements.add(r);
             }
         }

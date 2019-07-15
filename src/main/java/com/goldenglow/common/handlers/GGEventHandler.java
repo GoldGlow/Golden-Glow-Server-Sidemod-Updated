@@ -8,6 +8,7 @@ import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.RouteManager;
+import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.TileEntityCustomApricornTree;
@@ -29,6 +30,7 @@ import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.items.ItemApricorn;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -36,6 +38,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -236,11 +239,12 @@ public class GGEventHandler {
             for(BattleParticipant participant:event.bc.participants){
                 if(participant instanceof PlayerParticipant){
                     if(event.results.get(participant)==BattleResults.DEFEAT){
-                        GoldenGlow.routeManager.getRoute(((PlayerParticipant) participant).player.getEntityData().getString("safeZone")).warp(((PlayerParticipant) participant).player);
-                        new PlayerWrapper(((PlayerParticipant) participant).player).message("You whited out!");
+                        NPCFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant) participant).player));
+                    }
+                    else {
+                        SongManager.setToRouteSong(((PlayerParticipant) participant).player);
                     }
                 }
-                SongManager.setToRouteSong(((PlayerParticipant) participant).player);
             }
         }
         /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){

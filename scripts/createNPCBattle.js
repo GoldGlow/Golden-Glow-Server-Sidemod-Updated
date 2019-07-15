@@ -6,5 +6,6 @@ function dialogClose(event){
 	}
 	else if(event.dialog.getId()==loseDialog){
 		event.player.removeDialog(initDialog);
+		Packages.com.goldenglow.common.util.NPCFunctions.warpToSafeZone(event.player);
 	}
 }

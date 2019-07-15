@@ -3,17 +3,20 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.common.util.Requirement;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import noppes.npcs.api.IContainer;
 import noppes.npcs.api.IContainerCustomChest;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.ItemStackWrapper;
 import noppes.npcs.containers.ContainerCustomChest;
+
+import java.util.Iterator;
 
 /**
  * Created by JeanMarc on 6/18/2019.
@@ -34,6 +37,31 @@ public class CustomInventory extends ContainerChest {
         for(CustomItem item: items){
             if(Requirement.checkRequirements(item.requirements, player)){
                 return item;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+        InventoryPlayer inventoryplayer = player.inventory;
+        Slot slot = getSlot(slotId);
+
+        if(slot.isSameInventory(getSlot(0))) {
+            CustomItem item=CustomInventory.getItem(data.getItems()[slotId], (EntityPlayerMP)player);
+            if(dragType==0){
+                for(Action action:item.leftClickActions) {
+                    if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                        action.doAction((EntityPlayerMP)player);
+                    }
+                }
+            }
+            else if(dragType==1){
+                for(Action action:item.rightClickActions) {
+                    if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                        action.doAction((EntityPlayerMP)player);
+                    }
+                }
             }
         }
         return null;

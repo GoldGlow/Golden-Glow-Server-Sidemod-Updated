@@ -95,6 +95,7 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandSetPvpMusicOption());
         event.registerServerCommand(new CommandSetTheme());
         event.registerServerCommand(new CommandMoneyreward());
+        event.registerServerCommand(new CommandCustomChest());
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
@@ -106,6 +107,7 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
+        customInventoryHandler.init();
         phoneItemListHandler.init();
         if(Loader.isModLoaded("spongeforge"))
             Sponge.getEventManager().registerListeners(this, new GGEventHandler());
