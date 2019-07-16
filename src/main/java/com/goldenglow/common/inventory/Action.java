@@ -3,6 +3,9 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.common.util.Requirement;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.network.rcon.RConConsoleSource;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 
@@ -53,11 +56,19 @@ public class Action {
             ICommandManager icommandmanager = player.getEntityWorld().getMinecraftServer().getCommandManager();
             icommandmanager.executeCommand(new RConConsoleSource(playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer()), command);
         }
+        else if(this.actionType==ActionType.GIVEITEM){
+            try {
+                player.inventory.addItemStackToInventory(new ItemStack(JsonToNBT.getTagFromJson(this.value)));
+            } catch (NBTException e) {
+                e.printStackTrace();
+            }
+        }
         if(this.closeInv)
             player.closeScreen();
     }
 
     public enum ActionType{
-        COMMAND
+        COMMAND,
+        GIVEITEM
     }
 }

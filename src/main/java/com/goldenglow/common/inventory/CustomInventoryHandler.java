@@ -39,7 +39,7 @@ public class CustomInventoryHandler {
         if(!dir.exists()) {
             if (!dir.getParentFile().exists())
                 dir.getParentFile().mkdirs();
-                dir.mkdir();
+            dir.mkdir();
         }
         else
             this.loadInventories();
@@ -70,7 +70,7 @@ public class CustomInventoryHandler {
             if(items.has("slot"+i)){
                 JsonArray slot=items.getAsJsonArray("slot"+i);
                 CustomItem[] itemList=new CustomItem[slot.size()];
-                for (int j=0;i<slot.size();i++) {
+                for (int j=0;j<slot.size();j++) {
                     CustomItem customItem;
                     JsonObject item=slot.get(j).getAsJsonObject();
                     ItemStack itemStack=null;
@@ -81,10 +81,13 @@ public class CustomInventoryHandler {
                         CommonSkinCache.INSTANCE.addEquipmentDataToCache(skin, file);
                         SkinIdentifier identifier = new SkinIdentifier(0, file, 0, skin.getSkinType());
                         itemStack = SkinNBTHelper.makeEquipmentSkinStack(new SkinDescriptor(identifier));
+                        GGLogger.info("Loaded AW item: "+awItem);
                     }
                     else {
                         try {
+                            GGLogger.info(item.getAsJsonObject("item").toString());
                             itemStack = new ItemStack(JsonToNBT.getTagFromJson(item.getAsJsonObject("item").toString()));
+                            GGLogger.info(itemStack.toString());
                         } catch (NBTException e) {
                             e.printStackTrace();
                         }
@@ -121,7 +124,8 @@ public class CustomInventoryHandler {
                 customItems[i]=itemList;
             }
             else {
-                customItems[i]=new CustomItem[0];
+                customItems[i]=new CustomItem[1];
+                customItems[i][0]=null;
             }
         }
         Requirement[] requirements = new Requirement[0];

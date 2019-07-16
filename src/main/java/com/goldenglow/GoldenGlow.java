@@ -14,6 +14,7 @@ import com.goldenglow.common.command.CommandRoutes;
 import com.goldenglow.common.command.CommandRouteNotificationOption;
 import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.inventory.CustomInventoryHandler;
+import com.goldenglow.common.inventory.shops.CustomShopHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
@@ -32,8 +33,8 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import noppes.npcs.CustomNpcs;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.spongepowered.api.Sponge;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
@@ -61,6 +62,7 @@ public class GoldenGlow {
     public static RaidHandler raidHandler = new RaidHandler();
     public static DataHandler dataHandler = new DataHandler();
     public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
+    public static CustomShopHandler customShopHandler=new CustomShopHandler();
 
     public static CommandDispatcher<ICommandSender> commandDispatcher = new CommandDispatcher<>();
 
@@ -71,9 +73,8 @@ public class GoldenGlow {
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
-        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
-        GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
-        GameRegistry.registerTileEntity(TileEntityCustomAW.class, new ResourceLocation("obscureobsidian", "custom_aw"));
+        GameRegistry.registerTileEntity();
+        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "customApricornTree"));
     }
 
     @Mod.EventHandler
@@ -87,7 +88,6 @@ public class GoldenGlow {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        CustomNpcs.Channel.register(eventHandler);
     }
 
     @Mod.EventHandler
@@ -102,10 +102,10 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandSetTheme());
         event.registerServerCommand(new CommandMoneyreward());
         event.registerServerCommand(new CommandCustomChest());
+        event.registerServerCommand(new CommandShop());
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
-        event.registerServerCommand(new CommandScriptable());
 
         event.registerServerCommand(new CommandRoutes());
         CommandRoutes.register(commandDispatcher);
@@ -115,6 +115,7 @@ public class GoldenGlow {
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
         customInventoryHandler.init();
+        customShopHandler.init();
         phoneItemListHandler.init();
         if(Loader.isModLoaded("spongeforge"))
             Sponge.getEventManager().registerListeners(this, new GGEventHandler());

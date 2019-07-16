@@ -1,10 +1,17 @@
 package com.goldenglow.common.util;
 
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -57,6 +64,30 @@ public class Requirement {
                 return !playerEntity.getEntityWorld().isDaytime();
             }
         }
+        else if(requirement.type==RequirementType.MONEY){
+            IPixelmonBankAccount bankAccount=(IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount(playerEntity).orElse(null);
+            if(bankAccount!=null){
+                return bankAccount.getMoney() >= requirement.id;
+            }
+        }
+        else if(requirement.type==RequirementType.ITEM){
+            try {
+                if(playerEntity.inventory.hasItemStack(new ItemStack(JsonToNBT.getTagFromJson(requirement.value)))) {
+                    return true;
+                }
+            } catch (NBTException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(requirement.type==RequirementType.HAS_SPACE){
+            EntityPlayerMP entityPlayerMP=(EntityPlayerMP)player.getMCEntity();
+            InventoryPlayer inventoryplayer = entityPlayerMP.inventory;
+            Iterator<ItemStack> iterator = inventoryplayer.mainInventory.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().isEmpty())
+                    return true;
+            }
+        }
         return false;
     }
 
@@ -91,6 +122,9 @@ public class Requirement {
         QUEST_FINISHED,
         DIALOG,
         PERMISSION,
-        TIME
+        TIME,
+        MONEY,
+        ITEM,
+        HAS_SPACE
     }
 }
