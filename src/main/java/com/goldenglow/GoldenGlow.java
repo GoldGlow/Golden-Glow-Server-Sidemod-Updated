@@ -33,8 +33,8 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import noppes.npcs.CustomNpcs;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import noppes.npcs.CustomNpcs;
 import org.spongepowered.api.Sponge;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
@@ -73,8 +73,9 @@ public class GoldenGlow {
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
-        GameRegistry.registerTileEntity();
-        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "customApricornTree"));
+        GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
+        GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
+        GameRegistry.registerTileEntity(TileEntityCustomAW.class, new ResourceLocation("obscureobsidian", "custom_aw"));
     }
 
     @Mod.EventHandler
@@ -88,6 +89,7 @@ public class GoldenGlow {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        CustomNpcs.Channel.register(eventHandler);
     }
 
     @Mod.EventHandler
@@ -106,6 +108,7 @@ public class GoldenGlow {
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
+        event.registerServerCommand(new CommandScriptable());
 
         event.registerServerCommand(new CommandRoutes());
         CommandRoutes.register(commandDispatcher);

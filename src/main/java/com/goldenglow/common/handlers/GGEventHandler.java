@@ -6,12 +6,16 @@ import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.tiles.ICustomScript;
+import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
+import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.api.events.BerryEvent;
 import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
@@ -38,6 +42,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.EventHooks;
@@ -45,6 +51,7 @@ import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
@@ -250,71 +257,40 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void onPickApricorn(ApricornEvent.PickApricorn event) {
-        if(event.player.world.getTileEntity(event.pos) instanceof TileEntityCustomApricornTree) {
+        if(event.tree instanceof TileEntityCustomApricornTree) {
             event.setCanceled(true);
-            TileEntityCustomApricornTree tile = (TileEntityCustomApricornTree) event.player.world.getTileEntity(event.pos);
-            if (event.player.getHeldItemMainhand().getItem() instanceof ItemScripted && event.player.isSneaking() && new PlayerWrapper(event.player).hasPermission("goldglow.scripting")) {
-                ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.player.getHeldItemMainhand());
-                tile.tile.setNBT(item.getScriptNBT(new NBTTagCompound()));
-                tile.tile.setEnabled(true);
-                event.player.sendMessage(new TextComponentString("Applied Script!"));
-            } else {
-                EventHooks.onScriptBlockInteract(tile.tile, event.player, 0, event.pos.getX(),event.pos.getY(),event.pos.getZ());
-            }
+            runOnPickEvent((TileEntityCustomApricornTree)event.tree, event);
         }
     }
 
     @SubscribeEvent
-    public void onApricornPlanted(ApricornEvent.ApricornPlanted event) {
-        if(event.player.getHeldItemMainhand().getItem() instanceof ItemApricorn && event.player.getHeldItemMainhand().getDisplayName().equalsIgnoreCase("Scripted")) {
+    public void onPickBerry(BerryEvent.PickBerry event) {
+        event.player.sendMessage(new TextComponentString(""+event.tree));
+        if(event.tree instanceof TileEntityCustomBerryTree) {
             event.setCanceled(true);
-            Block block;
-            switch (event.apricorn) {
-                case Black:
-                    block = PixelmonBlocksApricornTrees.apricornTreeBlack;
-                    break;
-                case White:
-                    block = PixelmonBlocksApricornTrees.apricornTreeWhite;
-                    break;
-                case Pink:
-                    block = PixelmonBlocksApricornTrees.apricornTreePink;
-                    break;
-                case Green:
-                    block = PixelmonBlocksApricornTrees.apricornTreeGreen;
-                    break;
-                case Blue:
-                    block = PixelmonBlocksApricornTrees.apricornTreeBlue;
-                    break;
-                case Yellow:
-                    block = PixelmonBlocksApricornTrees.apricornTreeYellow;
-                    break;
-                case Red:
-                    block = PixelmonBlocksApricornTrees.apricornTreeRed;
-                    break;
-                default:
-                    block = null;
-            }
+            runOnPickEvent((TileEntityCustomBerryTree)event.tree, event);
+        }
+    }
 
-            IBlockState state = block.getDefaultState().withProperty(BlockApricornTree.BLOCKPOS, EnumBlockPos.BOTTOM);
-            event.player.world.setBlockState(event.pos, state, 3);
-            state = event.player.world.getBlockState(event.pos);
-            if (state.getBlock() == block) {
-                ItemBlock.setTileEntityNBT(event.player.world, event.player, event.pos, event.player.getHeldItemMainhand());
-                ((TileEntityApricornTree) event.player.world.getTileEntity(event.pos)).setStage(5);
-                TileEntityCustomApricornTree newTile = new TileEntityCustomApricornTree(event.player.world);
-                newTile.readFromNBT(event.player.world.getTileEntity(event.pos).writeToNBT(new NBTTagCompound()));
-                event.player.world.setTileEntity(event.pos, newTile);
-                state.getBlock().onBlockPlacedBy(event.player.world, event.pos, state, event.player, event.player.getHeldItemMainhand());
+    @SubscribeEvent
+    public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
+        if(event.getHand()==EnumHand.MAIN_HAND && event.getUseBlock()!=Event.Result.DENY && event.getWorld().getTileEntity(event.getPos())!=null
+                && event.getWorld().getTileEntity(event.getPos()) instanceof ICustomScript) {
+            ICustomScript tile = (ICustomScript)event.getWorld().getTileEntity(event.getPos());
+            if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
+                ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
+                tile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
+                tile.getScriptedTile().setEnabled(true);
+                event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
+            } else {
+                EventHooks.onScriptBlockInteract(tile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
             }
+        }
+    }
 
-            event.player.world.playSound((EntityPlayer) null, (double) event.pos.getX() + 0.5D, (double) event.pos.getY() + 0.5D, (double) event.pos.getZ() + 0.5D, SoundEvents.BLOCK_GRASS_STEP, SoundCategory.PLAYERS, 0.5F, 1.0F);
-            if (!event.player.isCreative()) {
-                if (event.player.getHeldItemMainhand().getCount() <= 1) {
-                    event.player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
-                } else {
-                    event.player.getHeldItemMainhand().shrink(1);
-                }
-            }
+    void runOnPickEvent(ICustomScript tile, Event event) {
+        for (final ScriptContainer scriptContainer4 : tile.getScriptedTile().scripts) {
+            scriptContainer4.run("onPick", event);
         }
     }
 }
