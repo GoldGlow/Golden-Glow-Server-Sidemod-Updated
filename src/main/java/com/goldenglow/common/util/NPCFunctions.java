@@ -2,6 +2,8 @@ package com.goldenglow.common.util;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
+import com.goldenglow.common.data.IPlayerData;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomInventoryData;
@@ -136,6 +138,7 @@ public class NPCFunctions {
         tile.setScale(1.25f, 1.25f, 1.25f);
     }
 
+    /* OLD METHOD, BEFORE CAPABILITIES
     public static void checkRoute(EntityPlayerMP playerMP, int lastPosX, int lastPosY, int lastPosZ) {
 	    Route currentRoute = null;
 	    Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
@@ -165,6 +168,42 @@ public class NPCFunctions {
 	    else {
 	        if(currentRoute!=null)
 	            currentRoute.removePlayer(playerMP);
+        }
+    }
+    */
+
+    public static void checkRoute(EntityPlayerMP playerMP, int lastPosX, int lastPosY, int lastPosZ) {
+        IPlayerData playerData = playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
+	    Route currentRoute = null;
+	    Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
+
+	    if(playerData.hasRoute())
+	        currentRoute = playerData.getRoute();
+
+	    if(actualRoute!=null) {
+	        if(actualRoute.canPlayerEnter(playerMP)) {
+                if (currentRoute != null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
+                    currentRoute.removePlayer(playerMP);
+                }
+                if(actualRoute.isSafeZone){
+                    playerData.setSafezone(actualRoute.unlocalizedName);
+                }
+                actualRoute.addPlayer(playerMP);
+            }
+            else if(currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)){
+	            currentRoute.warp(playerMP);
+            }
+	        else {
+	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
+	            TextComponentString msg = actualRoute.getRequirementMessage(playerMP);
+	            playerMP.sendMessage(msg);
+            }
+        }
+	    else {
+	        if(currentRoute!=null) {
+                currentRoute.removePlayer(playerMP);
+                playerData.clearRoute();
+            }
         }
     }
 

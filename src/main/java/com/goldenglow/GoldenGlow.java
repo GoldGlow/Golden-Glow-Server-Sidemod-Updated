@@ -4,6 +4,9 @@ import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.battles.raids.CommandRaidDebug;
 import com.goldenglow.common.battles.raids.RaidHandler;
 import com.goldenglow.common.command.*;
+import com.goldenglow.common.data.IPlayerData;
+import com.goldenglow.common.data.OOPlayerData;
+import com.goldenglow.common.data.OOPlayerStorage;
 import com.goldenglow.common.handlers.ConfigHandler;
 import com.goldenglow.common.handlers.GGEventHandler;
 import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
@@ -29,6 +32,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -76,6 +80,7 @@ public class GoldenGlow {
         GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomAW.class, new ResourceLocation("obscureobsidian", "custom_aw"));
+        CapabilityManager.INSTANCE.register(IPlayerData.class, new OOPlayerStorage(), OOPlayerData::new);
     }
 
     @Mod.EventHandler

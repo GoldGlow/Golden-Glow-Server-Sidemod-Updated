@@ -1,5 +1,6 @@
 package com.goldenglow.common.routes;
 
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Requirement;
@@ -52,7 +53,7 @@ public class Route {
 
     public void addPlayer(EntityPlayerMP playerMP) {
         if(!this.players.contains(playerMP)) {
-            playerMP.getEntityData().setString("Route", this.unlocalizedName);
+            playerMP.getCapability(OOPlayerProvider.OO_DATA, null).setRoute(this.unlocalizedName);
             this.players.add(playerMP);
             SongManager.setCurrentSong(playerMP, this.song);
             if(this.displayName!=null && !this.displayName.isEmpty())
@@ -61,7 +62,6 @@ public class Route {
     }
 
     public void removePlayer(EntityPlayerMP playerMP) {
-        playerMP.getEntityData().removeTag("Route");
         this.players.remove(playerMP);
     }
 

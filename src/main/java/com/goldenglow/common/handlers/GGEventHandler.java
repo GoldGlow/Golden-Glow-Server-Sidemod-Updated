@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.tiles.ICustomScript;
@@ -28,6 +29,8 @@ import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityApricornTree;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.config.PixelmonBlocksApricornTrees;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import com.pixelmonmod.pixelmon.items.ItemApricorn;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -39,8 +42,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -292,5 +297,12 @@ public class GGEventHandler {
         for (final ScriptContainer scriptContainer4 : tile.getScriptedTile().scripts) {
             scriptContainer4.run("onPick", event);
         }
+    }
+
+    @SubscribeEvent
+    public void attachCapability(AttachCapabilitiesEvent<Entity> event) {
+        if(!(event.getObject() instanceof EntityPlayer)) return;
+
+        event.addCapability(new ResourceLocation("obscureobsidian", "playerdata"), new OOPlayerProvider());
     }
 }
