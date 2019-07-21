@@ -62,7 +62,7 @@ public class CustomInventoryHandler {
     public void loadInventory(String inventoryName) throws IOException{
         InputStream iStream = new FileInputStream(new File(dir, inventoryName+".json"));
         JsonObject json = new JsonParser().parse(new InputStreamReader(iStream, StandardCharsets.UTF_8)).getAsJsonObject();
-        String name = json.get("name").getAsString();
+        String displayName = json.get("name").getAsString();
         int rows=json.get("rows").getAsInt();
         JsonObject items=json.get("items").getAsJsonObject();
         CustomItem[][] customItems=new CustomItem[rows*9][];
@@ -137,6 +137,6 @@ public class CustomInventoryHandler {
                 requirements[i++]=ParseJson.parseRequirement(requirement.getAsJsonObject());
             }
         }
-        this.inventories.add(new CustomInventoryData(rows, name, customItems, requirements));
+        this.inventories.add(new CustomInventoryData(rows, inventoryName, displayName, customItems, requirements));
     }
 }

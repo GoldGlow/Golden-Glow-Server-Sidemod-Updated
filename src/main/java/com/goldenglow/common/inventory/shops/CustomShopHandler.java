@@ -64,7 +64,7 @@ public class CustomShopHandler {
     public void loadShop(String inventoryName) throws IOException{
         InputStream iStream = new FileInputStream(new File(dir, inventoryName+".json"));
         JsonObject json = new JsonParser().parse(new InputStreamReader(iStream, StandardCharsets.UTF_8)).getAsJsonObject();
-        String name = json.get("name").getAsString();
+        String displayName = json.get("name").getAsString();
         int rows=json.get("rows").getAsInt();
         JsonObject items=json.get("items").getAsJsonObject();
         CustomShopItem[][] customItems=new CustomShopItem[rows*9][];
@@ -100,7 +100,7 @@ public class CustomShopHandler {
                         try {
                             jsonItem.getAsJsonObject("tag").add("display", new JsonObject());
                             jsonItem.getAsJsonObject("tag").getAsJsonObject("display").add("Lore", new JsonArray());
-                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").addProperty("Name", "§r"+species);
+                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").addProperty("Name", Reference.resetText+species);
                             jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add("§rLeft-Click: buy for "+price);
                             itemStack = new ItemStack(JsonToNBT.getTagFromJson(item.getAsJsonObject("item").toString()));
                         } catch (NBTException e) {
@@ -138,24 +138,24 @@ public class CustomShopHandler {
                         jsonItem.getAsJsonObject("tag").getAsJsonObject("display").add("Lore", new JsonArray());
                         if (item.has("buy")) {
                             price = item.get("buy").getAsInt();
-                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add("§2 Left-Click: buy for "+price);
+                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.darkGreen+"Left-Click: buy for "+price);
                             sell=0;
                             if(item.has("sell")){
                                 sell=item.get("sell").getAsInt();
-                                jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add("§r§4Right-Click: sell for "+sell);
+                                jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.darkRed+"Right-Click: sell for "+sell);
                             }
                             else if(!item.has("buyOnly")){
                                 sell=price/2;
-                                jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add("§r§4Right-Click: sell for "+sell);
+                                jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.darkRed+"Right-Click: sell for "+sell);
                             }
                             else if(!item.get("buyOnly").getAsBoolean()){
                                 sell=price/2;
-                                jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add("§r§4Right-Click: sell for "+sell);
+                                jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.darkRed+"Right-Click: sell for "+sell);
                             }
                         }
                         else if (item.has("sell")) {
                             sell=item.get("sell").getAsInt();
-                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add("§r§4Right-Click: sell for "+sell);
+                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.darkRed+"Right-Click: sell for "+sell);
                         }
                         try {
                             GGLogger.info(item.getAsJsonObject("item").toString());
@@ -199,6 +199,6 @@ public class CustomShopHandler {
                 requirements[i++]=ParseJson.parseRequirement(requirement.getAsJsonObject());
             }
         }
-        this.shops.add(new CustomShopData(rows, name, customItems, requirements));
+        this.shops.add(new CustomShopData(rows, inventoryName, displayName, customItems, requirements));
     }
 }

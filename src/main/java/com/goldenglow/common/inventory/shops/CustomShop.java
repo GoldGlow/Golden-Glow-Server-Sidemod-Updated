@@ -5,6 +5,7 @@ import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
@@ -70,6 +71,13 @@ public class CustomShop extends CustomInventory {
                             if(action.getValue().startsWith("pokegive")){
                                 ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought "+action.getValue().split(" ")[2]+"!"));
                             }
+                            if(data.getName().equals("Starter")){
+                                ((EntityPlayerMP) player).closeScreen();
+                                NpcAPI.Instance().executeCommand(new PlayerWrapper<>(((EntityPlayerMP) player)).getWorld(), "noppes dialog show "+((EntityPlayerMP) player).getName()+" 328");
+                            }
+                            else {
+                                openCustomShop(((EntityPlayerMP) player), data);
+                            }
                             return null;
                         }
                     }
@@ -92,7 +100,7 @@ public class CustomShop extends CustomInventory {
     public static void openCustomShop(EntityPlayerMP playerMP, CustomShopData data){
         InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
         if(Requirement.checkRequirements(data.getRequirements(), playerMP)) {
-            for(int i=0;i<data.getRows()*9;i++){
+            for(int i=0;i<data.getRows()*9-1;i++){
                 if(i<data.getItems().length){
                     GGLogger.info("Loaded item in slot "+i);
                     CustomShopItem item= CustomShop.getItem(data.getItems()[i], playerMP);
@@ -104,8 +112,15 @@ public class CustomShop extends CustomInventory {
                     }
                 }
             }
+            ItemStack balance=new ItemStack(Item.getByNameOrId("variedcommodities:coin_bronze"));
+            IPixelmonBankAccount bankAccount=(IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount(playerMP).orElse(null);
+            int amount=0;
+            if(bankAccount!=null){
+                amount=bankAccount.getMoney();
+            }
+            balance.setStackDisplayName(Reference.resetText+"Current Balance: "+amount);
             playerMP.getNextWindowId();
-            playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getName()), data.getRows() * 9));
+            playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
             playerMP.openContainer = new CustomShop(playerMP.inventory, chestInventory, playerMP);
             ((CustomShop)playerMP.openContainer).setData(data);
             playerMP.openContainer.windowId = playerMP.currentWindowId;

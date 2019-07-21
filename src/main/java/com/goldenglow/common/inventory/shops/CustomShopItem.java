@@ -29,7 +29,7 @@ public class CustomShopItem extends CustomItem {
         }
         buyItem.closeInv=false;
         Action notEnough=new Action();
-        notEnough.setValue("tellraw @dp [\"\",{\"text\":\"You do not have enough money to buy this!\",\"color\":\"dark_red\"}]");
+        notEnough.setValue("tellraw @dp [\"\",{\"text\":\"You can't buy this!\",\"color\":\"dark_red\"}]");
         notEnough.closeInv=false;
         this.setLeftClickActions(new Action[]{buyItem, notEnough});
     }
