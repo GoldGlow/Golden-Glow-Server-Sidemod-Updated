@@ -8,8 +8,8 @@ import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItem;
 public class CustomShopData extends CustomInventoryData {
     CustomShopItem[][] shopItems;
 
-    public CustomShopData(int rows, String name, CustomShopItem[][] items, Requirement[] requirements){
-        super(rows, name, (CustomItem[][]) items, requirements);
+    public CustomShopData(int rows, String name, String displayName, CustomShopItem[][] items, Requirement[] requirements){
+        super(rows, name, displayName, (CustomItem[][]) items, requirements);
         this.shopItems=items;
     }
 

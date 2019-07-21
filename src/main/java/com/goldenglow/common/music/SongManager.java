@@ -2,6 +2,7 @@ package com.goldenglow.common.music;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -51,6 +52,7 @@ public class SongManager {
             if(!configFile.getParentFile().exists())
                 configFile.getParentFile().mkdirs();
             try {
+                GGLogger.info("Creating music config file!");
                 createConfigFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -219,6 +221,7 @@ public class SongManager {
     }
 
     public static void setToRouteSong(EntityPlayerMP player){
-        setCurrentSong(player, GoldenGlow.routeManager.getRoute(player).song);
+        if(GoldenGlow.routeManager.getRoute(player)!=null)
+            setCurrentSong(player, GoldenGlow.routeManager.getRoute(player).song);
     }
 }

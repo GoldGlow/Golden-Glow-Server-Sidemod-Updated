@@ -12,6 +12,10 @@ function dialogAchievement(dialogId, firstLine, secondLine){
 	}
 }
 
+function achievement(player, firstLine, secondLine){
+	Packages.com.goldenglow.common.util.NPCFunctions.showAchievement(player, firstLine, secondLine);
+}
+
 function lightBlock(){
 	function init(event){
 		event.block.setLight(15);

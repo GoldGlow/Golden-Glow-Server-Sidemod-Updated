@@ -92,12 +92,12 @@ public class GGEventHandler {
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         if(!event.player.getEntityData().hasKey("RouteNotification"))
             event.player.getEntityData().setInteger("RouteNotification", 0);
-        if(!event.player.getEntityData().hasKey("WildTheme"))
-            event.player.getEntityData().setString("WildTheme", GoldenGlow.songManager.wildBattleSong);
-        if(!event.player.getEntityData().hasKey("TrainerTheme"))
-            event.player.getEntityData().setString("TrainerTheme", GoldenGlow.songManager.trainerBattleSong);
-        if(!event.player.getEntityData().hasKey("PVPTheme"))
-            event.player.getEntityData().setString("PVPTheme", GoldenGlow.songManager.trainerBattleSong);
+        if(!event.player.getEntityData().hasKey("theme_wild"))
+            event.player.getEntityData().setString("theme_wild", GoldenGlow.songManager.wildBattleSong);
+        if(!event.player.getEntityData().hasKey("theme_trainer"))
+            event.player.getEntityData().setString("theme_trainer", GoldenGlow.songManager.trainerBattleSong);
+        if(!event.player.getEntityData().hasKey("theme_pvp"))
+            event.player.getEntityData().setString("theme_pvp", GoldenGlow.songManager.trainerBattleSong);
         if(!event.player.getEntityData().hasKey("PlayTime"))
             event.player.getEntityData().setLong("PlayTime", 0);
         if(!event.player.getEntityData().hasKey("safeZone"))
@@ -107,7 +107,7 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void playerLogoutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
-        Instant loginTime = playerTimes.get(event.player.getUniqueID());
+        /*Instant loginTime = playerTimes.get(event.player.getUniqueID());
         playerTimes.remove(event.player.getUniqueID());
         Instant logoutTime = Instant.now();
         Duration sessionDuration = Duration.between(loginTime, logoutTime);
@@ -116,7 +116,7 @@ public class GGEventHandler {
         String time = String.format("%d:%02d:%02d", (int)totalDuration.getSeconds() / 3600, ((int)totalDuration.getSeconds() % 3600) / 60, ((int)totalDuration.getSeconds() % 60));
         int dex = Pixelmon.storageManager.getParty((EntityPlayerMP)event.player).pokedex.countCaught();
         int badges = 0; //ToDo: Change this when we decide how to handle badges.
-        GoldenGlow.dataHandler.sendData(event.player.getName(), dex, badges, time);
+        GoldenGlow.dataHandler.sendData(event.player.getName(), dex, badges, time);*/
     }
 
     @SubscribeEvent

@@ -50,6 +50,8 @@ public class Action {
     }
 
     public void doAction(EntityPlayerMP player){
+        if(this.closeInv)
+            player.closeScreen();
         if(this.actionType==ActionType.COMMAND){
             PlayerWrapper playerWrapper=new PlayerWrapper(player);
             String command=this.getValue().replace("@dp",player.getName());
@@ -63,8 +65,6 @@ public class Action {
                 e.printStackTrace();
             }
         }
-        if(this.closeInv)
-            player.closeScreen();
     }
 
     public enum ActionType{

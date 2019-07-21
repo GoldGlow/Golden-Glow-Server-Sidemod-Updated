@@ -7,13 +7,15 @@ import com.goldenglow.common.util.Requirement;
  */
 public class CustomInventoryData {
     String name;
+    String displayName;
     CustomItem[][] items;
     Requirement[] requirements;
     int rows;
 
-    public CustomInventoryData(int rows, String name, CustomItem[][] items, Requirement[] requirements)
+    public CustomInventoryData(int rows, String name, String displayName, CustomItem[][] items, Requirement[] requirements)
     {
         this.name=name;
+        this.displayName=displayName;
         this.rows=rows;
         this.items=items;
         this.requirements=requirements;
@@ -24,6 +26,8 @@ public class CustomInventoryData {
     }
 
     public int getRows(){return this.rows;}
+
+    public String getDisplayName(){return this.displayName;}
 
     public CustomItem[][] getItems(){
         return this.items;

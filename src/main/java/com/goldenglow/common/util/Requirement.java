@@ -79,12 +79,20 @@ public class Requirement {
                 e.printStackTrace();
             }
         }
-        else if(requirement.type==RequirementType.HAS_SPACE){
-            EntityPlayerMP entityPlayerMP=(EntityPlayerMP)player.getMCEntity();
-            InventoryPlayer inventoryplayer = entityPlayerMP.inventory;
-            Iterator<ItemStack> iterator = inventoryplayer.mainInventory.iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().isEmpty())
+        return false;
+    }
+
+    public static boolean checkSpaceRequirement(EntityPlayerMP player, ItemStack itemStack){
+        Iterator<ItemStack> iterator = player.inventory.mainInventory.iterator();
+        ItemStack item=null;
+        int freeItemSpace=0;
+        while (iterator.hasNext()) {
+            item=iterator.next();
+            if (item.isEmpty())
+                return true;
+            else if(item.getTagCompound().getString("id").equals(itemStack.getTagCompound().getString("id"))&&item.getCount()<item.getMaxStackSize()){
+                freeItemSpace+=item.getMaxStackSize()-item.getCount();
+                if(freeItemSpace>=itemStack.getCount())
                     return true;
             }
         }

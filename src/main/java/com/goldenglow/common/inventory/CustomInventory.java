@@ -2,6 +2,7 @@ package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Requirement;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -101,7 +102,7 @@ public class CustomInventory extends ContainerChest {
                 }
             }
             playerMP.getNextWindowId();
-            playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getName()), data.getRows() * 9));
+            playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
             playerMP.openContainer = new CustomInventory(playerMP.inventory, chestInventory, playerMP);
             ((CustomInventory)playerMP.openContainer).setData(data);
             playerMP.openContainer.windowId = playerMP.currentWindowId;
