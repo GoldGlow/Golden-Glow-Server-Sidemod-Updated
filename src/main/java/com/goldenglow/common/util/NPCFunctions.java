@@ -5,14 +5,11 @@ import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.handlers.TickHandler;
-import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomInventoryData;
-import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.routes.RouteManager;
-import com.sk89q.worldedit.entity.Player;
+import com.goldenglow.common.tiles.ICustomScript;
 import moe.plushie.armourers_workshop.common.library.LibraryFile;
 import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
 import moe.plushie.armourers_workshop.common.skin.data.Skin;
@@ -21,7 +18,6 @@ import moe.plushie.armourers_workshop.common.skin.data.SkinIdentifier;
 import moe.plushie.armourers_workshop.utils.SkinIOUtils;
 import moe.plushie.armourers_workshop.utils.SkinNBTHelper;
 import net.minecraft.command.ICommandManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -29,23 +25,27 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.rcon.RConConsoleSource;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.HoverEvent;
 import noppes.npcs.Server;
-import noppes.npcs.api.NpcAPI;
+import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.api.wrapper.WorldWrapper;
 import noppes.npcs.blocks.tiles.TileScripted;
 import noppes.npcs.constants.EnumPacketClient;
+import noppes.npcs.controllers.IScriptHandler;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.QuestData;
 import noppes.npcs.entity.EntityNPCInterface;
+import org.lwjgl.Sys;
 
 import java.util.HashMap;
 
 public class NPCFunctions {
+
+    private static long lastDailyRefresh = 0;
 
 	public static void playSound(EntityPlayerMP player, String source, String path){
         SongManager.playSound(player, source, path);
@@ -213,5 +213,28 @@ public class NPCFunctions {
         }
         playerMP.getEntityData().removeTag("Route");
 	    playerMP.getEntityData().removeTag("Song");
+    }
+
+    public static int getCurrentDay(WorldWrapper world) {
+        return (int)(world.getTime() / 24000L % 2147483647L);
+    }
+
+    public static boolean newRLDay(WorldWrapper world) {
+        IData worldData = world.getStoreddata();
+        if(lastDailyRefresh==0) {
+            if(worldData.has("dailyRefresh")) {
+                lastDailyRefresh = (long)worldData.get("dailyRefresh");
+            }
+            else {
+                lastDailyRefresh = System.currentTimeMillis();
+                worldData.put("dailyRefresh", lastDailyRefresh);
+            }
+        }
+        if(System.currentTimeMillis() - lastDailyRefresh >= 86400000L) {
+            lastDailyRefresh = System.currentTimeMillis();
+            worldData.put("dailyRefresh", lastDailyRefresh);
+            return true;
+        }
+        return false;
     }
 }
