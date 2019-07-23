@@ -10,6 +10,7 @@ public class OOPlayerData implements IPlayerData {
     private String current_song = "";
     private String theme_wild,theme_trainer,theme_pvp = "";
     private int notification_scheme = 0;
+    private boolean hasRouteDebug=false;
     
     public Route getRoute() {
         return current_route;
@@ -78,5 +79,13 @@ public class OOPlayerData implements IPlayerData {
     
     public void setNotificationScheme(int id) {
         this.notification_scheme = id;
+    }
+
+    public boolean getHasRouteDebug(){
+        return this.hasRouteDebug;
+    }
+
+    public void setHasRouteDebug(boolean hasRouteDebug){
+        this.hasRouteDebug=hasRouteDebug;
     }
 }

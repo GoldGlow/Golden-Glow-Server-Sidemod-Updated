@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -90,12 +91,13 @@ public class Requirement {
             item=iterator.next();
             if (item.isEmpty())
                 return true;
-            else if(item.getTagCompound().getString("id").equals(itemStack.getTagCompound().getString("id"))&&item.getCount()<item.getMaxStackSize()){
+            else if(Item.getIdFromItem(item.getItem())==Item.getIdFromItem(itemStack.getItem())&&item.getCount()<item.getMaxStackSize()){
                 freeItemSpace+=item.getMaxStackSize()-item.getCount();
                 if(freeItemSpace>=itemStack.getCount())
                     return true;
             }
         }
+        GGLogger.info("failed the check");
         return false;
     }
 

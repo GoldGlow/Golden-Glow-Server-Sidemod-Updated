@@ -6,6 +6,7 @@ import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
@@ -274,6 +275,21 @@ public class GGEventHandler {
         if(event.tree instanceof TileEntityCustomBerryTree) {
             event.setCanceled(true);
             runOnPickEvent((TileEntityCustomBerryTree)event.tree, event);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPhoneItemRightClick(PlayerInteractEvent.RightClickItem event){
+        for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
+            int item=Item.getIdFromItem(Item.getByNameOrId(id));
+            if (Item.getIdFromItem(event.getItemStack().getItem()) ==item){
+                event.setCanceled(true);
+                for(CustomInventoryData inventoryData:GoldenGlow.customInventoryHandler.inventories){
+                    if(inventoryData.getName().equals("PokeHelper")){
+                        CustomInventory.openCustomInventory((EntityPlayerMP) event.getEntityPlayer(), inventoryData);
+                    }
+                }
+            }
         }
     }
 

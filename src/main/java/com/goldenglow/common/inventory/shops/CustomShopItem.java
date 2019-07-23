@@ -18,8 +18,7 @@ public class CustomShopItem extends CustomItem {
         Requirement amountRequirement=new Requirement(Requirement.RequirementType.MONEY, buyPrice);
         Action buyItem=new Action();
         if(boughtCommand.startsWith("giveitem")){
-            Requirement hasSpace=new Requirement(Requirement.RequirementType.HAS_SPACE, "");
-            buyItem.setRequirements(new Requirement[]{amountRequirement, hasSpace});
+            buyItem.setRequirements(new Requirement[]{amountRequirement});
             buyItem.actionType= Action.ActionType.GIVEITEM;
             buyItem.setValue(boughtCommand.replace("giveitem ",""));
         }
@@ -28,10 +27,7 @@ public class CustomShopItem extends CustomItem {
             buyItem.setValue(boughtCommand);
         }
         buyItem.closeInv=false;
-        Action notEnough=new Action();
-        notEnough.setValue("tellraw @dp [\"\",{\"text\":\"You can't buy this!\",\"color\":\"dark_red\"}]");
-        notEnough.closeInv=false;
-        this.setLeftClickActions(new Action[]{buyItem, notEnough});
+        this.setLeftClickActions(new Action[]{buyItem});
     }
 
     public void setRightClickActions(int sellPrice, String item){

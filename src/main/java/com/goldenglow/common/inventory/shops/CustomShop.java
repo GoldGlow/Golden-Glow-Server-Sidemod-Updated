@@ -9,6 +9,7 @@ import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
+import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -18,7 +19,10 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.item.IItemStack;
@@ -61,26 +65,44 @@ public class CustomShop extends CustomInventory {
             CustomShopItem item = CustomShop.getItem(data.getItems()[slotId], (EntityPlayerMP) player);
             if (item != null) {
                 if (dragType == 0) {
-                    for (Action action : item.getLeftClickActions()) {
-                        if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
-                            IPixelmonBankAccount bankAccount=(IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount((EntityPlayerMP) player).orElse(null);
-                            if(bankAccount!=null){
-                                bankAccount.changeMoney(-1*item.buyPrice);
+                        boolean didAction=false;
+                        for (Action action : item.getLeftClickActions()) {
+                            if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                                IPixelmonBankAccount bankAccount = (IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount((EntityPlayerMP) player).orElse(null);
+                                if (action.getValue().startsWith("pokegive")) {
+                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.getValue().split(" ")[2] + "!"));
+                                    bankAccount.changeMoney(-1 * item.buyPrice);
+                                    didAction=true;
+                                    bankAccount.changeMoney(-1 * item.buyPrice);
+                                    break;
+                                }
+                                else {
+                                    try {
+                                        if(Requirement.checkSpaceRequirement(((EntityPlayerMP)player), new ItemStack(JsonToNBT.getTagFromJson(action.value)))) {
+                                            GGLogger.info("Got in");
+                                            action.doAction((EntityPlayerMP) player);
+                                            didAction=true;
+                                            bankAccount.changeMoney(-1 * item.buyPrice);
+                                            break;
+                                        }
+                                    } catch (NBTException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
-                            action.doAction((EntityPlayerMP) player);
-                            if(action.getValue().startsWith("pokegive")){
-                                ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought "+action.getValue().split(" ")[2]+"!"));
-                            }
-                            if(data.getName().equals("Starter")){
-                                ((EntityPlayerMP) player).closeScreen();
-                                NpcAPI.Instance().executeCommand(new PlayerWrapper<>(((EntityPlayerMP) player)).getWorld(), "noppes dialog show "+((EntityPlayerMP) player).getName()+" 328");
-                            }
-                            else {
-                                openCustomShop(((EntityPlayerMP) player), data);
-                            }
-                            return null;
                         }
-                    }
+                        GGLogger.info(didAction);
+                        if(!didAction) {
+                            ICommandManager icommandmanager = ((EntityPlayerMP)player).getEntityWorld().getMinecraftServer().getCommandManager();
+                            icommandmanager.executeCommand(new RConConsoleSource(((EntityPlayerMP)player).getEntityWorld().getMinecraftServer()), "tellraw "+((EntityPlayerMP)player).getName()+" [\"\",{\"text\":\"You can't buy this!\",\"color\":\"dark_red\"}]");
+                        }
+                        if (data.getName().equals("Starter")) {
+                            ((EntityPlayerMP) player).closeScreen();
+                                NpcAPI.Instance().executeCommand(new PlayerWrapper<>(((EntityPlayerMP) player)).getWorld(), "noppes dialog show " + ((EntityPlayerMP) player).getName() + " 328");
+                        } else {
+                            openCustomShop(((EntityPlayerMP) player), data);
+                        }
+                        return null;
                 } else if (dragType == 1) {
                     for (Action action : item.getRightClickActions()) {
                         if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
@@ -119,6 +141,7 @@ public class CustomShop extends CustomInventory {
                 amount=bankAccount.getMoney();
             }
             balance.setStackDisplayName(Reference.resetText+"Current Balance: "+amount);
+            chestInventory.setInventorySlotContents(data.getRows()*9-1, balance);
             playerMP.getNextWindowId();
             playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
             playerMP.openContainer = new CustomShop(playerMP.inventory, chestInventory, playerMP);
