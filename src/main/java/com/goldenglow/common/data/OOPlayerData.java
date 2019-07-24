@@ -30,6 +30,14 @@ public class OOPlayerData implements IPlayerData {
         this.current_route = null;
     }
 
+    public boolean getHasRouteDebug(){
+        return this.hasRouteDebug;
+    }
+
+    public void setHasRouteDebug(boolean hasRouteDebug){
+        this.hasRouteDebug=hasRouteDebug;
+    }
+
     public Route getSafezone() {
         return this.safezone;
     }
@@ -81,11 +89,4 @@ public class OOPlayerData implements IPlayerData {
         this.notification_scheme = id;
     }
 
-    public boolean getHasRouteDebug(){
-        return this.hasRouteDebug;
-    }
-
-    public void setHasRouteDebug(boolean hasRouteDebug){
-        this.hasRouteDebug=hasRouteDebug;
-    }
 }

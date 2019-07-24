@@ -8,6 +8,8 @@ public interface IPlayerData {
     boolean hasRoute();
     void setRoute(String routeName);
     void clearRoute();
+    boolean getHasRouteDebug();
+    void setHasRouteDebug(boolean hasRouteDebug);
 
     Route getSafezone();
     void setSafezone(String safezoneName);

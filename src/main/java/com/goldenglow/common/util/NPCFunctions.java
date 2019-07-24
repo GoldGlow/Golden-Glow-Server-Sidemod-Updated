@@ -65,7 +65,7 @@ public class NPCFunctions {
         safeZone.warp((EntityPlayerMP)playerWrapper.getMCEntity());
         playerWrapper.message("You whited out!");
         ICommandManager icommandmanager = playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer().getCommandManager();
-        icommandmanager.executeCommand(new RConConsoleSource(playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer()), "/pokeheal "+playerWrapper.getName());
+        icommandmanager.executeCommand(new RConConsoleSource(playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer()), "pokeheal "+playerWrapper.getName());
     }
 
     public static void createNPCBattle(NPCWrapper firstNPC, String firstTeamName, NPCWrapper secondNPC, String secondTeamName){
@@ -184,25 +184,29 @@ public class NPCFunctions {
 	        if(actualRoute.canPlayerEnter(playerMP)) {
                 if (currentRoute != null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
                     currentRoute.removePlayer(playerMP);
+                    actualRoute.addPlayer(playerMP);
                 }
                 if(actualRoute.isSafeZone){
                     playerData.setSafezone(actualRoute.unlocalizedName);
                 }
-                actualRoute.addPlayer(playerMP);
+                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName.substring(0, 15));
             }
             else if(currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)){
 	            currentRoute.warp(playerMP);
+                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName.substring(0, 15));
             }
 	        else {
 	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
 	            TextComponentString msg = actualRoute.getRequirementMessage(playerMP);
 	            playerMP.sendMessage(msg);
+                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName.substring(0, 15));
             }
         }
 	    else {
 	        if(currentRoute!=null) {
                 currentRoute.removePlayer(playerMP);
                 playerData.clearRoute();
+                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName("null");
             }
         }
     }
