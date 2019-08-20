@@ -9,7 +9,6 @@ import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.tiles.ICustomScript;
 import moe.plushie.armourers_workshop.common.library.LibraryFile;
 import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
 import moe.plushie.armourers_workshop.common.skin.data.Skin;
@@ -25,7 +24,6 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.rcon.RConConsoleSource;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.Server;
 import noppes.npcs.api.entity.data.IData;
@@ -35,11 +33,9 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WorldWrapper;
 import noppes.npcs.blocks.tiles.TileScripted;
 import noppes.npcs.constants.EnumPacketClient;
-import noppes.npcs.controllers.IScriptHandler;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.QuestData;
 import noppes.npcs.entity.EntityNPCInterface;
-import org.lwjgl.Sys;
 
 import java.util.HashMap;
 

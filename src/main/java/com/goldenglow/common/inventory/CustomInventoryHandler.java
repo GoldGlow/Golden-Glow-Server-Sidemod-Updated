@@ -18,7 +18,6 @@ import moe.plushie.armourers_workshop.utils.SkinNBTHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
-import noppes.npcs.api.item.IItemStack;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

@@ -2,7 +2,6 @@ package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Requirement;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,15 +10,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import noppes.npcs.api.IContainer;
-import noppes.npcs.api.IContainerCustomChest;
-import noppes.npcs.api.NpcAPI;
-import noppes.npcs.api.item.IItemStack;
-import noppes.npcs.api.wrapper.ItemStackWrapper;
-import noppes.npcs.containers.ContainerCustomChest;
-
-import java.util.Iterator;
 
 /**
  * Created by JeanMarc on 6/18/2019.

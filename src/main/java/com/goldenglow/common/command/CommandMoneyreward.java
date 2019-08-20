@@ -1,16 +1,12 @@
 package com.goldenglow.common.command;
 
-import com.sk89q.minecraft.util.commands.Console;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 
 /**

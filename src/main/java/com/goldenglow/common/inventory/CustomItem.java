@@ -2,7 +2,6 @@ package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.util.Requirement;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**

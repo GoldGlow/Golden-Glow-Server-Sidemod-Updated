@@ -6,8 +6,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
-import noppes.npcs.Server;
-import noppes.npcs.constants.EnumPacketClient;
 
 /**
  * Created by JeanMarc on 6/15/2019.

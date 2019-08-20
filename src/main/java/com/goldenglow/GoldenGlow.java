@@ -2,19 +2,11 @@ package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
 import com.goldenglow.common.battles.raids.CommandRaidDebug;
-import com.goldenglow.common.battles.raids.RaidHandler;
+import com.goldenglow.common.battles.raids.RaidEventHandler;
 import com.goldenglow.common.command.*;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerStorage;
-import com.goldenglow.common.handlers.ConfigHandler;
-import com.goldenglow.common.handlers.GGEventHandler;
-import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
-import com.goldenglow.common.handlers.TickHandler;
-import com.goldenglow.common.command.CommandInstanceInv;
-import com.goldenglow.common.command.CommandPhone;
-import com.goldenglow.common.command.CommandRoutes;
-import com.goldenglow.common.command.CommandRouteNotificationOption;
 import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.inventory.CustomInventoryHandler;
 import com.goldenglow.common.inventory.shops.CustomShopHandler;
@@ -23,10 +15,10 @@ import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.tiles.TileEntityCustomAW;
+import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PhoneItemListHandler;
-import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.ICommandSender;
@@ -53,6 +45,7 @@ public class GoldenGlow {
     public static CommonProxy proxy;
 
     public GGEventHandler eventHandler = new GGEventHandler();
+    public RaidEventHandler raidEventHandler = new RaidEventHandler();
     public TickHandler tickHandler=new TickHandler();
 
     public static GGLogger logger = new GGLogger();
@@ -63,7 +56,6 @@ public class GoldenGlow {
     public static TeamManager teamManager = new TeamManager();
     public static RouteManager routeManager = new RouteManager();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
-    public static RaidHandler raidHandler = new RaidHandler();
     public static DataHandler dataHandler = new DataHandler();
     public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
     public static CustomShopHandler customShopHandler=new CustomShopHandler();
@@ -90,6 +82,7 @@ public class GoldenGlow {
         MinecraftForge.EVENT_BUS.register(proxy);
         MinecraftForge.EVENT_BUS.register(TickHandler.class);
         Pixelmon.EVENT_BUS.register(eventHandler);
+        Pixelmon.EVENT_BUS.register(raidEventHandler);
     }
 
     @Mod.EventHandler
@@ -129,7 +122,7 @@ public class GoldenGlow {
         if(Loader.isModLoaded("spongeforge"))
             Sponge.getEventManager().registerListeners(this, new GGEventHandler());
         GGLogger.info("Routes:");
-        for(Route route:routeManager.getRoutes()){
+        for(Route route:routeManager.getRoutes()) {
             GGLogger.info(route.unlocalizedName);
         }
     }

@@ -1,6 +1,5 @@
 package com.goldenglow.common.routes;
 
-import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.ParseJson;
 import com.goldenglow.common.util.Reference;
