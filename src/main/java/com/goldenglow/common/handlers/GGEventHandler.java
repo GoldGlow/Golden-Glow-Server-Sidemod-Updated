@@ -1,5 +1,6 @@
 package com.goldenglow.common.handlers;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
@@ -16,39 +17,28 @@ import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
-import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
-import com.pixelmonmod.pixelmon.api.events.BerryEvent;
-import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
+import com.pixelmonmod.pixelmon.api.events.*;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
-import com.pixelmonmod.pixelmon.blocks.apricornTrees.BlockApricornTree;
-import com.pixelmonmod.pixelmon.blocks.enums.EnumBlockPos;
-import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityApricornTree;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
-import com.pixelmonmod.pixelmon.config.PixelmonBlocksApricornTrees;
+import com.pixelmonmod.pixelmon.entities.pokeballs.EntityOccupiedPokeball;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import com.pixelmonmod.pixelmon.items.ItemApricorn;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -62,11 +52,14 @@ import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
+import noppes.npcs.util.NBTJsonUtil;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -213,10 +206,7 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onBattleEnd(BattleEndEvent event)
     {
-        if(event.bc.rules instanceof RaidBattleRules) {
-            GoldenGlow.raidHandler.endBattle(event.bc);
-        }
-        else if(event.bc.rules instanceof CustomNPCBattle) {
+        if(event.bc.rules instanceof CustomNPCBattle) {
             EntityPlayerMP mcPlayer = event.getPlayers().get(0);
             BattleResults results = event.results.get(event.bc.participants.get(0));
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);

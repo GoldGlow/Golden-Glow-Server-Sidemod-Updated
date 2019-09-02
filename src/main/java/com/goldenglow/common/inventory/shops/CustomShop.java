@@ -2,8 +2,6 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.Action;
 import com.goldenglow.common.inventory.CustomInventory;
-import com.goldenglow.common.inventory.CustomInventoryData;
-import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
@@ -26,7 +24,6 @@ import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.item.IItemStack;
-import noppes.npcs.api.wrapper.ItemStackWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 
 public class CustomShop extends CustomInventory {

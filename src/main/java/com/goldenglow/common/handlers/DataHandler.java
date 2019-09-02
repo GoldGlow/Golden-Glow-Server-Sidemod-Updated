@@ -7,8 +7,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;*/
 
-import java.io.IOException;
-
 public class DataHandler {
 
     public void sendData(String playerName, int dex, int badges, String time) {

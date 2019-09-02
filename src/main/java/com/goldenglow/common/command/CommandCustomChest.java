@@ -3,14 +3,11 @@ package com.goldenglow.common.command;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomInventoryData;
-import io.netty.buffer.Unpooled;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 
 /**

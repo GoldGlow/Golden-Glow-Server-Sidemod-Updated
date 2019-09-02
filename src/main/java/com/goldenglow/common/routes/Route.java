@@ -2,7 +2,6 @@ package com.goldenglow.common.routes;
 
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.Requirement;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayer;

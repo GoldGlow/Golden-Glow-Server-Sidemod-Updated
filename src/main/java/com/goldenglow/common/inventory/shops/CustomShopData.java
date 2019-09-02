@@ -3,7 +3,6 @@ package com.goldenglow.common.inventory.shops;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.util.Requirement;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItem;
 
 public class CustomShopData extends CustomInventoryData {
     CustomShopItem[][] shopItems;

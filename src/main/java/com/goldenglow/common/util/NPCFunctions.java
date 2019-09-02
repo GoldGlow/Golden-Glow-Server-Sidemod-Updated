@@ -26,7 +26,6 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.rcon.RConConsoleSource;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.Server;
 import noppes.npcs.api.entity.data.IData;
@@ -36,11 +35,9 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WorldWrapper;
 import noppes.npcs.blocks.tiles.TileScripted;
 import noppes.npcs.constants.EnumPacketClient;
-import noppes.npcs.controllers.IScriptHandler;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.QuestData;
 import noppes.npcs.entity.EntityNPCInterface;
-import org.lwjgl.Sys;
 
 import java.util.HashMap;
 

@@ -3,7 +3,10 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
