@@ -9,6 +9,7 @@ import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.routes.RouteDebugUtils;
 import com.goldenglow.common.tiles.ICustomScript;
 import moe.plushie.armourers_workshop.common.library.LibraryFile;
 import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
@@ -176,6 +177,10 @@ public class NPCFunctions {
         IPlayerData playerData = playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
 	    Route currentRoute = null;
 	    Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
+        String playerName=playerMP.getName();
+        if(playerName.length()>13){
+            playerName=playerName.substring(0,12);
+        }
 
 	    if(playerData.hasRoute())
 	        currentRoute = playerData.getRoute();
@@ -189,24 +194,27 @@ public class NPCFunctions {
                 if(actualRoute.isSafeZone){
                     playerData.setSafezone(actualRoute.unlocalizedName);
                 }
-                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName.substring(0, 15));
+                RouteDebugUtils.updateRouteDisplayName(playerMP);
             }
-            else if(currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)){
-	            currentRoute.warp(playerMP);
-                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName.substring(0, 15));
+            else if(currentRoute!=null){
+                if(currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
+                    currentRoute.warp(playerMP);
+                    RouteDebugUtils.updateRouteDisplayName(playerMP);
+                }
             }
 	        else {
 	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
 	            TextComponentString msg = actualRoute.getRequirementMessage(playerMP);
 	            playerMP.sendMessage(msg);
-                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName.substring(0, 15));
+	            RouteDebugUtils.updateRouteDisplayName(playerMP);
             }
         }
 	    else {
 	        if(currentRoute!=null) {
                 currentRoute.removePlayer(playerMP);
                 playerData.clearRoute();
-                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName("null");
+                if(playerData.getHasRouteDebug())
+                    RouteDebugUtils.updateRouteDisplayName(playerMP);
             }
         }
     }

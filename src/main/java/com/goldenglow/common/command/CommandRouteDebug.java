@@ -2,6 +2,7 @@ package com.goldenglow.common.command;
 
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.routes.RouteDebugUtils;
 import com.goldenglow.common.util.Reference;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -33,18 +34,14 @@ public class CommandRouteDebug extends CommandBase {
         }
         else{
             EntityPlayerMP playerMP=getPlayer(server, sender, sender.getName());
-            IPlayerData playerData=getPlayer(server, sender, sender.getName()).getCapability(OOPlayerProvider.OO_DATA, null);
+            IPlayerData playerData=playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
             if(args[0].equals("on")){
                 if(!playerData.getHasRouteDebug()) {
                     playerData.setHasRouteDebug(true);
-                    playerMP.getWorldScoreboard().addScoreObjective("RD_"+playerMP.getName(), IScoreCriteria.DUMMY);
-                    if(playerData.getRoute()==null){
-                        playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName("null");
-                    }
-                    else{
-                        playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName.substring(0, 15));
-                    }
-                    playerMP.connection.sendPacket(new SPacketDisplayObjective(1, playerMP.getWorldScoreboard().getObjective("RouteDebug"+playerMP.getName())));
+                    playerMP.getWorldScoreboard().addScoreObjective(RouteDebugUtils.getRouteScoreboardName(playerMP), IScoreCriteria.DUMMY);
+                    RouteDebugUtils.updateRouteDisplayName(playerMP);
+                    playerMP.getWorldScoreboard().getOrCreateScore(playerMP.getName(), playerMP.getWorldScoreboard().getObjective(RouteDebugUtils.getRouteScoreboardName(playerMP))).setScorePoints(1);
+                    playerMP.connection.sendPacket(new SPacketDisplayObjective(1, playerMP.getWorldScoreboard().getObjective(RouteDebugUtils.getRouteScoreboardName(playerMP))));
                 }
                 else {
                     playerMP.sendMessage(new TextComponentString(Reference.red+"You already have the route debug tool running!"));
@@ -53,7 +50,7 @@ public class CommandRouteDebug extends CommandBase {
                 if(playerData.getHasRouteDebug()) {
                     playerData.setHasRouteDebug(false);
                     playerMP.connection.sendPacket(new SPacketDisplayObjective(1, null));
-                    playerMP.getWorldScoreboard().removeObjective(playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()));
+                    playerMP.getWorldScoreboard().removeObjective(playerMP.getWorldScoreboard().getObjective(RouteDebugUtils.getRouteScoreboardName(playerMP)));
                 }
                 else {
                     playerMP.sendMessage(new TextComponentString(Reference.red+"You already have the route debug tool stopped!"));

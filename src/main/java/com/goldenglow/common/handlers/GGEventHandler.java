@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
+import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomInventoryData;
@@ -110,6 +111,10 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void playerLogoutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
+        IPlayerData playerData= event.player.getCapability(OOPlayerProvider.OO_DATA, null);
+        if(playerData.getHasRouteDebug()){
+            event.player.getWorldScoreboard().removeObjective(event.player.getWorldScoreboard().getObjective("RD_"+event.player.getName()));
+        }
         /*Instant loginTime = playerTimes.get(event.player.getUniqueID());
         playerTimes.remove(event.player.getUniqueID());
         Instant logoutTime = Instant.now();
