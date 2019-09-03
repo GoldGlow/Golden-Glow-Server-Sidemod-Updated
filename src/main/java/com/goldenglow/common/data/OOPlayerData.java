@@ -20,10 +20,8 @@ public class OOPlayerData implements IPlayerData {
         return this.current_route != null;
     }
 
-    public void setRoute(String routeName) {
-        if (GoldenGlow.routeManager.doesRouteExist(routeName)) {
-            this.current_route = GoldenGlow.routeManager.getRoute(routeName);
-        }
+    public void setRoute(Route route) {
+        this.current_route = route;
     }
 
     public void clearRoute() {
