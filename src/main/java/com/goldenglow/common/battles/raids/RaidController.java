@@ -9,11 +9,9 @@ import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
-import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.BonusStats;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +63,7 @@ public class RaidController {
         }
         if(!participants.isEmpty()) {
             BattleControllerBase bc = BattleRegistry.startBattle(participants.toArray(new PlayerParticipant[0]), new BattleParticipant[]{ this.raidBoss.getParticipant() }, new RaidBattleRules(this));
+            this.battleList.add(bc);
             return bc;
         }
         return null;

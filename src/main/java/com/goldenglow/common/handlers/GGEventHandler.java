@@ -1,6 +1,5 @@
 package com.goldenglow.common.handlers;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
@@ -8,6 +7,8 @@ import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.seals.EntitySealEffect;
+import com.goldenglow.common.seals.ParticleFrame;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
@@ -15,34 +16,40 @@ import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.*;
+import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
+import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.api.events.BerryEvent;
+import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
-import com.pixelmonmod.pixelmon.entities.pokeballs.EntityOccupiedPokeball;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.NpcAPI;
@@ -50,18 +57,12 @@ import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
-import noppes.npcs.util.NBTJsonUtil;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.effect.particle.ParticleEffect;
-import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class GGEventHandler {
 
@@ -83,6 +84,7 @@ public class GGEventHandler {
         }
     }
 
+    //ToDo: Change login Event considering we now use a different way for storing this info.
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         if(!event.player.getEntityData().hasKey("RouteNotification"))
@@ -269,6 +271,7 @@ public class GGEventHandler {
         }
     }
 
+    //ToDo: Possibly update this code for efficiency/to use more appropriate Forge methods.
     @SubscribeEvent
     public void onPhoneItemRightClick(PlayerInteractEvent.RightClickItem event){
         for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
@@ -311,5 +314,34 @@ public class GGEventHandler {
         if(!(event.getObject() instanceof EntityPlayer)) return;
 
         event.addCapability(new ResourceLocation("obscureobsidian", "playerdata"), new OOPlayerProvider());
+    }
+
+    @SubscribeEvent
+    public void registerEntities(RegistryEvent.Register<EntityEntry> event) {
+        EntityEntry entry = EntityEntryBuilder.create()
+                .entity(EntitySealEffect.class)
+                .id(new ResourceLocation("obscureobsidian", "sealEffect"), 0)
+                .tracker(10, 20, false)
+                .name("sealEffect")
+                .build();
+        event.getRegistry().register(entry);
+    }
+
+    @SubscribeEvent
+    public void entityJoinWorld(EntityJoinWorldEvent event) {
+        if(event.getEntity() instanceof EntityPixelmon) {
+            Pokemon p = ((EntityPixelmon)event.getEntity()).getPokemonData();
+            if(p.getOwnerPlayer()!=null && p.getPersistentData().hasKey("ballSeal")) {
+                EntitySealEffect effect = new EntitySealEffect(event.getWorld());
+                ArrayList<ParticleFrame> list = new ArrayList<>();
+                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,2,0, 0,0,0));
+                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,3,0, 0,0,0));
+                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,4,0, 0,0,0));
+                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,5,0, 0,0,0));
+                effect.frames.put(0, list);
+                effect.setPositionAndRotation(event.getEntity().posX,event.getEntity().posY,event.getEntity().posZ, event.getEntity().rotationYaw,event.getEntity().rotationPitch);
+                event.getWorld().spawnEntity(effect);
+            }
+        }
     }
 }
