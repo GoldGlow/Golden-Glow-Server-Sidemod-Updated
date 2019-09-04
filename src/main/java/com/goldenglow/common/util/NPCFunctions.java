@@ -26,6 +26,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.rcon.RConConsoleSource;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.Server;
 import noppes.npcs.api.entity.data.IData;
@@ -183,36 +184,35 @@ public class NPCFunctions {
 	        currentRoute = playerData.getRoute();
 
 	    if(actualRoute!=null) {
-	        if(actualRoute.canPlayerEnter(playerMP)) {
-                if (currentRoute != null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
-                    currentRoute.removePlayer(playerMP);
-                    actualRoute.addPlayer(playerMP);
+	        //If entering Different Route
+	        if(currentRoute==null || !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
+
+	            //Check if player is restricted from entering
+                if (!actualRoute.canPlayerEnter(playerMP)) {
+                    playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
+                    playerMP.sendMessage(actualRoute.getRequirementMessage(playerMP));
                 }
-                if(actualRoute.isSafeZone){
-                    playerData.setSafezone(actualRoute.unlocalizedName);
+                //If player is allowed to enter
+                else {
+                    //Clear old route if it exists
+                    if (currentRoute != null)
+                        currentRoute.removePlayer(playerMP);
+
+                    actualRoute.addPlayer(playerMP); //Add player to new route
+
+                    //If route has a safeZone, set player's last safeZone to this Route's safeZone
+                    if (actualRoute.isSafeZone)
+                        playerData.setSafezone(actualRoute.unlocalizedName);
+
+                    playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName == null ? "Null" : playerData.getRoute().unlocalizedName);
                 }
-                RouteDebugUtils.updateRouteDisplayName(playerMP);
-            }
-            else if(currentRoute!=null){
-                if(currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
-                    currentRoute.warp(playerMP);
-                    RouteDebugUtils.updateRouteDisplayName(playerMP);
-                }
-            }
-	        else {
-	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
-	            TextComponentString msg = actualRoute.getRequirementMessage(playerMP);
-	            playerMP.sendMessage(msg);
-	            RouteDebugUtils.updateRouteDisplayName(playerMP);
             }
         }
 	    else {
-	        if(currentRoute!=null) {
-                currentRoute.removePlayer(playerMP);
-                playerData.clearRoute();
-                if(playerData.getHasRouteDebug())
-                    RouteDebugUtils.updateRouteDisplayName(playerMP);
-            }
+	        /* Ensure players are always in a route. (Stop players leaving the map)
+            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
+            playerMP.sendMessage(new TextComponentString("You can't go this way!").setStyle(new Style().setBold(true)));
+	         */
         }
     }
 

@@ -10,6 +10,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
 import noppes.npcs.Server;
+import noppes.npcs.api.entity.IPlayer;
+import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.QuestController;
@@ -51,13 +53,13 @@ public class Route {
     }
 
     public void addPlayer(EntityPlayerMP playerMP) {
-        if(!this.players.contains(playerMP)) {
-            playerMP.getCapability(OOPlayerProvider.OO_DATA, null).setRoute(this.unlocalizedName);
+        if (!this.players.contains(playerMP)) {
             this.players.add(playerMP);
-            SongManager.setCurrentSong(playerMP, this.song);
-            if(this.displayName!=null && !this.displayName.isEmpty())
-                Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
         }
+        playerMP.getCapability(OOPlayerProvider.OO_DATA, null).setRoute(this);
+        SongManager.setCurrentSong(playerMP, this.song);
+        if (this.displayName != null && !this.displayName.isEmpty())
+            Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
     }
 
     public void removePlayer(EntityPlayerMP playerMP) {
@@ -69,7 +71,7 @@ public class Route {
     }
 
     public boolean canPlayerEnter(EntityPlayerMP playerMP) {
-        return Requirement.checkRequirements(this.requirements, playerMP);
+        return Requirement.checkRequirements(this.requirements, playerMP) || ((IPlayer)new PlayerWrapper(playerMP)).hasPermission("*");
     }
 
     public TextComponentString getRequirementMessage(EntityPlayerMP player) {

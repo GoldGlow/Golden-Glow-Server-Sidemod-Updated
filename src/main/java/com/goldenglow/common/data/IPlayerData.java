@@ -6,7 +6,7 @@ public interface IPlayerData {
 
     Route getRoute();
     boolean hasRoute();
-    void setRoute(String routeName);
+    void setRoute(Route routeName);
     void clearRoute();
     boolean getHasRouteDebug();
     void setHasRouteDebug(boolean hasRouteDebug);
