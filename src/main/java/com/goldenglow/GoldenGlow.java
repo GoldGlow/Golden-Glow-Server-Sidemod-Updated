@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import noppes.npcs.CustomNpcs;
 import org.spongepowered.api.Sponge;
 
-@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldeditd", acceptableRemoteVersions = "*")
+@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
 public class GoldenGlow {
 
     public String VERSION = "1.0.1";

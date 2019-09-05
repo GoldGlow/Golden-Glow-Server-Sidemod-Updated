@@ -203,12 +203,14 @@ public class NPCFunctions {
                     //If route has a safeZone, set player's last safeZone to this Route's safeZone
                     if (actualRoute.isSafeZone)
                         playerData.setSafezone(actualRoute.unlocalizedName);
-
-                    playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName == null ? "Null" : playerData.getRoute().unlocalizedName);
+                    if(playerData.getHasRouteDebug())
+                        playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName == null ? "Null" : playerData.getRoute().unlocalizedName);
                 }
             }
         }
 	    else {
+            if(playerData.getHasRouteDebug())
+                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName("null");
 	        /* Ensure players are always in a route. (Stop players leaving the map)
             playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
             playerMP.sendMessage(new TextComponentString("You can't go this way!").setStyle(new Style().setBold(true)));
