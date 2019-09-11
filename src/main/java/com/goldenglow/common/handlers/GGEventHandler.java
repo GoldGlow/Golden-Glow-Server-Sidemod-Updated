@@ -14,6 +14,7 @@ import com.goldenglow.common.seals.ParticleFrame;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
@@ -280,15 +281,10 @@ public class GGEventHandler {
     //ToDo: Possibly update this code for efficiency/to use more appropriate Forge methods.
     @SubscribeEvent
     public void onPhoneItemRightClick(PlayerInteractEvent.RightClickItem event){
-        for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
-            int item=Item.getIdFromItem(Item.getByNameOrId(id));
-            if (Item.getIdFromItem(event.getItemStack().getItem()) ==item){
+        if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")) {
+            if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
                 event.setCanceled(true);
-                for(CustomInventoryData inventoryData:GoldenGlow.customInventoryHandler.inventories){
-                    if(inventoryData.getName().equals("PokeHelper")){
-                        CustomInventory.openCustomInventory((EntityPlayerMP) event.getEntityPlayer(), inventoryData);
-                    }
-                }
+                CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
             }
         }
     }

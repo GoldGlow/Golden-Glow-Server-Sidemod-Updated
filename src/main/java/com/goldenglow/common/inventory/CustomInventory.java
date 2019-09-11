@@ -1,6 +1,6 @@
 package com.goldenglow.common.inventory;
 
-import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.Requirement;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -20,6 +20,15 @@ public class CustomInventory extends ContainerChest {
 
     public CustomInventory(IInventory playerInv, IInventory chestInv, EntityPlayerMP playerMP){
         super(playerInv, chestInv, playerMP);
+    }
+
+    public static void openInventory(String inventoryName, EntityPlayerMP player){
+        for(CustomInventoryData inventoryData: GoldenGlow.customInventoryHandler.inventories){
+            if(inventoryData.getName().equals(inventoryName)){
+                CustomInventory.openCustomInventory(player, inventoryData);
+                return;
+            }
+        }
     }
 
     public boolean canInteractWith(EntityPlayerMP player){
@@ -42,7 +51,6 @@ public class CustomInventory extends ContainerChest {
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
         InventoryPlayer inventoryplayer = player.inventory;
-        GGLogger.info("Clicked "+slotId);
         Slot slot = getSlot(slotId);
 
         if(slot.isSameInventory(getSlot(0))) {
@@ -81,12 +89,10 @@ public class CustomInventory extends ContainerChest {
         if(Requirement.checkRequirements(data.requirements, playerMP)) {
             for(int i=0;i<data.getRows()*9;i++){
                 if(i<data.getItems().length){
-                    GGLogger.info("Loaded item in slot "+i);
                     CustomItem item= CustomInventory.getItem(data.getItems()[i], playerMP);
                     if(item!=null){
                         if(item.getItem()!=null) {
                             chestInventory.setInventorySlotContents(i, item.getItem());
-                            GGLogger.info(Item.getIdFromItem(item.getItem().getItem()));
                         }
                     }
                 }

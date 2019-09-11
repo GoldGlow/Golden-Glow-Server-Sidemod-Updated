@@ -28,12 +28,7 @@ public class CommandCustomChest extends CommandBase{
         }
         else{
             EntityPlayerMP player = getPlayer(server, sender, args[0]);
-            for(CustomInventoryData inventoryData:GoldenGlow.customInventoryHandler.inventories) {
-                if (inventoryData.getName().equals(args[1])) {
-                    CustomInventory.openCustomInventory(player, inventoryData);
-                    return;
-                }
-            }
+            CustomInventory.openInventory(args[1], player);
         }
     }
 }

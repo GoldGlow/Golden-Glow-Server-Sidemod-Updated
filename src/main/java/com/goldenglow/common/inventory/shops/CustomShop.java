@@ -2,7 +2,6 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.Action;
 import com.goldenglow.common.inventory.CustomInventory;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -55,7 +54,6 @@ public class CustomShop extends CustomInventory {
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
         InventoryPlayer inventoryplayer = player.inventory;
-        GGLogger.info("Clicked "+slotId);
         Slot slot = getSlot(slotId);
 
         if(slot.isSameInventory(getSlot(0))) {
@@ -76,7 +74,6 @@ public class CustomShop extends CustomInventory {
                                 else {
                                     try {
                                         if(Requirement.checkSpaceRequirement(((EntityPlayerMP)player), new ItemStack(JsonToNBT.getTagFromJson(action.value)))) {
-                                            GGLogger.info("Got in");
                                             action.doAction((EntityPlayerMP) player);
                                             didAction=true;
                                             bankAccount.changeMoney(-1 * item.buyPrice);
@@ -88,15 +85,10 @@ public class CustomShop extends CustomInventory {
                                 }
                             }
                         }
-                        GGLogger.info(didAction);
                         if(!didAction) {
                             ICommandManager icommandmanager = ((EntityPlayerMP)player).getEntityWorld().getMinecraftServer().getCommandManager();
                             icommandmanager.executeCommand(new RConConsoleSource(((EntityPlayerMP)player).getEntityWorld().getMinecraftServer()), "tellraw "+((EntityPlayerMP)player).getName()+" [\"\",{\"text\":\"You can't buy this!\",\"color\":\"dark_red\"}]");
-                        }
-                        if (data.getName().equals("Starter")) {
-                            ((EntityPlayerMP) player).closeScreen();
-                                NpcAPI.Instance().executeCommand(new PlayerWrapper<>(((EntityPlayerMP) player)).getWorld(), "noppes dialog show " + ((EntityPlayerMP) player).getName() + " 328");
-                        } else {
+                        }else {
                             openCustomShop(((EntityPlayerMP) player), data);
                         }
                         return null;
@@ -121,12 +113,10 @@ public class CustomShop extends CustomInventory {
         if(Requirement.checkRequirements(data.getRequirements(), playerMP)) {
             for(int i=0;i<data.getRows()*9-1;i++){
                 if(i<data.getItems().length){
-                    GGLogger.info("Loaded item in slot "+i);
                     CustomShopItem item= CustomShop.getItem(data.getItems()[i], playerMP);
                     if(item!=null){
                         if(item.getItem()!=null) {
                             chestInventory.setInventorySlotContents(i, item.getItem());
-                            GGLogger.info(Item.getIdFromItem(item.getItem().getItem()));
                         }
                     }
                 }
