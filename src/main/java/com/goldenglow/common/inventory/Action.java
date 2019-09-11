@@ -65,10 +65,23 @@ public class Action {
                 e.printStackTrace();
             }
         }
+        else if(this.actionType==ActionType.CHANGESKIN){
+            String[] words=this.value.split(" ");
+            String name="";
+            player.getHeldItemMainhand().setItemDamage(Integer.parseInt(words[0]));
+            for(int i=1;i<words.length;i++){
+                if(i>1){
+                    name+=" ";
+                }
+                name+=words[i];
+            }
+            player.getHeldItemMainhand().setStackDisplayName(name);
+        }
     }
 
     public enum ActionType{
         COMMAND,
-        GIVEITEM
+        GIVEITEM,
+        CHANGESKIN
     }
 }

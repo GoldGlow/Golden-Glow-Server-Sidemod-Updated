@@ -18,7 +18,6 @@ import com.goldenglow.common.tiles.TileEntityCustomAW;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.PhoneItemListHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.ICommandSender;
@@ -33,7 +32,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import noppes.npcs.CustomNpcs;
 import org.spongepowered.api.Sponge;
 
-@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit", acceptableRemoteVersions = "*")
+@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop", acceptableRemoteVersions = "*")
 public class GoldenGlow {
 
     public String VERSION = "1.0.1";
@@ -51,7 +50,6 @@ public class GoldenGlow {
     public static GGLogger logger = new GGLogger();
     public static SongManager songManager = new SongManager();
     public static ConfigHandler configHandler = new ConfigHandler();
-    public static PhoneItemListHandler phoneItemListHandler=new PhoneItemListHandler();
 
     public static TeamManager teamManager = new TeamManager();
     public static RouteManager routeManager = new RouteManager();
@@ -120,13 +118,13 @@ public class GoldenGlow {
         routeManager.init();
         customInventoryHandler.init();
         customShopHandler.init();
-        phoneItemListHandler.init();
         if(Loader.isModLoaded("spongeforge"))
             Sponge.getEventManager().registerListeners(this, new GGEventHandler());
-        GGLogger.info("Routes:");
+        String routes="Routes: ";
         for(Route route:routeManager.getRoutes()) {
-            GGLogger.info(route.unlocalizedName);
+            routes+=route.unlocalizedName+" ";
         }
+        GGLogger.info(routes);
     }
 
     @Mod.EventHandler

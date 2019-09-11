@@ -24,7 +24,7 @@ public class ParseJson {
     public static Action parseAction(JsonObject o){
         Action a = new Action();
         a.actionType = Action.ActionType.valueOf(o.getAsJsonObject().get("actionType").getAsString());
-        if (a.actionType == Action.ActionType.COMMAND) {
+        if (a.actionType == Action.ActionType.COMMAND || a.actionType==Action.ActionType.CHANGESKIN) {
             a.value = o.get("value").getAsString();
         }
         if(o.has("requirements")){

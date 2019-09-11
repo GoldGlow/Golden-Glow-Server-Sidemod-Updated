@@ -125,14 +125,11 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void itemDroppedEvent(ItemTossEvent event){
-        for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
-            int item=Item.getIdFromItem(Item.getByNameOrId(id));
-            if (Item.getIdFromItem(event.getEntityItem().getItem().getItem()) ==item){
-                ItemStack itemStack = event.getEntityItem().getItem();
-                event.setCanceled(true);
-                event.getPlayer().inventory.addItemStackToInventory(itemStack);
-                event.getPlayer().sendMessage(new TextComponentString(Reference.red+"Cannot drop this item!"));
-            }
+        if ((event.getEntityItem().getItem().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")){
+            ItemStack itemStack = event.getEntityItem().getItem();
+            event.setCanceled(true);
+            event.getPlayer().inventory.addItemStackToInventory(itemStack);
+            event.getPlayer().sendMessage(new TextComponentString(Reference.red+"Cannot drop this item!"));
         }
     }
 
@@ -142,10 +139,8 @@ public class GGEventHandler {
             event.setCancelled(true);
         }
         else if(event.getTargetInventory().getArchetype()!= InventoryArchetypes.PLAYER){
-            for(String id: GoldenGlow.phoneItemListHandler.itemIDs) {
-                if(event.getTransactions().get(0).getFinal().getType().getName().equals(id)){
-                    event.setCancelled(true);
-                }
+            if (event.getTransactions().get(0).getFinal().getType().getName().equals("variedcommodities:diamond_dagger")) {
+                event.setCancelled(true);
             }
         }
     }

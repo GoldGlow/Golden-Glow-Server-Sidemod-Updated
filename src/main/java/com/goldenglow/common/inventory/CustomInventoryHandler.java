@@ -46,16 +46,19 @@ public class CustomInventoryHandler {
 
     public void loadInventories(){
         GGLogger.info("Loading Inventories...");
+        String inventories="";
         try {
             for (File f : Objects.requireNonNull(dir.listFiles())) {
                 if (f.getName().endsWith(".json")) {
                     loadInventory(f.getName().replace(".json", ""));
+                    inventories+=f.getName().replace(".json", "")+" ";
                 }
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+        GGLogger.info("Loaded Inventories: "+inventories);
     }
 
     public void loadInventory(String inventoryName) throws IOException{
@@ -80,13 +83,10 @@ public class CustomInventoryHandler {
                         CommonSkinCache.INSTANCE.addEquipmentDataToCache(skin, file);
                         SkinIdentifier identifier = new SkinIdentifier(0, file, 0, skin.getSkinType());
                         itemStack = SkinNBTHelper.makeEquipmentSkinStack(new SkinDescriptor(identifier));
-                        GGLogger.info("Loaded AW item: "+awItem);
                     }
                     else {
                         try {
-                            GGLogger.info(item.getAsJsonObject("item").toString());
                             itemStack = new ItemStack(JsonToNBT.getTagFromJson(item.getAsJsonObject("item").toString()));
-                            GGLogger.info(itemStack.toString());
                         } catch (NBTException e) {
                             e.printStackTrace();
                         }

@@ -36,17 +36,20 @@ public class CustomShopHandler {
     }
 
     public void loadShops(){
-        GGLogger.info("Loading Inventories...");
+        GGLogger.info("Loading Shops...");
+        String shops="";
         try {
             for (File f : Objects.requireNonNull(dir.listFiles())) {
                 if (f.getName().endsWith(".json")) {
                     loadShop(f.getName().replace(".json", ""));
+                    shops+=f.getName().replace(".json", "")+" ";
                 }
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+        GGLogger.info("Loaded Shops: "+shops);
     }
 
     public void loadShop(String inventoryName) throws IOException{
@@ -146,9 +149,7 @@ public class CustomShopHandler {
                             jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.darkRed+"Right-Click: sell for "+sell);
                         }
                         try {
-                            GGLogger.info(item.getAsJsonObject("item").toString());
                             itemStack = new ItemStack(JsonToNBT.getTagFromJson(item.getAsJsonObject("item").toString()));
-                            GGLogger.info(itemStack.toString());
                         } catch (NBTException e) {
                             e.printStackTrace();
                         }
