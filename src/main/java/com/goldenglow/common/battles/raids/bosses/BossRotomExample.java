@@ -10,6 +10,10 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.items.heldItems.ItemLeftovers;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.text.TextComponentTranslation;
+import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.controllers.DialogController;
+import noppes.npcs.controllers.data.Dialog;
+import noppes.npcs.entity.EntityCustomNpc;
 
 import java.util.Random;
 

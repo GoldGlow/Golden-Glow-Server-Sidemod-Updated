@@ -34,5 +34,6 @@ public class CommandRaidDebug extends CommandBase {
         } else {
             sender.sendMessage(new TextComponentString("[ERROR] Something went wrong making the raid... Awkward..."));
         }
+
     }
 }
