@@ -3,18 +3,22 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.util.NPCFunctions;
 import com.sk89q.worldedit.BlockVector2D;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.entity.IEntity;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.data.Dialog;
+import noppes.npcs.controllers.data.PlayerData;
+import noppes.npcs.controllers.data.PlayerScriptData;
 import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.HashMap;
@@ -27,6 +31,9 @@ public class TickHandler {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.player.ticksExisted % 10 == 0) {
+            NPCFunctions.checkRoute((EntityPlayerMP)event.player, (int)event.player.lastTickPosX, (int)event.player.lastTickPosY, (int)event.player.lastTickPosZ);
+        }
         if(!battleNPCs.isEmpty()) {
             for(NPCWrapper npc : battleNPCs.keySet()) {
                 if(npc!=null) {

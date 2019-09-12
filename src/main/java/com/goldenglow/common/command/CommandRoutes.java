@@ -2,6 +2,7 @@ package com.goldenglow.common.command;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.util.Requirement;
 import com.goldenglow.common.util.RequirementTypeArgument;
 import com.mojang.brigadier.CommandDispatcher;
@@ -267,12 +268,16 @@ public class CommandRoutes extends OOCommand {
                                         )
                                         .executes(c -> {
                                             Route r = GoldenGlow.routeManager.getRoute((EntityPlayerMP) c.getSource().getCommandSenderEntity());
-                                            List<TextComponentString> buttons = new ArrayList<>();
-                                            buttons.add(cuiButton("Display Name", TextFormatting.RED, r.displayName, ClickEvent.Action.SUGGEST_COMMAND, "/routes edit " + r.unlocalizedName + " display "));
-                                            buttons.add(cuiButton("Song", TextFormatting.GREEN, '"' + r.song + '"', ClickEvent.Action.SUGGEST_COMMAND, "/routes edit " + r.unlocalizedName + " song "));
-                                            buttons.add(cuiButton("Priority", TextFormatting.BLUE, String.valueOf(r.priority), ClickEvent.Action.SUGGEST_COMMAND, "/routes edit " + r.unlocalizedName + " priority "));
-                                            buttons.add(cuiButton("Requirements", TextFormatting.LIGHT_PURPLE, r.getRequirementHoverText(), ClickEvent.Action.RUN_COMMAND, "/routes edit " + r.unlocalizedName + " requirements"));
-                                            sendCuiMsg(c.getSource(), buttons);
+                                            if(r==null) {
+                                                c.getSource().sendMessage(new TextComponentString("You're not in a route!"));
+                                            } else {
+                                                List<TextComponentString> buttons = new ArrayList<>();
+                                                buttons.add(cuiButton("Display Name", TextFormatting.RED, r.displayName, ClickEvent.Action.SUGGEST_COMMAND, "/routes edit " + r.unlocalizedName + " display "));
+                                                buttons.add(cuiButton("Song", TextFormatting.GREEN, '"' + r.song + '"', ClickEvent.Action.SUGGEST_COMMAND, "/routes edit " + r.unlocalizedName + " song "));
+                                                buttons.add(cuiButton("Priority", TextFormatting.BLUE, String.valueOf(r.priority), ClickEvent.Action.SUGGEST_COMMAND, "/routes edit " + r.unlocalizedName + " priority "));
+                                                buttons.add(cuiButton("Requirements", TextFormatting.LIGHT_PURPLE, r.getRequirementHoverText(), ClickEvent.Action.RUN_COMMAND, "/routes edit " + r.unlocalizedName + " requirements"));
+                                                sendCuiMsg(c.getSource(), buttons);
+                                            }
                                             return 1;
                                         })
                         )

@@ -71,7 +71,7 @@ public class Route {
     }
 
     public boolean canPlayerEnter(EntityPlayerMP playerMP) {
-        return Requirement.checkRequirements(this.requirements, playerMP) || ((IPlayer)new PlayerWrapper(playerMP)).hasPermission("*");
+        return Requirement.checkRequirements(this.requirements, playerMP);
     }
 
     public TextComponentString getRequirementMessage(EntityPlayerMP player) {

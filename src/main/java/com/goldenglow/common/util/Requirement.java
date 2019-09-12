@@ -9,6 +9,8 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,11 +40,14 @@ public class Requirement {
         this.value=value;
     }
 
-    public static boolean checkRequirement(Requirement requirement, EntityPlayerMP playerEntity){
-        PlayerWrapper player = new PlayerWrapper(playerEntity);
-        if(((IPlayer)player).hasPermission(requirement.override)){
+    public static boolean checkRequirement(Requirement requirement, EntityPlayerMP playerEntity) {
+        Player p = Sponge.getServer().getPlayer(playerEntity.getUniqueID()).get();
+        if(p.hasPermission(requirement.override)){
             return true;
         }
+
+        PlayerWrapper player = new PlayerWrapper(playerEntity);
+
         if(requirement.type == RequirementType.QUEST_STARTED) {
             return ((IPlayer)player).hasActiveQuest(requirement.id);
         }

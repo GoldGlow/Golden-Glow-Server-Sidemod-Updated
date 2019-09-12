@@ -48,6 +48,7 @@ public class RouteManager {
 
     public void loadRoutes() {
         GGLogger.info("Loading Routes...");
+        this.routes.clear();
         try {
             for (File f : Objects.requireNonNull(dir.listFiles())) {
                 if (f.getName().endsWith(".json")) {
