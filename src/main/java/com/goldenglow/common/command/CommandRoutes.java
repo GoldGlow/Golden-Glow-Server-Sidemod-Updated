@@ -23,6 +23,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.Dimension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,7 @@ public class CommandRoutes extends OOCommand {
                                                                 Region region = session.getRegionSelector(session.getSelectionWorld()).getRegion();
                                                                 if (region != null && region instanceof Polygonal2DRegion) {
                                                                     Polygonal2DRegion selection = (Polygonal2DRegion) region;
-                                                                    Route route = new Route(c.getArgument("routeName", String.class), selection);
+                                                                    Route route = new Route(c.getArgument("routeName", String.class), selection, Sponge.getServer().getPlayer(c.getSource().getName()).get().getWorld());
                                                                     GoldenGlow.routeManager.addRoute(route);
                                                                     TextComponentString msg = new TextComponentString("New Route '" + route.unlocalizedName + "' created successfully!");
                                                                     msg.getStyle().setColor(TextFormatting.AQUA);

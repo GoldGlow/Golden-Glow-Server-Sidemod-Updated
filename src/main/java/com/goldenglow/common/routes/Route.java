@@ -15,6 +15,7 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.QuestController;
+import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +31,24 @@ public class Route {
     public int warpX=0;
     public int warpY=100;
     public int warpZ=0;
+    public World world;
 
     List<EntityPlayerMP> players = new ArrayList<>();
 
-    public Route(String name, Polygonal2DRegion region) {
-        this(name, "", region, 0);
+    public Route(String name, Polygonal2DRegion region, World world) {
+        this(name, "", region, 0, world);
     }
 
-    public Route(String name, String songName, Polygonal2DRegion region) {
-        this(name, songName, region, 0);
+    public Route(String name, String songName, Polygonal2DRegion region, World world) {
+        this(name, songName, region, 0, world);
     }
 
-    public Route(String name, String song, Polygonal2DRegion region, int priority) {
+    public Route(String name, String song, Polygonal2DRegion region, int priority, World world) {
         this.unlocalizedName = name;
         this.song = song;
         this.region = region;
         this.priority = priority;
+        this.world = world;
     }
 
     public void warp(EntityPlayer player){

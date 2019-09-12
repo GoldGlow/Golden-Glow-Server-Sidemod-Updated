@@ -17,12 +17,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.DimensionManager;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.world.World;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class RouteManager {
 
@@ -85,8 +88,14 @@ public class RouteManager {
             BlockVector2D vec = new BlockVector2D(posX, posZ);
             points.add(vec);
         }
+        World world;
+        if(json.has("world")) {
+            world = Sponge.getServer().getWorld(UUID.fromString(json.get("world").getAsString())).get();
+        } else {
+            world = Sponge.getServer().getWorld("world").get();
+        }
 
-        Route route = new Route(name, song, new Polygonal2DRegion(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(0)), points, minY, maxY), priority);
+        Route route = new Route(name, song, new Polygonal2DRegion(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(0)), points, minY, maxY), priority, world);
 
         if(!dName.isEmpty())
             route.displayName = dName;
@@ -170,6 +179,8 @@ public class RouteManager {
             file.endObject();
         }
         file.endArray();
+
+        file.name("world").value(route.world.getUniqueId().toString());
 
         file.name("safeZone").value(route.isSafeZone);
         file.name("warpX").value(route.warpX);

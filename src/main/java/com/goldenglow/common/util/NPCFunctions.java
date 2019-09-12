@@ -175,10 +175,6 @@ public class NPCFunctions {
         IPlayerData playerData = playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
 	    Route currentRoute = null;
 	    Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
-        String playerName=playerMP.getName();
-        if(playerName.length()>13){
-            playerName=playerName.substring(0,12);
-        }
 
 	    if(playerData.hasRoute())
 	        currentRoute = playerData.getRoute();
