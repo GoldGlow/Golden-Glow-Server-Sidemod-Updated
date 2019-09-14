@@ -13,6 +13,7 @@ import com.goldenglow.common.inventory.shops.CustomShopHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
+import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.tiles.TileEntityCustomAW;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
@@ -73,6 +74,8 @@ public class GoldenGlow {
         GameRegistry.registerTileEntity(TileEntityCustomAW.class, new ResourceLocation("obscureobsidian", "custom_aw"));
 
         CapabilityManager.INSTANCE.register(IPlayerData.class, new OOPlayerStorage(), OOPlayerData::new);
+
+        SealManager.init();
     }
 
     @Mod.EventHandler
