@@ -2,7 +2,6 @@ package com.goldenglow.common.command;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.util.Requirement;
 import com.goldenglow.common.util.RequirementTypeArgument;
 import com.mojang.brigadier.CommandDispatcher;
@@ -24,8 +23,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.world.Dimension;
 
 import java.util.ArrayList;
 import java.util.List;

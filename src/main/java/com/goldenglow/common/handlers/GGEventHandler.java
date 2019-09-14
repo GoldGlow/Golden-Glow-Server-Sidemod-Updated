@@ -3,18 +3,14 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
-import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
-import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.seals.EntitySealEffect;
-import com.goldenglow.common.seals.ParticleFrame;
+import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
@@ -35,24 +31,18 @@ import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.NpcAPI;
@@ -65,7 +55,9 @@ import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class GGEventHandler {
 
@@ -314,30 +306,11 @@ public class GGEventHandler {
     }
 
     @SubscribeEvent
-    public void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-        EntityEntry entry = EntityEntryBuilder.create()
-                .entity(EntitySealEffect.class)
-                .id(new ResourceLocation("obscureobsidian", "sealEffect"), 0)
-                .tracker(10, 20, false)
-                .name("sealEffect")
-                .build();
-        event.getRegistry().register(entry);
-    }
-
-    @SubscribeEvent
     public void entityJoinWorld(EntityJoinWorldEvent event) {
         if(event.getEntity() instanceof EntityPixelmon) {
             Pokemon p = ((EntityPixelmon)event.getEntity()).getPokemonData();
-            if(p.getOwnerPlayer()!=null && p.getPersistentData().hasKey("ballSeal")) {
-                EntitySealEffect effect = new EntitySealEffect(event.getWorld());
-                ArrayList<ParticleFrame> list = new ArrayList<>();
-                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,2,0, 0,0,0));
-                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,3,0, 0,0,0));
-                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,4,0, 0,0,0));
-                list.add(new ParticleFrame(EnumParticleTypes.NOTE, 0,5,0, 0,0,0));
-                effect.frames.put(0, list);
-                effect.setPositionAndRotation(event.getEntity().posX,event.getEntity().posY,event.getEntity().posZ, event.getEntity().rotationYaw,event.getEntity().rotationPitch);
-                event.getWorld().spawnEntity(effect);
+            if(p.getOwnerPlayer()!= null) {
+                SealManager.loadedSeals.get(0).execute(event.getEntity());
             }
         }
     }

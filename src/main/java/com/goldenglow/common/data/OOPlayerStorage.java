@@ -1,7 +1,7 @@
 package com.goldenglow.common.data;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import com.goldenglow.common.seals.Seal;
+import net.minecraft.nbt.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -19,6 +19,14 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             tag.setString("theme_trainer", instance.getTrainerTheme());
         if(instance.getPVPTheme()!=null)
             tag.setString("theme_pvp", instance.getPVPTheme());
+        tag.setInteger("notification_style", instance.getNotificationScheme());
+
+        NBTTagList sealList = new NBTTagList();
+        for(Seal s : instance.getPlayerSeals()) {
+            //sealList.appendTag(new NBTTagInt(s.getID()));
+        }
+        if(!sealList.isEmpty())
+            tag.setTag("seals", sealList);
         return tag;
     }
 
@@ -31,5 +39,6 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             instance.setTrainerTheme(tag.getString("theme_trainer"));
         if(tag.hasKey("theme_pvp"))
             instance.setPVPTheme(tag.getString("theme_pvp"));
+        instance.setNotificationScheme(tag.getInteger("notification_style"));
     }
 }

@@ -9,8 +9,6 @@ import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.routes.RouteDebugUtils;
-import com.goldenglow.common.tiles.ICustomScript;
 import moe.plushie.armourers_workshop.common.library.LibraryFile;
 import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
 import moe.plushie.armourers_workshop.common.skin.data.Skin;
@@ -26,8 +24,6 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.rcon.RConConsoleSource;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.Server;
 import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
@@ -137,40 +133,6 @@ public class NPCFunctions {
         tile.setScale(1.25f, 1.25f, 1.25f);
     }
 
-    /* OLD METHOD, BEFORE CAPABILITIES
-    public static void checkRoute(EntityPlayerMP playerMP, int lastPosX, int lastPosY, int lastPosZ) {
-	    Route currentRoute = null;
-	    Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
-
-	    if(playerMP.getEntityData().hasKey("Route"))
-	        currentRoute = GoldenGlow.routeManager.getRoute(playerMP.getEntityData().getString("Route"));
-
-	    if(actualRoute!=null) {
-	        if(actualRoute.canPlayerEnter(playerMP)) {
-                if (currentRoute != null && !currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)) {
-                    currentRoute.removePlayer(playerMP);
-                }
-                if(actualRoute.isSafeZone){
-                    playerMP.getEntityData().setString("safeZone", actualRoute.unlocalizedName);
-                }
-                actualRoute.addPlayer(playerMP);
-            }
-            else if(currentRoute.unlocalizedName.equalsIgnoreCase(actualRoute.unlocalizedName)){
-	            currentRoute.warp(playerMP);
-            }
-	        else {
-	            playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
-	            TextComponentString msg = actualRoute.getRequirementMessage(playerMP);
-	            playerMP.sendMessage(msg);
-            }
-        }
-	    else {
-	        if(currentRoute!=null)
-	            currentRoute.removePlayer(playerMP);
-        }
-    }
-    */
-
     public static void checkRoute(EntityPlayerMP playerMP, int lastPosX, int lastPosY, int lastPosZ) {
         IPlayerData playerData = playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
 	    Route currentRoute = null;
@@ -243,5 +205,9 @@ public class NPCFunctions {
             return true;
         }
         return false;
+    }
+
+    public static void test() {
+	    System.out.println("Test works");
     }
 }
