@@ -1,6 +1,7 @@
 package com.goldenglow.common.data;
 
 import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.seals.Seal;
 
 public interface IPlayerData {
 
@@ -26,5 +27,8 @@ public interface IPlayerData {
 
     int getNotificationScheme();
     void setNotificationScheme(int id);
+
+    Seal[] getPlayerSeals();
+    void setPlayerSeals(Seal[] seals);
 
 }

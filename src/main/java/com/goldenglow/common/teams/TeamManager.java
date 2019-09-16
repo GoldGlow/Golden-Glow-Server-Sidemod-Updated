@@ -1,7 +1,6 @@
 package com.goldenglow.common.teams;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;

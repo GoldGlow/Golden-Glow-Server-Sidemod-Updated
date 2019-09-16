@@ -11,13 +11,8 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketDisplayObjective;
 import net.minecraft.scoreboard.IScoreCriteria;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
-import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.api.wrapper.PlayerWrapper;
 
 public class CommandRouteDebug extends CommandBase {
     public String getName(){

@@ -35,4 +35,5 @@ public class Reference {
     public static String spawnerDir=configDir+"/spawners";
     public static String inventoryDir=configDir+"/inventories";
     public static String shopsDir=configDir+"/shops";
+    public static String sealsDir=configDir+"/seals";
 }

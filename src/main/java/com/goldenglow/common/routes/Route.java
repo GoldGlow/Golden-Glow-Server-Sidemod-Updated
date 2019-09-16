@@ -10,8 +10,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
 import noppes.npcs.Server;
-import noppes.npcs.api.entity.IPlayer;
-import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.QuestController;
@@ -62,7 +60,7 @@ public class Route {
         playerMP.getCapability(OOPlayerProvider.OO_DATA, null).setRoute(this);
         SongManager.setCurrentSong(playerMP, this.song);
         if (this.displayName != null && !this.displayName.isEmpty())
-            Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", Integer.valueOf(playerMP.getEntityData().getInteger("RouteNotification")));
+            Server.sendData(playerMP, EnumPacketClient.MESSAGE, this.displayName, "", playerMP.getCapability(OOPlayerProvider.OO_DATA, null).getNotificationScheme());
     }
 
     public void removePlayer(EntityPlayerMP playerMP) {
