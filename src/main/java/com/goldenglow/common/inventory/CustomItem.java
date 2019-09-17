@@ -30,8 +30,9 @@ public class CustomItem  {
         return this.leftClickActions;
     }
 
-    public void setLeftClickActions(Action[] actions){
+    public CustomItem setLeftClickActions(Action[] actions){
         this.leftClickActions=actions;
+        return this;
     }
 
     public Action[] getRightClickActions(){

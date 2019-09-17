@@ -3,6 +3,8 @@ package com.goldenglow.common.data;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
 
+import java.util.List;
+
 public interface IPlayerData {
 
     Route getRoute();
@@ -28,7 +30,9 @@ public interface IPlayerData {
     int getNotificationScheme();
     void setNotificationScheme(int id);
 
-    Seal[] getPlayerSeals();
-    void setPlayerSeals(Seal[] seals);
+    String[] getEquippedSeals();
+    List<String> getUnlockedSeals();
+    void unlockSeal(String name);
+    void setPlayerSeals(String[] seals);
 
 }

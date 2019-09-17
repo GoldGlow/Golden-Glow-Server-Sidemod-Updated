@@ -1,15 +1,16 @@
 package com.goldenglow.common.seals;
 
-
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SealManager {
 
-    public static List<Seal> loadedSeals = new ArrayList<>();
+    public static Map<String, Seal> loadedSeals = new TreeMap<>();
 
     public static void init() {
         File dir = new File(Reference.sealsDir);
@@ -18,13 +19,14 @@ public class SealManager {
         for(File f : dir.listFiles()) {
             if(f.getName().toLowerCase().endsWith(".js")) {
                 try {
-                    loadedSeals.add(new Seal(readFile(f)));
+                    loadedSeals.put(f.getName().replace(".js",""), new Seal(readFile(f)));
                 }
                 catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+        GGLogger.info("[Seals] SealMaanager finished loading seals: "+ Arrays.toString(loadedSeals.keySet().toArray()));
     }
 
     private static String readFile(final File file) throws IOException {

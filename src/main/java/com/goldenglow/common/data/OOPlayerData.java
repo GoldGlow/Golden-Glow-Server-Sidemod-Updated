@@ -4,6 +4,9 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OOPlayerData implements IPlayerData {
 
     private Route current_route;
@@ -15,7 +18,8 @@ public class OOPlayerData implements IPlayerData {
 
     private int notification_scheme = 0;
 
-    private Seal[] player_seals = new Seal[6];
+    private String[] player_seals = new String[6];
+    private List<String> unlocked_seals = new ArrayList<>();
 
     public Route getRoute() {
         return current_route;
@@ -80,10 +84,16 @@ public class OOPlayerData implements IPlayerData {
         this.notification_scheme = id;
     }
 
-    public Seal[] getPlayerSeals() {
+    public String[] getEquippedSeals() {
         return this.player_seals.clone();
     }
-    public void setPlayerSeals(Seal[] seals) {
+    public List<String> getUnlockedSeals() {
+        return this.unlocked_seals;
+    }
+    public void unlockSeal(String name) {
+        this.unlocked_seals.add(name);
+    }
+    public void setPlayerSeals(String[] seals) {
         this.player_seals = seals;
     }
 

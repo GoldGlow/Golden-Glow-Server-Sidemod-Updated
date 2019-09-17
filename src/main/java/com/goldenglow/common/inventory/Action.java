@@ -1,5 +1,7 @@
 package com.goldenglow.common.inventory;
 
+import com.goldenglow.common.data.OOPlayerData;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.util.Requirement;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,20 +27,28 @@ public class Action {
         this.closeInv=true;
     }
 
+    public Action(ActionType type, String value) {
+        this();
+        this.actionType = type;
+        this.value = value;
+    }
+
     public ActionType getActionType(){
         return this.actionType;
     }
 
-    public void setActionType(ActionType actionType){
+    public Action setActionType(ActionType actionType){
         this.actionType=actionType;
+        return this;
     }
 
     public String getValue(){
         return this.value;
     }
 
-    public void setValue(String value){
+    public Action setValue(String value){
         this.value=value;
+        return this;
     }
 
     public Requirement[] getRequirements(){
@@ -77,11 +87,25 @@ public class Action {
             }
             player.getHeldItemMainhand().setStackDisplayName(name);
         }
+        else if(this.actionType==ActionType.OPEN_INV) {
+            player.closeScreen();
+            CustomInventory.openInventory(value, player);
+        }
+        else if(this.actionType==ActionType.SEAL_SET) {
+            OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
+            String[] equippedSeals = data.getEquippedSeals();
+            equippedSeals[Integer.parseInt(value.split(":")[1])] = value.split(":")[0];
+            data.setPlayerSeals(equippedSeals);
+            player.closeScreen();
+            CustomInventory.openInventory("seals", player);
+        }
     }
 
     public enum ActionType{
         COMMAND,
         GIVEITEM,
-        CHANGESKIN
+        CHANGESKIN,
+        OPEN_INV,
+        SEAL_SET
     }
 }

@@ -105,9 +105,11 @@ public class Requirement {
     }
 
     public static boolean checkRequirements(Requirement[] requirements, EntityPlayerMP player){
-        for(Requirement requirement:requirements){
-            if(!checkRequirement(requirement, player)){
-                return false;
+        if(requirements!=null) {
+            for (Requirement requirement : requirements) {
+                if (!checkRequirement(requirement, player)) {
+                    return false;
+                }
             }
         }
         return true;

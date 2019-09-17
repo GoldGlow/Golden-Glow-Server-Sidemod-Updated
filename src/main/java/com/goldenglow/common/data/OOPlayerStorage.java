@@ -1,7 +1,10 @@
 package com.goldenglow.common.data;
 
-import com.goldenglow.common.seals.Seal;
-import net.minecraft.nbt.*;
+import com.goldenglow.common.seals.SealManager;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -21,12 +24,28 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             tag.setString("theme_pvp", instance.getPVPTheme());
         tag.setInteger("notification_style", instance.getNotificationScheme());
 
-        NBTTagList sealList = new NBTTagList();
-        for(Seal s : instance.getPlayerSeals()) {
-            //sealList.appendTag(new NBTTagInt(s.getID()));
+        if(instance.getEquippedSeals()!=null) {
+            NBTTagList equippedSeals = new NBTTagList();
+            for (int i = 0; i < instance.getEquippedSeals().length; i++) {
+                String s = instance.getEquippedSeals()[i];
+                if (s!=null && !s.isEmpty()) {
+                    NBTTagCompound sealTag = new NBTTagCompound();
+                    sealTag.setInteger("slot", i);
+                    sealTag.setString("name", instance.getEquippedSeals()[i]);
+                    equippedSeals.appendTag(sealTag);
+                }
+            }
+            if (!equippedSeals.isEmpty())
+                tag.setTag("equippedSeals", equippedSeals);
         }
-        if(!sealList.isEmpty())
-            tag.setTag("seals", sealList);
+
+        NBTTagList unlockedSeals = new NBTTagList();
+        for(String s : instance.getUnlockedSeals()) {
+            unlockedSeals.appendTag(new NBTTagString(s));
+        }
+        if(!unlockedSeals.isEmpty())
+            tag.setTag("unlockedSeals", unlockedSeals);
+
         return tag;
     }
 
@@ -40,5 +59,25 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(tag.hasKey("theme_pvp"))
             instance.setPVPTheme(tag.getString("theme_pvp"));
         instance.setNotificationScheme(tag.getInteger("notification_style"));
+        if(tag.hasKey("equippedSeals")) {
+            NBTTagList list = tag.getTagList("equippedSeals", 8);
+            for(NBTBase n : list) {
+                NBTTagCompound seal = (NBTTagCompound)n;
+                if(SealManager.loadedSeals.containsKey(seal.getString("name"))) {
+                    String[] equipped = instance.getEquippedSeals();
+                    equipped[seal.getInteger("slot")] = seal.getString("name");
+                    instance.setPlayerSeals(equipped);
+                }
+            }
+        }
+        if(tag.hasKey("unlockedSeals")) {
+            NBTTagList list = tag.getTagList("unlockedSeals", 8);
+            for(NBTBase n : list) {
+                NBTTagString string = (NBTTagString)n;
+                if(SealManager.loadedSeals.containsKey(string.getString())) {
+                    instance.unlockSeal(string.getString());
+                }
+            }
+        }
     }
 }

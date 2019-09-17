@@ -1,5 +1,6 @@
 package com.goldenglow.common.command;
 
+import com.goldenglow.common.inventory.CustomInventory;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.ScoreboardLocation;
@@ -29,6 +30,7 @@ public class CommandDebug extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        /*
         //Pixelmon Custom Scoreboard Overlay
         ArrayList<String> lines = new ArrayList<>();
         lines.add("[ ]");
@@ -46,5 +48,7 @@ public class CommandDebug extends CommandBase {
         nbt.setString("id", "minecraft:skull");
         nbt.setShort("Damage", (short)3);
         Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(true).setLines(new String[] {"§0§lThis is a test for potential dialgue!","§0§lLet's see how this looks..."}).setItemStack(new ItemStack(nbt), EnumOverlayLayout.LEFT), (EntityPlayerMP)sender);
+        */
+        CustomInventory.openInventory("Seals", (EntityPlayerMP)sender);
     }
 }
