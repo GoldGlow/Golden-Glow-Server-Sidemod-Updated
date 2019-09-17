@@ -58,7 +58,7 @@ public class Requirement {
             return ((IPlayer)player).hasReadDialog(requirement.id);
         }
         else if(requirement.type == RequirementType.PERMISSION) {
-            return ((IPlayer)player).hasPermission(requirement.value);
+            return player.hasPermission(requirement.value);
         }
         else if(requirement.type == RequirementType.TIME) {
             if(requirement.value.equals("day")) {

@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 
 /**
  * Created by JeanMarc on 7/11/2019.
@@ -21,7 +22,14 @@ public class CommandCustomChest extends CommandBase{
     }
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length!=2){
+        if(args.length==1){
+            if(args[0].equals("reload")){
+                GoldenGlow.customInventoryHandler.inventories.clear();
+                GoldenGlow.customInventoryHandler.loadInventories();
+                sender.sendMessage(new TextComponentString("Reloaded custom inventories!"));
+            }
+        }
+        else if(args.length!=2){
             throw new WrongUsageException(getUsage(sender), new Object[0]);
         }
         else{
