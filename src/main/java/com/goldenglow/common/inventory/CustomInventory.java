@@ -156,8 +156,7 @@ public class CustomInventory extends ContainerChest {
         Random r = new Random();
         OOPlayerData playerData = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         List<String> unlockedSeals = playerData.getUnlockedSeals();
-
-        int rows = Math.max(playerData.getUnlockedSeals().size()/6, 1);
+        int rows = Math.max((int)Math.ceil(playerData.getUnlockedSeals().size()/6.0), 1);
 
         PlayerPartyStorage partyStorage = Pixelmon.storageManager.getParty(player);
         InventoryBasic inventory = new InventoryBasic("Choose Seal", true, rows*9);

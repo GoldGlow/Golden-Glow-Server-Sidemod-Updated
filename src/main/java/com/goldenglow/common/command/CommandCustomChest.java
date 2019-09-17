@@ -1,5 +1,6 @@
 package com.goldenglow.common.command;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.CustomInventory;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
