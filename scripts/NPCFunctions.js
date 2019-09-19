@@ -19,3 +19,11 @@ function updatePos(player) {
     lastPosY = player.getY();
     lastPosZ = player.getZ();
 }
+
+function getCurrentDay(world){
+	return Packages.com.goldenglow.common.util.NPCFunctions.getCurrentDay(world);
+}
+
+function newRLDay(world){
+	Packages.com.goldenglow.common.util.NPCFunctions.newRLDay(world);
+}

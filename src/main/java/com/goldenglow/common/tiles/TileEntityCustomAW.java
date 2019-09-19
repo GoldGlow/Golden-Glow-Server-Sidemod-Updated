@@ -19,6 +19,8 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
         this.tile.setWorld(worldIn);
     }
 
+
+
     @Override
     public void setWorld(World worldIn) {
         super.setWorld(worldIn);

@@ -11,6 +11,7 @@ import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
@@ -48,6 +49,7 @@ import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.blocks.tiles.TileScripted;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
 import org.spongepowered.api.event.Listener;
@@ -280,13 +282,17 @@ public class GGEventHandler {
     public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
         if(event.getHand()==EnumHand.MAIN_HAND && event.getUseBlock()!=Event.Result.DENY && event.getWorld().getTileEntity(event.getPos())!=null
                 && event.getWorld().getTileEntity(event.getPos()) instanceof ICustomScript) {
+            GGLogger.info(event.getWorld().getTileEntity(event.getPos()).getBlockType());
             ICustomScript tile = (ICustomScript)event.getWorld().getTileEntity(event.getPos());
+            tile.setScriptedTile((TileScripted)event.getWorld().getTileEntity(event.getPos()));
             if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
                 ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
                 tile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
                 tile.getScriptedTile().setEnabled(true);
                 event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
             } else {
+                GGLogger.info(event.getPos().getX());
+                GGLogger.info(tile.getScriptedTile().getBlock().getMCTileEntity());
                 EventHooks.onScriptBlockInteract(tile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
             }
         }

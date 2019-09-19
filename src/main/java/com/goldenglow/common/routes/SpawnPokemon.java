@@ -7,6 +7,7 @@ public class SpawnPokemon {
     public String species;
     public int minLvl;
     public int maxLvl;
+
     public SpawnPokemon(){
         this.species="Dunsparce";
         this.minLvl=5;

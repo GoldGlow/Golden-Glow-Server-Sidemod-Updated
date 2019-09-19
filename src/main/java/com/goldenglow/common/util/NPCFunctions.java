@@ -25,6 +25,8 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.rcon.RConConsoleSource;
 import noppes.npcs.Server;
+import noppes.npcs.api.IWorld;
+import noppes.npcs.api.block.IBlock;
 import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
@@ -176,14 +178,6 @@ public class NPCFunctions {
         }
     }
 
-    public static void removeRouteLogout(EntityPlayerMP playerMP) {
-	    if(GoldenGlow.routeManager.getRoute(playerMP)!=null) {
-            GoldenGlow.routeManager.getRoute(playerMP).removePlayer(playerMP);
-        }
-        playerMP.getEntityData().removeTag("Route");
-	    playerMP.getEntityData().removeTag("Song");
-    }
-
     public static int getCurrentDay(WorldWrapper world) {
         return (int)(world.getTime() / 24000L % 2147483647L);
     }
@@ -205,6 +199,16 @@ public class NPCFunctions {
             return true;
         }
         return false;
+    }
+
+    public static boolean hasWaitedForDay(PlayerWrapper player, BlockScriptedWrapper scriptedBlock){
+	    if(scriptedBlock.getMCTileEntity().getTileData().hasKey(player.getUUID())) {
+            if (scriptedBlock.getMCTileEntity().getTileData().getLong(player.getUUID()) == getCurrentDay((WorldWrapper)player.getWorld())){
+                return false;
+            }
+        }
+	    scriptedBlock.getMCTileEntity().getTileData().setLong(player.getUUID(), getCurrentDay((WorldWrapper)player.getWorld()));
+	    return true;
     }
 
     public static void test() {
