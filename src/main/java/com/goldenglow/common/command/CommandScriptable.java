@@ -43,13 +43,13 @@ public class CommandScriptable extends OOCommand {
             if(world.isBlockLoaded(blockpos) && oldTile != null) {
                 TileEntity newTile = null;
                 if(oldTile instanceof TileEntityApricornTree) {
-                    newTile = new TileEntityCustomApricornTree();
+                    newTile = new TileEntityCustomApricornTree(world.getBlockState(blockpos).getBlock(), blockpos);
                 }
                 else if(oldTile instanceof TileEntityBerryTree) {
-                    newTile = new TileEntityCustomBerryTree();
+                    newTile = new TileEntityCustomBerryTree(world.getBlockState(blockpos).getBlock(), blockpos);
                 }
                 else if(oldTile instanceof TileEntitySkinnable) {
-                    newTile = new TileEntityCustomAW();
+                    newTile = new TileEntityCustomAW(world.getBlockState(blockpos).getBlock(), blockpos);
                 }
 
                 if (newTile != null) {

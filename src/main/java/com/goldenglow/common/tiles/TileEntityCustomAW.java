@@ -1,7 +1,9 @@
 package com.goldenglow.common.tiles;
 
 import moe.plushie.armourers_workshop.common.tileentities.TileEntitySkinnable;
+import net.minecraft.block.Block;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import noppes.npcs.blocks.tiles.TileScripted;
 
@@ -9,8 +11,10 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
 
     private TileScripted tile;
 
-    public TileEntityCustomAW() {
+    public TileEntityCustomAW(Block blockType, BlockPos pos) {
         this.tile = new TileScripted();
+        this.blockType = blockType;
+        this.pos = pos;
     }
 
     @Override

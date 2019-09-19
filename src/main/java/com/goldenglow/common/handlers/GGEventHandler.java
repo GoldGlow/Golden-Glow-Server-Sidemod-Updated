@@ -26,14 +26,20 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
+import com.pixelmonmod.pixelmon.blocks.BlockBerryTree;
+import com.pixelmonmod.pixelmon.blocks.apricornTrees.BlockApricornTree;
+import com.pixelmonmod.pixelmon.blocks.enums.EnumBlockPos;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -280,20 +286,26 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
-        if(event.getHand()==EnumHand.MAIN_HAND && event.getUseBlock()!=Event.Result.DENY && event.getWorld().getTileEntity(event.getPos())!=null
-                && event.getWorld().getTileEntity(event.getPos()) instanceof ICustomScript) {
-            GGLogger.info(event.getWorld().getTileEntity(event.getPos()).getBlockType());
-            ICustomScript tile = (ICustomScript)event.getWorld().getTileEntity(event.getPos());
-            tile.setScriptedTile((TileScripted)event.getWorld().getTileEntity(event.getPos()));
-            if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
-                ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
-                tile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
-                tile.getScriptedTile().setEnabled(true);
-                event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
-            } else {
-                GGLogger.info(event.getPos().getX());
-                GGLogger.info(tile.getScriptedTile().getBlock().getMCTileEntity());
-                EventHooks.onScriptBlockInteract(tile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
+        if(event.getHand()==EnumHand.MAIN_HAND && event.getUseBlock()!=Event.Result.DENY ) {
+            IBlockState blockState = event.getWorld().getBlockState(event.getPos());
+            TileEntity tile = null;
+            if(blockState.getBlock() instanceof BlockApricornTree || blockState.getBlock() instanceof BlockBerryTree) {
+                if(blockState.getValue(BlockApricornTree.BLOCKPOS) == EnumBlockPos.TOP) {
+                    tile = event.getWorld().getTileEntity(event.getPos().down());
+                } else {
+                    tile = event.getWorld().getTileEntity(event.getPos());
+                }
+            }
+            if(tile instanceof ICustomScript) {
+                ICustomScript customTile = (ICustomScript)tile;
+                if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
+                    ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
+                    customTile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
+                    customTile.getScriptedTile().setEnabled(true);
+                    event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
+                } else {
+                    EventHooks.onScriptBlockInteract(customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
+                }
             }
         }
     }
