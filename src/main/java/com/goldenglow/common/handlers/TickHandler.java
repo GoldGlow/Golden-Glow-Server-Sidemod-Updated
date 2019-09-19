@@ -28,9 +28,6 @@ public class TickHandler {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.player.ticksExisted % 10 == 0) {
-            NPCFunctions.checkRoute((EntityPlayerMP)event.player, (int)event.player.lastTickPosX, (int)event.player.lastTickPosY, (int)event.player.lastTickPosZ);
-        }
         if(!battleNPCs.isEmpty()) {
             for(NPCWrapper npc : battleNPCs.keySet()) {
                 if(npc!=null) {

@@ -1,6 +1,9 @@
 package com.goldenglow.common.tiles;
 
 import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityBerryTree;
+import com.pixelmonmod.pixelmon.config.PixelmonBlocksApricornTrees;
+import net.minecraft.block.Block;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import noppes.npcs.blocks.tiles.TileScripted;
 
@@ -8,8 +11,10 @@ public class TileEntityCustomBerryTree extends TileEntityBerryTree implements IC
 
     private TileScripted tile;
 
-    public TileEntityCustomBerryTree() {
+    public TileEntityCustomBerryTree(Block blockType, BlockPos pos) {
         this.tile = new TileScripted();
+        this.blockType = blockType;
+        this.pos = pos;
     }
 
     @Override

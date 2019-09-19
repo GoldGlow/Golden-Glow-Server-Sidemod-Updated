@@ -1,7 +1,9 @@
 package com.goldenglow.common.tiles;
 
 import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityApricornTree;
+import net.minecraft.block.Block;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import noppes.npcs.blocks.tiles.TileScripted;
 
@@ -9,8 +11,11 @@ public class TileEntityCustomApricornTree extends TileEntityApricornTree impleme
 
     private TileScripted tile;
 
-    public TileEntityCustomApricornTree() {
+    public TileEntityCustomApricornTree(Block blockType, BlockPos pos) {
         this.tile = new TileScripted();
+        this.blockType = blockType;
+        this.setPos(pos);
+        this.tile.setPos(pos);
     }
 
     @Override
