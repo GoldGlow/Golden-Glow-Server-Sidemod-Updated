@@ -298,9 +298,9 @@ public class GGEventHandler {
                     final BlockEvent.InitEvent initEvent = new BlockEvent.InitEvent(customTile.getScriptedTile().getBlock());
                     customTile.getScriptedTile().runScript(EnumScriptType.INIT, initEvent);
                     WrapperNpcAPI.EVENT_BUS.post(initEvent);
+
                     event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
                 } else {
-                    event.getEntityPlayer().sendMessage(new TextComponentString(customTile.getScriptedTile().getBlock()+""));
                     EventHooks.onScriptBlockInteract( customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
                 }
             }

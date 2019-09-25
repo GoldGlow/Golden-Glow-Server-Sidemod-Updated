@@ -12,9 +12,10 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
     private TileScripted tile;
 
     public TileEntityCustomAW(Block blockType, BlockPos pos) {
-        this.tile = new TileScripted();
+        this.tile = new TileEntityCustomScripted();
         this.blockType = blockType;
-        this.pos = pos;
+        this.setPos(pos);
+        this.tile.setPos(pos);
     }
 
     @Override

@@ -9,10 +9,10 @@ import noppes.npcs.blocks.tiles.TileScripted;
 
 public class TileEntityCustomApricornTree extends TileEntityApricornTree implements ICustomScript, ITickable {
 
-    private TileScripted tile;
+    private TileEntityCustomScripted tile;
 
     public TileEntityCustomApricornTree(Block blockType, BlockPos pos) {
-        this.tile = new TileScripted();
+        this.tile = new TileEntityCustomScripted();
         this.blockType = blockType;
         this.setPos(pos);
         this.tile.setPos(pos);
