@@ -8,6 +8,7 @@ import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerStorage;
 import com.goldenglow.common.handlers.*;
+import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomInventoryHandler;
 import com.goldenglow.common.inventory.shops.CustomShopHandler;
 import com.goldenglow.common.music.SongManager;
@@ -120,6 +121,11 @@ public class GoldenGlow {
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
         customInventoryHandler.init();
+        String inventories="Inventories: ";
+        for(CustomInventoryData data: customInventoryHandler.inventories){
+            inventories+=data.getName()+" ";
+        }
+        GGLogger.info(inventories);
         customShopHandler.init();
         if(Loader.isModLoaded("spongeforge"))
             Sponge.getEventManager().registerListeners(this, new GGEventHandler());

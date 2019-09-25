@@ -28,6 +28,7 @@ import noppes.npcs.Server;
 import noppes.npcs.api.IWorld;
 import noppes.npcs.api.block.IBlock;
 import noppes.npcs.api.entity.data.IData;
+import noppes.npcs.api.handler.data.IQuest;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
@@ -37,6 +38,8 @@ import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.QuestData;
 import noppes.npcs.entity.EntityNPCInterface;
+import noppes.npcs.quests.QuestInterface;
+import noppes.npcs.quests.QuestItem;
 
 import java.util.HashMap;
 
@@ -176,6 +179,35 @@ public class NPCFunctions {
             playerMP.sendMessage(new TextComponentString("You can't go this way!").setStyle(new Style().setBold(true)));
 	         */
         }
+    }
+
+    public static void addKeyItem(PlayerWrapper playerWrapper, String itemStack){
+        IPlayerData playerData = playerWrapper.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+	    ItemStack item=null;
+	    try {
+            item=new ItemStack(JsonToNBT.getTagFromJson(itemStack));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+	    if(item!=null) {
+	        GGLogger.info(item.getItemDamage());
+            playerData.addKeyItem(item);
+            /*IQuest[] quests=playerWrapper.getActiveQuests();
+            for(IQuest quest: quests){
+                if((QuestInterface)quest instanceof QuestItem){
+                    for(ItemStack questItem:((QuestItem) quest).items.items){
+                        if(questItem.equals(item)){
+                            quest.
+                        }
+                    }
+                }
+            }*/
+        }
+    }
+
+    public static void removeKeyItem(PlayerWrapper playerWrapper, String displayName){
+        IPlayerData playerData = playerWrapper.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.removeKeyItem(displayName);
     }
 
     public static int getCurrentDay(WorldWrapper world) {

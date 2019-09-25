@@ -67,6 +67,7 @@ public class CustomShop extends CustomInventory {
                                 if (action.getValue().startsWith("pokegive")) {
                                     ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.getValue().split(" ")[2] + "!"));
                                     bankAccount.changeMoney(-1 * item.buyPrice);
+                                    action.doAction((EntityPlayerMP)player);
                                     didAction=true;
                                     bankAccount.changeMoney(-1 * item.buyPrice);
                                     break;
@@ -89,7 +90,13 @@ public class CustomShop extends CustomInventory {
                             ICommandManager icommandmanager = ((EntityPlayerMP)player).getEntityWorld().getMinecraftServer().getCommandManager();
                             icommandmanager.executeCommand(new RConConsoleSource(((EntityPlayerMP)player).getEntityWorld().getMinecraftServer()), "tellraw "+((EntityPlayerMP)player).getName()+" [\"\",{\"text\":\"You can't buy this!\",\"color\":\"dark_red\"}]");
                         }else {
-                            openCustomShop(((EntityPlayerMP) player), data);
+                            if(this.data.getName().equals("Starter")){
+                                player.closeScreen();
+                                new PlayerWrapper((EntityPlayerMP)player).showDialog(328, "Poke Depository Clerk");
+                            }
+                            else{
+                                openCustomShop(((EntityPlayerMP) player), data);
+                            }
                         }
                         return null;
                 } else if (dragType == 1) {

@@ -88,8 +88,8 @@ public class Action {
             player.getHeldItemMainhand().setStackDisplayName(name);
         }
         else if(this.actionType==ActionType.OPEN_INV) {
-            player.closeScreen();
-            CustomInventory.openInventory(value, player);
+            //player.closeScreen();
+            CustomInventory.openInventory(this.value, player);
         }
         else if(this.actionType==ActionType.SEAL_SET) {
             OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);

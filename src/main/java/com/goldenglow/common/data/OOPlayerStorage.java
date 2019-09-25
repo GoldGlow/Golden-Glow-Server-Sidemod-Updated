@@ -46,6 +46,10 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(!unlockedSeals.isEmpty())
             tag.setTag("unlockedSeals", unlockedSeals);
 
+        if(instance.getSafezone()!=null){
+            tag.setString("safezone", instance.getSafezone().unlocalizedName);
+        }
+
         return tag;
     }
 
@@ -78,6 +82,9 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                     instance.unlockSeal(string.getString());
                 }
             }
+        }
+        if(tag.hasKey("safezone")){
+            instance.setSafezone(tag.getString("safezone"));
         }
     }
 }

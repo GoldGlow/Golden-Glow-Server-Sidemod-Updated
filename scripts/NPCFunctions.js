@@ -27,3 +27,7 @@ function getCurrentDay(world){
 function newRLDay(world){
 	Packages.com.goldenglow.common.util.NPCFunctions.newRLDay(world);
 }
+
+function addKeyItem(player, itemstack){
+	Packages.com.goldenglow.common.util.NPCFunctions.addKeyItem(player, itemstack);
+}

@@ -24,9 +24,7 @@ public class ParseJson {
     public static Action parseAction(JsonObject o){
         Action a = new Action();
         a.actionType = Action.ActionType.valueOf(o.getAsJsonObject().get("actionType").getAsString());
-        if (a.actionType == Action.ActionType.COMMAND || a.actionType==Action.ActionType.CHANGESKIN) {
-            a.value = o.get("value").getAsString();
-        }
+        a.value = o.get("value").getAsString();
         if(o.has("requirements")){
             JsonArray requirementArray=o.getAsJsonArray("requirements");
             Requirement[] requirements=new Requirement[requirementArray.size()];

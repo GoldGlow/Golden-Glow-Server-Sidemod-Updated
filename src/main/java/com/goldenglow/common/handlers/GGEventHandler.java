@@ -56,6 +56,7 @@ import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.blocks.tiles.TileScripted;
+import noppes.npcs.controllers.IScriptBlockHandler;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
 import org.spongepowered.api.event.Listener;
@@ -90,18 +91,6 @@ public class GGEventHandler {
     //ToDo: Change login Event considering we now use a different way for storing this info.
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        if(!event.player.getEntityData().hasKey("RouteNotification"))
-            event.player.getEntityData().setInteger("RouteNotification", 0);
-        if(!event.player.getEntityData().hasKey("theme_wild"))
-            event.player.getEntityData().setString("theme_wild", GoldenGlow.songManager.wildBattleSong);
-        if(!event.player.getEntityData().hasKey("theme_trainer"))
-            event.player.getEntityData().setString("theme_trainer", GoldenGlow.songManager.trainerBattleSong);
-        if(!event.player.getEntityData().hasKey("theme_pvp"))
-            event.player.getEntityData().setString("theme_pvp", GoldenGlow.songManager.trainerBattleSong);
-        if(!event.player.getEntityData().hasKey("PlayTime"))
-            event.player.getEntityData().setLong("PlayTime", 0);
-        if(!event.player.getEntityData().hasKey("safeZone"))
-            event.player.getEntityData().setString("safeZone", "Home");
         playerTimes.put(event.player.getUniqueID(), Instant.now());
     }
 
@@ -125,11 +114,11 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void itemDroppedEvent(ItemTossEvent event){
-        if ((event.getEntityItem().getItem().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")){
+        if ((event.getEntityItem().getItem().getItem().getRegistryName() + "").equals("variedcommodities:diamond_dagger")) {
             ItemStack itemStack = event.getEntityItem().getItem();
             event.setCanceled(true);
             event.getPlayer().inventory.addItemStackToInventory(itemStack);
-            event.getPlayer().sendMessage(new TextComponentString(Reference.red+"Cannot drop this item!"));
+            event.getPlayer().sendMessage(new TextComponentString(Reference.red + "Cannot drop this item!"));
         }
     }
 
@@ -298,13 +287,15 @@ public class GGEventHandler {
             }
             if(tile instanceof ICustomScript) {
                 ICustomScript customTile = (ICustomScript)tile;
+                event.getEntityPlayer().sendMessage(new TextComponentString("This is a scripted tile"));
                 if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
                     ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
                     customTile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
                     customTile.getScriptedTile().setEnabled(true);
                     event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
                 } else {
-                    EventHooks.onScriptBlockInteract(customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
+                    event.getEntityPlayer().sendMessage(new TextComponentString(customTile.getScriptedTile().getBlock()+""));
+                    EventHooks.onScriptBlockInteract( customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
                 }
             }
         }

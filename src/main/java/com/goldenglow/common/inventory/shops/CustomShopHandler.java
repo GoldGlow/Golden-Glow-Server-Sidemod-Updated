@@ -92,7 +92,7 @@ public class CustomShopHandler {
                             jsonItem.getAsJsonObject("tag").add("display", new JsonObject());
                             jsonItem.getAsJsonObject("tag").getAsJsonObject("display").add("Lore", new JsonArray());
                             jsonItem.getAsJsonObject("tag").getAsJsonObject("display").addProperty("Name", Reference.resetText+species);
-                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add("§rLeft-Click: buy for "+price);
+                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.resetText+"Left-Click: buy for "+price);
                             itemStack = new ItemStack(JsonToNBT.getTagFromJson(item.getAsJsonObject("item").toString()));
                         } catch (NBTException e) {
                             e.printStackTrace();

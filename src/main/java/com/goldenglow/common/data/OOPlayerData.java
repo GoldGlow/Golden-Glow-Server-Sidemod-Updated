@@ -3,6 +3,8 @@ package com.goldenglow.common.data;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
+import net.minecraft.item.ItemStack;
+import noppes.npcs.api.item.IItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,8 @@ public class OOPlayerData implements IPlayerData {
 
     private String current_song = "";
     private String theme_wild,theme_trainer,theme_pvp = "";
+
+    private List<ItemStack> keyItems=new ArrayList<>();
 
     private int notification_scheme = 0;
 
@@ -96,5 +100,17 @@ public class OOPlayerData implements IPlayerData {
     public void setPlayerSeals(String[] seals) {
         this.player_seals = seals;
     }
+
+    public List<ItemStack> getKeyItems(){return this.keyItems;}
+    public void addKeyItem(ItemStack item){this.keyItems.add(item);}
+    public void removeKeyItem(String displayName){
+        for(ItemStack item:this.keyItems){
+            if(item.getDisplayName().equals(displayName)){
+                this.keyItems.remove(item);
+                return;
+            }
+        }
+    }
+    public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
 
 }

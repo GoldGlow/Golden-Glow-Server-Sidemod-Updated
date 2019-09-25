@@ -3,6 +3,7 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsPokeballs;
@@ -21,6 +22,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import noppes.npcs.api.item.IItemStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,15 +42,21 @@ public class CustomInventory extends ContainerChest {
     public static void openInventory(String inventoryName, EntityPlayerMP player){
         if(inventoryName.equalsIgnoreCase("seals")) {
             CustomInventory.openCustomSealsInventory(player);
+            return;
         }
         else if (inventoryName.contains("sealChoice")) {
             CustomInventory.openSealSelection(player, Integer.parseInt(inventoryName.split(" ")[1]));
+            return;
+        }
+        else if(inventoryName.equalsIgnoreCase("KeyItems")){
+            openKeyItems(player);
+            return;
         }
         for(CustomInventoryData inventoryData: GoldenGlow.customInventoryHandler.inventories) {
             if (inventoryData.getName().equals(inventoryName)) {
                 CustomInventory.openCustomInventory(player, inventoryData);
+                return;
             }
-            return;
         }
     }
 
@@ -128,6 +136,8 @@ public class CustomInventory extends ContainerChest {
         }
     }
 
+    //Seals Code below
+
     static void openCustomSealsInventory(EntityPlayerMP player) {
         OOPlayerData playerData = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         CustomInventoryData data = new CustomInventoryData(9, "Seals", "Seals", new CustomItem[9][], null);
@@ -181,5 +191,26 @@ public class CustomInventory extends ContainerChest {
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addListener(player);
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, player.openContainer));
+    }
+
+    //Key Items below
+
+    static void openKeyItems(EntityPlayerMP player){
+        OOPlayerData playerData = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
+        List<ItemStack> items=playerData.getKeyItems();
+        int rows= Math.max(((items.size()-1)/9)+1, 1);
+        CustomInventoryData data=new CustomInventoryData(rows, "KeyItems", "Key Items", new CustomItem[rows*9][], new Requirement[0]);
+        GGLogger.info("Opening Key Items");
+        for(int i=0;i<items.size();i++){
+            data.items[i]=new CustomItem[]{new CustomItem(items.get(i), null)};
+        }
+        InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
+        player.getNextWindowId();
+        player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
+        player.openContainer = new CustomInventory(player.inventory, chestInventory, player);
+        ((CustomInventory)player.openContainer).setData(data);
+        player.openContainer.windowId = player.currentWindowId;
+        player.openContainer.addListener(player);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(player, player.openContainer));
     }
 }

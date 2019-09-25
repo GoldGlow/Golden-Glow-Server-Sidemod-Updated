@@ -46,19 +46,16 @@ public class CustomInventoryHandler {
 
     public void loadInventories(){
         GGLogger.info("Loading Inventories...");
-        String inventories="";
         try {
             for (File f : Objects.requireNonNull(dir.listFiles())) {
                 if (f.getName().endsWith(".json")) {
-                    loadInventory(f.getName().replace(".json", ""));
-                    inventories+=f.getName().replace(".json", "")+" ";
+                    this.loadInventory(f.getName().replace(".json", ""));
                 }
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        GGLogger.info("Loaded Inventories: "+inventories);
     }
 
     public void loadInventory(String inventoryName) throws IOException{
