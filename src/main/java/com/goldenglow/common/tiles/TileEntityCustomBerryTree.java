@@ -11,6 +11,8 @@ public class TileEntityCustomBerryTree extends TileEntityBerryTree implements IC
 
     private TileScripted tile;
 
+    public TileEntityCustomBerryTree() {}
+
     public TileEntityCustomBerryTree(Block blockType, BlockPos pos) {
         this.tile = new TileEntityCustomScripted();
         this.blockType = blockType;

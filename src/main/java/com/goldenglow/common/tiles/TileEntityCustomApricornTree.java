@@ -11,6 +11,8 @@ public class TileEntityCustomApricornTree extends TileEntityApricornTree impleme
 
     private TileEntityCustomScripted tile;
 
+    public TileEntityCustomApricornTree() {}
+
     public TileEntityCustomApricornTree(Block blockType, BlockPos pos) {
         this.tile = new TileEntityCustomScripted();
         this.blockType = blockType;
