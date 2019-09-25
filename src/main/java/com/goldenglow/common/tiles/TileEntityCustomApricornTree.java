@@ -2,6 +2,7 @@ package com.goldenglow.common.tiles;
 
 import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityApricornTree;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -40,5 +41,15 @@ public class TileEntityCustomApricornTree extends TileEntityApricornTree impleme
     @Override
     public void update() {
         tile.update();
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        return super.writeToNBT(nbt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
     }
 }

@@ -2,6 +2,7 @@ package com.goldenglow.common.tiles;
 
 import moe.plushie.armourers_workshop.common.tileentities.TileEntitySkinnable;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -42,5 +43,15 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
     @Override
     public void update() {
         tile.update();
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        return super.writeToNBT(nbt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
     }
 }

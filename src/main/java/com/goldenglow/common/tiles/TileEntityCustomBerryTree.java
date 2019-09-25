@@ -1,8 +1,8 @@
 package com.goldenglow.common.tiles;
 
 import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityBerryTree;
-import com.pixelmonmod.pixelmon.config.PixelmonBlocksApricornTrees;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import noppes.npcs.blocks.tiles.TileScripted;
@@ -41,5 +41,15 @@ public class TileEntityCustomBerryTree extends TileEntityBerryTree implements IC
     public void update() {
         super.update();
         tile.update();
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        return super.writeToNBT(nbt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
     }
 }
