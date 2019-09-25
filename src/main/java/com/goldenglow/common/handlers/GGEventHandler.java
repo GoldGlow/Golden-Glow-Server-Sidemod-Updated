@@ -53,9 +53,12 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.NpcAPI;
+import noppes.npcs.api.event.BlockEvent;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import noppes.npcs.blocks.tiles.TileScripted;
+import noppes.npcs.constants.EnumScriptType;
 import noppes.npcs.controllers.IScriptBlockHandler;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
@@ -287,11 +290,14 @@ public class GGEventHandler {
             }
             if(tile instanceof ICustomScript) {
                 ICustomScript customTile = (ICustomScript)tile;
-                event.getEntityPlayer().sendMessage(new TextComponentString("This is a scripted tile"));
                 if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
                     ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
                     customTile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
                     customTile.getScriptedTile().setEnabled(true);
+
+                    final BlockEvent.InitEvent initEvent = new BlockEvent.InitEvent(customTile.getScriptedTile().getBlock());
+                    customTile.getScriptedTile().runScript(EnumScriptType.INIT, initEvent);
+                    WrapperNpcAPI.EVENT_BUS.post(initEvent);
                     event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
                 } else {
                     event.getEntityPlayer().sendMessage(new TextComponentString(customTile.getScriptedTile().getBlock()+""));
