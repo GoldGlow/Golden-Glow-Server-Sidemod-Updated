@@ -31,3 +31,7 @@ function newRLDay(world){
 function addKeyItem(player, itemstack){
 	Packages.com.goldenglow.common.util.NPCFunctions.addKeyItem(player, itemstack);
 }
+
+function removeKeyItem(player, displayName){
+	
+}Packages.com.goldenglow.common.util.NPCFunctions.removeKeyItem(player, displayName);

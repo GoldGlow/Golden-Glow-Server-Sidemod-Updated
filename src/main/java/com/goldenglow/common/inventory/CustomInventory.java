@@ -200,17 +200,19 @@ public class CustomInventory extends ContainerChest {
         List<ItemStack> items=playerData.getKeyItems();
         int rows= Math.max(((items.size()-1)/9)+1, 1);
         CustomInventoryData data=new CustomInventoryData(rows, "KeyItems", "Key Items", new CustomItem[rows*9][], new Requirement[0]);
+        InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
         GGLogger.info("Opening Key Items");
         for(int i=0;i<items.size();i++){
+            GGLogger.info("Adding item: "+items.get(i).getDisplayName());
             data.items[i]=new CustomItem[]{new CustomItem(items.get(i), null)};
+            chestInventory.setInventorySlotContents(i, items.get(i));
         }
-        InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
         player.getNextWindowId();
-        player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
+        player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString("Key Items"), rows*9));
         player.openContainer = new CustomInventory(player.inventory, chestInventory, player);
         ((CustomInventory)player.openContainer).setData(data);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addListener(player);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(player, player.openContainer));
+        MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, player.openContainer));
     }
 }
