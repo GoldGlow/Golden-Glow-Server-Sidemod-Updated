@@ -1,12 +1,12 @@
 package com.goldenglow.common.data;
 
 import com.goldenglow.common.seals.SealManager;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import com.goldenglow.common.util.GGLogger;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
@@ -23,6 +23,15 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(instance.getPVPTheme()!=null)
             tag.setString("theme_pvp", instance.getPVPTheme());
         tag.setInteger("notification_style", instance.getNotificationScheme());
+
+        if(instance.getKeyItems()!=null){
+            NBTTagList items=new NBTTagList();
+            for(ItemStack item:instance.getKeyItems()){
+                if(item!=null)
+                    items.appendTag(item.serializeNBT());
+            }
+            tag.setTag("KeyItems", items);
+        }
 
         if(instance.getEquippedSeals()!=null) {
             NBTTagList equippedSeals = new NBTTagList();
@@ -85,6 +94,17 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         }
         if(tag.hasKey("safezone")){
             instance.setSafezone(tag.getString("safezone"));
+        }
+        if(tag.hasKey("KeyItems")){
+            NBTTagList items=tag.getTagList("KeyItems", Constants.NBT.TAG_COMPOUND);
+            for(NBTBase item: items){
+                GGLogger.info(item);
+                try {
+                    instance.addKeyItem(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
+                } catch (NBTException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

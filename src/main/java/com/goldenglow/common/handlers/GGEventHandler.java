@@ -32,6 +32,7 @@ import com.pixelmonmod.pixelmon.blocks.enums.EnumBlockPos;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import com.pixelmonmod.pixelmon.items.ItemTM;
 import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
