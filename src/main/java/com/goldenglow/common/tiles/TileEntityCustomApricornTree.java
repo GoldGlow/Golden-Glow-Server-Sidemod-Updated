@@ -12,11 +12,14 @@ public class TileEntityCustomApricornTree extends TileEntityApricornTree impleme
 
     private TileEntityCustomScripted tile;
 
-    public TileEntityCustomApricornTree() {}
+    public TileEntityCustomApricornTree() {
+        this.tile = new TileEntityCustomScripted();
+    }
 
     public TileEntityCustomApricornTree(Block blockType, BlockPos pos) {
         this.tile = new TileEntityCustomScripted();
         this.blockType = blockType;
+        this.setStage(5);
         this.setPos(pos);
         this.tile.setPos(pos);
     }
@@ -24,7 +27,8 @@ public class TileEntityCustomApricornTree extends TileEntityApricornTree impleme
     @Override
     protected void setWorldCreate(World worldIn) {
         super.setWorldCreate(worldIn);
-        this.tile.setWorld(worldIn);
+        if(this.tile!=null)
+            this.tile.setWorld(worldIn);
     }
 
     @Override
@@ -43,13 +47,19 @@ public class TileEntityCustomApricornTree extends TileEntityApricornTree impleme
         tile.update();
     }
 
-    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        return super.writeToNBT(nbt);
+        super.writeToNBT(nbt);
+        NBTTagCompound tile = new NBTTagCompound();
+        this.tile.writeToNBT(tile);
+        nbt.setTag("scriptedTile", tile);
+        return nbt;
     }
 
-    @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
+        if(nbt.hasKey("scriptedTile")) {
+            NBTTagCompound tile = (NBTTagCompound)nbt.getTag("scriptedTile");
+            this.tile.readFromNBT(tile);
+        }
     }
 }

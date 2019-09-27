@@ -11,7 +11,9 @@ public class TileEntityCustomBerryTree extends TileEntityBerryTree implements IC
 
     private TileScripted tile;
 
-    public TileEntityCustomBerryTree() {}
+    public TileEntityCustomBerryTree() {
+        this.tile = new TileEntityCustomScripted();
+    }
 
     public TileEntityCustomBerryTree(Block blockType, BlockPos pos) {
         this.tile = new TileEntityCustomScripted();
@@ -23,7 +25,8 @@ public class TileEntityCustomBerryTree extends TileEntityBerryTree implements IC
     @Override
     protected void setWorldCreate(World worldIn) {
         super.setWorldCreate(worldIn);
-        this.tile.setWorld(worldIn);
+        if(this.tile!=null)
+            this.tile.setWorld(worldIn);
     }
 
     @Override
@@ -39,17 +42,22 @@ public class TileEntityCustomBerryTree extends TileEntityBerryTree implements IC
 
     @Override
     public void update() {
-        super.update();
         tile.update();
     }
 
-    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        return super.writeToNBT(nbt);
+        super.writeToNBT(nbt);
+        NBTTagCompound tile = new NBTTagCompound();
+        this.tile.writeToNBT(tile);
+        nbt.setTag("scriptedTile", tile);
+        return nbt;
     }
 
-    @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
+        if(nbt.hasKey("scriptedTile")) {
+            NBTTagCompound tile = (NBTTagCompound)nbt.getTag("scriptedTile");
+            this.tile.readFromNBT(tile);
+        }
     }
 }

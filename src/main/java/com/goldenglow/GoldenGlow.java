@@ -19,6 +19,7 @@ import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.tiles.TileEntityCustomAW;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
+import com.goldenglow.common.tiles.TileEntityCustomScripted;
 import com.goldenglow.common.util.GGLogger;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -73,6 +74,7 @@ public class GoldenGlow {
         GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomAW.class, new ResourceLocation("obscureobsidian", "custom_aw"));
+        GameRegistry.registerTileEntity(TileEntityCustomScripted.class, new ResourceLocation("obscureobsidian", "custom_scripted"));
 
         CapabilityManager.INSTANCE.register(IPlayerData.class, new OOPlayerStorage(), OOPlayerData::new);
 

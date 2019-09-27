@@ -8,6 +8,10 @@ public class TileEntityCustomScripted extends TileScripted {
     private short ticksExisted;
     IBlock block;
 
+    public TileEntityCustomScripted() {
+        super();
+    }
+
     @Override
     public IBlock getBlock() {
         if(this.block==null) {

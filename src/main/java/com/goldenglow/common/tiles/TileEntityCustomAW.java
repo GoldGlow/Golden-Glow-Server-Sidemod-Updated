@@ -12,7 +12,9 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
 
     private TileScripted tile;
 
-    public TileEntityCustomAW() {}
+    public TileEntityCustomAW() {
+        this.tile = new TileEntityCustomScripted();
+    }
 
     public TileEntityCustomAW(Block blockType, BlockPos pos) {
         this.tile = new TileEntityCustomScripted();
@@ -24,10 +26,9 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
     @Override
     protected void setWorldCreate(World worldIn) {
         super.setWorldCreate(worldIn);
-        this.tile.setWorld(worldIn);
+        if(this.tile!=null)
+            this.tile.setWorld(worldIn);
     }
-
-
 
     @Override
     public void setWorld(World worldIn) {
@@ -45,13 +46,19 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
         tile.update();
     }
 
-    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        return super.writeToNBT(nbt);
+        super.writeToNBT(nbt);
+        NBTTagCompound tile = new NBTTagCompound();
+        this.tile.writeToNBT(tile);
+        nbt.setTag("scriptedTile", tile);
+        return nbt;
     }
 
-    @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
+        if(nbt.hasKey("scriptedTile")) {
+            NBTTagCompound tile = (NBTTagCompound)nbt.getTag("scriptedTile");
+            this.tile.readFromNBT(tile);
+        }
     }
 }

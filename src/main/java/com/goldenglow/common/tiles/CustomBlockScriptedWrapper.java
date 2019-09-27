@@ -15,8 +15,8 @@ public class CustomBlockScriptedWrapper extends BlockScriptedWrapper {
 
     @Override
     protected void setTile(TileEntity tile) {
-        if(tile instanceof TileEntityCustomApricornTree) {
-            super.setTile(((TileEntityCustomApricornTree)tile).getScriptedTile());
+        if(tile instanceof ICustomScript) {
+            super.setTile(((ICustomScript)tile).getScriptedTile());
         } else {
             super.setTile(tile);
         }
