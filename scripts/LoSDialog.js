@@ -1,3 +1,3 @@
 function init(event){
-	Packages.com.goldenglow.common.util.NPCFunctions.registerLOSBattle(event.npc, initDialog);
+	Packages.com.goldenglow.common.util.scripting.BattleFunctions.registerLOSBattle(event.npc, initDialog);
 }

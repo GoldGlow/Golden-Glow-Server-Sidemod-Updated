@@ -2,6 +2,7 @@ package com.goldenglow.common.data;
 
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -40,4 +41,7 @@ public interface IPlayerData {
     void addKeyItem(ItemStack item);
     void removeKeyItem(String displayName);
     void removeKeyItem(ItemStack item);
+
+    List<ItemStack> getTMs();
+    void unlockTM(ItemStack tm);
 }

@@ -3,7 +3,7 @@ function achievement(player, firstLine, secondLine){
 }
 
 function playSong(player){
-	Packages.com.goldenglow.common.util.NPCFunctions.playSong(player);
+	Packages.com.goldenglow.common.util.scripting.MusicSoundFunctions.playSong(player);
 }
 
 function setCurrentSong(player, song){
@@ -11,7 +11,7 @@ function setCurrentSong(player, song){
 }
 
 function checkRoute(player, lastPosX, lastPosY, lastPosZ){
-	Packages.com.goldenglow.common.util.NPCFunctions.checkRoute(player, lastPosX, lastPosY, lastPosZ);
+	Packages.com.goldenglow.common.util.scripting.WorldFunctions.checkRoute(player, lastPosX, lastPosY, lastPosZ);
 }
 
 function updatePos(player) {
@@ -21,17 +21,21 @@ function updatePos(player) {
 }
 
 function getCurrentDay(world){
-	return Packages.com.goldenglow.common.util.NPCFunctions.getCurrentDay(world);
+	return Packages.com.goldenglow.common.util.scripting.WorldFunctions.getCurrentDay(world);
 }
 
 function newRLDay(world){
-	Packages.com.goldenglow.common.util.NPCFunctions.newRLDay(world);
+	Packages.com.goldenglow.common.util.scripting.WorldFunctions.newRLDay(world);
 }
 
 function addKeyItem(player, itemstack){
-	Packages.com.goldenglow.common.util.NPCFunctions.addKeyItem(player, itemstack);
+	Packages.com.goldenglow.common.util.scripting.InventoryFunctions.addKeyItem(player, itemstack);
 }
 
 function removeKeyItem(player, displayName){
-	
-}Packages.com.goldenglow.common.util.NPCFunctions.removeKeyItem(player, displayName);
+	Packages.com.goldenglow.common.util.scripting.InventoryFunctions.removeKeyItem(player, displayName);	
+}
+
+function unlockTM(player, itemID){
+	Packages.com.goldenglow.common.util.scripting.InventoryFunctions
+}

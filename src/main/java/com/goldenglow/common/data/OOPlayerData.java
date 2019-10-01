@@ -19,6 +19,7 @@ public class OOPlayerData implements IPlayerData {
     private String theme_wild,theme_trainer,theme_pvp = "";
 
     private List<ItemStack> keyItems=new ArrayList<>();
+    private List<ItemStack> tms=new ArrayList<>();
 
     private int notification_scheme = 0;
 
@@ -113,4 +114,5 @@ public class OOPlayerData implements IPlayerData {
     }
     public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
 
+    public List<ItemStack> getTMs(ItemStack tm){return this.tms;}
 }
