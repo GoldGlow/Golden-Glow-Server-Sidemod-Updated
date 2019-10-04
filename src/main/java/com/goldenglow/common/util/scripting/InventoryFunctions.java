@@ -8,6 +8,7 @@ import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.util.GGLogger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -88,5 +89,8 @@ public class InventoryFunctions {
     }
 
     public static void unlockTM(PlayerWrapper player, String ItemID) {
+        ItemStack tm=new ItemStack(Item.getByNameOrId(ItemID));
+        IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.unlockTM(tm);
     }
 }

@@ -32,6 +32,14 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             }
             tag.setTag("KeyItems", items);
         }
+        if(instance.getTMs()!=null){
+            NBTTagList items=new NBTTagList();
+            for(ItemStack item:instance.getKeyItems()){
+                if(item!=null)
+                    items.appendTag(item.serializeNBT());
+            }
+            tag.setTag("TMs", items);
+        }
 
         if(instance.getEquippedSeals()!=null) {
             NBTTagList equippedSeals = new NBTTagList();
@@ -101,6 +109,17 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                 GGLogger.info(item);
                 try {
                     instance.addKeyItem(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
+                } catch (NBTException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(tag.hasKey("TMs")){
+            NBTTagList items=tag.getTagList("TMs", Constants.NBT.TAG_COMPOUND);
+            for(NBTBase item: items){
+                GGLogger.info(item);
+                try {
+                    instance.unlockTM(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
                 } catch (NBTException e) {
                     e.printStackTrace();
                 }

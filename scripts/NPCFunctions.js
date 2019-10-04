@@ -37,5 +37,5 @@ function removeKeyItem(player, displayName){
 }
 
 function unlockTM(player, itemID){
-	Packages.com.goldenglow.common.util.scripting.InventoryFunctions
+	Packages.com.goldenglow.common.util.scripting.InventoryFunctions.unlockTM(player, itemID);
 }

@@ -3,7 +3,6 @@ package com.goldenglow.common.handlers;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.util.NPCFunctions;
 import com.sk89q.worldedit.BlockVector2D;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumParticleTypes;

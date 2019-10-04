@@ -52,6 +52,9 @@ public class CustomInventory extends ContainerChest {
             BagInventories.openKeyItems(player);
             return;
         }
+        else if(inventoryName.equalsIgnoreCase("TMCase")){
+            BagInventories.openTMCase(player);
+        }
         else if(inventoryName.equalsIgnoreCase("Party")){
             CustomInventory.openPartyInventoryTest(player);
             return;

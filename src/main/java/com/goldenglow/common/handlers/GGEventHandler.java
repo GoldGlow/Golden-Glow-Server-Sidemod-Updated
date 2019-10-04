@@ -11,10 +11,9 @@ import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
-import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.NPCFunctions;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
+import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
@@ -32,8 +31,6 @@ import com.pixelmonmod.pixelmon.blocks.enums.EnumBlockPos;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
-import com.pixelmonmod.pixelmon.items.ItemTM;
-import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -223,7 +220,7 @@ public class GGEventHandler {
             for(BattleParticipant participant:event.bc.participants){
                 if(participant instanceof PlayerParticipant){
                     if(event.results.get(participant)==BattleResults.DEFEAT){
-                        NPCFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant) participant).player));
+                        WorldFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant) participant).player));
                     }
                     else {
                         SongManager.setToRouteSong(((PlayerParticipant) participant).player);

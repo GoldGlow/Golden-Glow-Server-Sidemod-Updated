@@ -2,13 +2,21 @@ package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenReplaceMoveScreen;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.rcon.RConConsoleSource;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 
 /**
@@ -99,6 +107,28 @@ public class Action {
             player.closeScreen();
             CustomInventory.openInventory("seals", player);
         }
+        else if(this.actionType==ActionType.TM_PARTY){
+            BagInventories.openTMMenu(player, value);
+        }
+        else if(this.actionType==ActionType.TEACH_MOVE){
+            int slot=Integer.parseInt(this.value.split(":")[0]);
+            Attack attack=new Attack(this.value.split(":")[1]);
+            PlayerPartyStorage partyStorage = Pixelmon.storageManager.getParty(player);
+            Pokemon pokemon=partyStorage.get(slot);
+            if (!pokemon.getMoveset().hasAttack(attack)) {
+                if (pokemon.getMoveset().size() >= 4) {
+                    player.closeScreen();
+                    Pixelmon.network.sendTo(new OpenReplaceMoveScreen(pokemon.getUUID(), attack.getActualMove().getAttackId()), player);
+                } else {
+                    player.closeScreen();
+                    pokemon.getMoveset().add(attack);
+                    player.sendMessage(new TextComponentString(pokemon.getDisplayName()+"successfully learned the move "+attack.getActualMove().getAttackName()));
+                }
+            } else {
+                player.closeScreen();
+                player.sendMessage(new TextComponentString(Reference.red+"Already knows the move!"));
+            }
+        }
     }
 
     public enum ActionType{
@@ -106,6 +136,8 @@ public class Action {
         GIVEITEM,
         CHANGESKIN,
         OPEN_INV,
-        SEAL_SET
+        SEAL_SET,
+        TM_PARTY,
+        TEACH_MOVE
     }
 }

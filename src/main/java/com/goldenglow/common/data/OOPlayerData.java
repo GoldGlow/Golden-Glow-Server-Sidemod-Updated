@@ -3,6 +3,8 @@ package com.goldenglow.common.data;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
+import com.pixelmonmod.pixelmon.items.ItemTM;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import noppes.npcs.api.item.IItemStack;
 
@@ -114,5 +116,37 @@ public class OOPlayerData implements IPlayerData {
     }
     public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
 
-    public List<ItemStack> getTMs(ItemStack tm){return this.tms;}
+    public List<ItemStack> getTMs(){return this.tms;}
+    public boolean unlockTM(ItemStack tm){
+        if(tm.getItem() instanceof ItemTM) {
+            ItemTM newTM = (ItemTM) tm.getItem();
+            if (this.tms.size() == 0) {
+                this.tms.add(tm);
+                return true;
+            }
+            for (int i = 0; i < this.tms.size(); i++) {
+                ItemTM tmOriginal = (ItemTM) this.tms.get(i).getItem();
+                if (tmOriginal.isHM && newTM.isHM) {
+                    if (newTM.index < tmOriginal.index) {
+                        this.tms.add(i, tm);
+                        return true;
+                    } else if (newTM.index == tmOriginal.index) {
+                        return false;
+                    }
+                } else if (tmOriginal.isHM) {
+                    this.tms.add(i, tm);
+                } else if (!newTM.isHM) {
+                    if (newTM.index < tmOriginal.index) {
+                        this.tms.add(i, tm);
+                        return true;
+                    } else if (newTM.index == tmOriginal.index) {
+                        return false;
+                    }
+                }
+            }
+            this.tms.add(tm);
+            return true;
+        }
+        return false;
+    }
 }
