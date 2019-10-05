@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.client.gui.custom.overlays.ScoreboardLocation;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardDisplayPacket;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardUpdatePacket;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

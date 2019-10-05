@@ -82,26 +82,20 @@ public class Route {
         StringBuilder s = new StringBuilder();
         for(Requirement requirement : this.requirements) {
             if(!Requirement.checkRequirement(requirement, player)) {
+                if(s.length()>0)
+                    s.append("\n");
                 switch (requirement.type) {
                     case QUEST_STARTED:
-                        if(!s.toString().isEmpty())
-                            s.append("\n");
                         s.append("Start Quest: ").append(QuestController.instance.get(requirement.id).getName());
                         break;
                     case QUEST_FINISHED:
-                        if(!s.toString().isEmpty())
-                            s.append("\n");
-                        s.append("Finish Quest: ").append(QuestController.instance.get(requirement.id).getName()).append("\n");
+                        s.append("Finish Quest: ").append(QuestController.instance.get(requirement.id).getName());
                         break;
                     case TIME:
-                        if(!s.toString().isEmpty())
-                            s.append("\n");
-                        s.append("Time: ").append(requirement.value).append("\n");
+                        s.append("Time: ").append(requirement.value);
                         break;
                     case DIALOG:
-                        if(!s.toString().isEmpty())
-                            s.append("\n");
-                        s.append("Read Dialog: ").append(DialogController.instance.get(requirement.id).getName()).append("\n");
+                        s.append("Read Dialog: ").append(DialogController.instance.get(requirement.id).getName());
                         break;
                 }
             }

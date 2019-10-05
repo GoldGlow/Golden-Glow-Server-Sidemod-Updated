@@ -250,16 +250,13 @@ public class GGEventHandler {
     public void onPickApricorn(ApricornEvent.PickApricorn event) {
         if(event.tree instanceof TileEntityCustomApricornTree) {
             event.setCanceled(true);
-            runOnPickEvent((TileEntityCustomApricornTree)event.tree, event);
         }
     }
 
     @SubscribeEvent
     public void onPickBerry(BerryEvent.PickBerry event) {
-        event.player.sendMessage(new TextComponentString(""+event.tree));
         if(event.tree instanceof TileEntityCustomBerryTree) {
             event.setCanceled(true);
-            runOnPickEvent((TileEntityCustomBerryTree)event.tree, event);
         }
     }
 
@@ -276,8 +273,16 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
+        IBlockState blockState = event.getWorld().getBlockState(event.getPos());
+        if(!blockState.getBlock().onBlockActivated(event.getWorld(), event.getPos(), blockState, event.getEntityPlayer(), event.getHand(), event.getFace(), (float)event.getHitVec().x, (float)event.getHitVec().y, (float)event.getHitVec().z)) {
+            if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")) {
+                if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
+                    event.setCanceled(true);
+                    CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
+                }
+            }
+        }
         if(event.getHand()==EnumHand.MAIN_HAND && event.getUseBlock()!=Event.Result.DENY ) {
-            IBlockState blockState = event.getWorld().getBlockState(event.getPos());
             TileEntity tile = null;
             if(blockState.getBlock() instanceof BlockApricornTree || blockState.getBlock() instanceof BlockBerryTree) {
                 if(blockState.getValue(BlockApricornTree.BLOCKPOS) == EnumBlockPos.TOP) {
