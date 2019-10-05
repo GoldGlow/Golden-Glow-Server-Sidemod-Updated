@@ -4,6 +4,8 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.routes.Route;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.rcon.RConConsoleSource;
@@ -17,6 +19,7 @@ public class WorldFunctions {
     public static void warpToSafeZone(PlayerWrapper playerWrapper){
         Route safeZone= GoldenGlow.routeManager.getRoute(playerWrapper.getMCEntity().getEntityData().getString("safeZone"));
         safeZone.warp((EntityPlayerMP)playerWrapper.getMCEntity());
+        Pixelmon.storageManager.getParty((EntityPlayerMP)playerWrapper.getMCEntity()).getTeam().forEach(Pokemon::heal);
         playerWrapper.message("You whited out!");
         ICommandManager icommandmanager = playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer().getCommandManager();
         icommandmanager.executeCommand(new RConConsoleSource(playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer()), "pokeheal "+playerWrapper.getName());
