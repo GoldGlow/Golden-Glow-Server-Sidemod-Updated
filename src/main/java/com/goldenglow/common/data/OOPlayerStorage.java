@@ -1,5 +1,6 @@
 package com.goldenglow.common.data;
 
+import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.GGLogger;
 import net.minecraft.item.ItemStack;
@@ -16,12 +17,16 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
     @Override
     public NBTBase writeNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side) {
         final NBTTagCompound tag = new NBTTagCompound();
+
         if(instance.getWildTheme()!=null)
             tag.setString("theme_wild", instance.getWildTheme());
+
         if(instance.getTrainerTheme()!=null)
             tag.setString("theme_trainer", instance.getTrainerTheme());
+
         if(instance.getPVPTheme()!=null)
             tag.setString("theme_pvp", instance.getPVPTheme());
+
         tag.setInteger("notification_style", instance.getNotificationScheme());
 
         if(instance.getKeyItems()!=null){
@@ -32,6 +37,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             }
             tag.setTag("KeyItems", items);
         }
+
         if(instance.getTMs()!=null){
             NBTTagList items=new NBTTagList();
             for(ItemStack item:instance.getKeyItems()){
@@ -73,13 +79,22 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
     @Override
     public void readNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side, NBTBase nbt) {
         final NBTTagCompound tag = (NBTTagCompound)nbt;
+
         if(tag.hasKey("theme_wild"))
             instance.setWildTheme(tag.getString("theme_wild"));
+        else
+            instance.setWildTheme(SongManager.wildDefault);
+
         if(tag.hasKey("theme_trainer"))
             instance.setTrainerTheme(tag.getString("theme_trainer"));
+        else
+            instance.setWildTheme(SongManager.trainerDefault);
+
         if(tag.hasKey("theme_pvp"))
             instance.setPVPTheme(tag.getString("theme_pvp"));
+
         instance.setNotificationScheme(tag.getInteger("notification_style"));
+
         if(tag.hasKey("equippedSeals")) {
             NBTTagList list = tag.getTagList("equippedSeals", 8);
             for(NBTBase n : list) {
@@ -91,6 +106,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                 }
             }
         }
+
         if(tag.hasKey("unlockedSeals")) {
             NBTTagList list = tag.getTagList("unlockedSeals", 8);
             for(NBTBase n : list) {
@@ -100,9 +116,11 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                 }
             }
         }
+
         if(tag.hasKey("safezone")){
             instance.setSafezone(tag.getString("safezone"));
         }
+
         if(tag.hasKey("KeyItems")){
             NBTTagList items=tag.getTagList("KeyItems", Constants.NBT.TAG_COMPOUND);
             for(NBTBase item: items){
@@ -114,6 +132,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                 }
             }
         }
+
         if(tag.hasKey("TMs")){
             NBTTagList items=tag.getTagList("TMs", Constants.NBT.TAG_COMPOUND);
             for(NBTBase item: items){

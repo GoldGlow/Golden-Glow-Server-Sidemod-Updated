@@ -51,7 +51,6 @@ public class GoldenGlow {
     public TickHandler tickHandler=new TickHandler();
 
     public static GGLogger logger = new GGLogger();
-    public static SongManager songManager = new SongManager();
     public static ConfigHandler configHandler = new ConfigHandler();
 
     public static TeamManager teamManager = new TeamManager();
@@ -99,7 +98,6 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         teamManager.init();
-        songManager.init();
         pixelmonSpawnerHandler.init();
         event.registerServerCommand(new CommandInstanceInv());
         event.registerServerCommand(new CommandPhone());

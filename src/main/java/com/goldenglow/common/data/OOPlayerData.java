@@ -28,83 +28,81 @@ public class OOPlayerData implements IPlayerData {
     private String[] player_seals = new String[6];
     private List<String> unlocked_seals = new ArrayList<>();
 
+    //Getters
     public Route getRoute() {
         return current_route;
     }
-    public boolean hasRoute() {
-        return this.current_route != null;
-    }
-    public void setRoute(Route route) {
-        this.current_route = route;
-    }
-    public void clearRoute() {
-        this.current_route = null;
-    }
-
     public boolean getHasRouteDebug(){
         return this.hasRouteDebug;
     }
-    public void setHasRouteDebug(boolean hasRouteDebug){
-        this.hasRouteDebug=hasRouteDebug;
-    }
-
     public Route getSafezone() {
         return this.safezone;
     }
-    public void setSafezone(String safezoneName) {
-        if (GoldenGlow.routeManager.doesRouteExist(safezoneName)) {
-            this.safezone = GoldenGlow.routeManager.getRoute(safezoneName);
-        }
-    }
-
     public String getCurrentSong() {
         return this.current_song;
     }
-    public void setSong(String song) {
-        //Do more here
-        this.current_song = song;
-    }
-
     public String getWildTheme() {
         return this.theme_wild;
-    }
-    public void setWildTheme(String newTheme) {
-        this.theme_wild = newTheme;
     }
     public String getTrainerTheme() {
         return this.theme_trainer;
     }
-    public void setTrainerTheme(String newTheme) {
-        this.theme_trainer = newTheme;
-    }
     public String getPVPTheme() {
         return this.theme_pvp;
     }
-    public void setPVPTheme(String newTheme) {
-        this.theme_pvp = newTheme;
-    }
-
     public int getNotificationScheme() {
         return this.notification_scheme;
     }
-    public void setNotificationScheme(int id) {
-        this.notification_scheme = id;
-    }
-
     public String[] getEquippedSeals() {
         return this.player_seals.clone();
     }
     public List<String> getUnlockedSeals() {
         return this.unlocked_seals;
     }
-    public void unlockSeal(String name) {
-        this.unlocked_seals.add(name);
+    public List<ItemStack> getKeyItems(){return this.keyItems;}
+    public List<ItemStack> getTMs(){return this.tms;}
+
+    //Setters
+    public void setRoute(Route route) {
+        this.current_route = route;
+    }
+    public void setHasRouteDebug(boolean hasRouteDebug){
+        this.hasRouteDebug=hasRouteDebug;
+    }
+    public void setSafezone(String safezoneName) {
+        if (GoldenGlow.routeManager.doesRouteExist(safezoneName)) {
+            this.safezone = GoldenGlow.routeManager.getRoute(safezoneName);
+        }
+    }
+    public void setSong(String song) {
+        this.current_song = song;
+    }
+    public void setWildTheme(String newTheme) {
+        this.theme_wild = newTheme;
+    }
+    public void setTrainerTheme(String newTheme) {
+        this.theme_trainer = newTheme;
+    }
+    public void setPVPTheme(String newTheme) {
+        this.theme_pvp = newTheme;
+    }
+    public void setNotificationScheme(int id) {
+        this.notification_scheme = id;
     }
     public void setPlayerSeals(String[] seals) {
         this.player_seals = seals;
     }
 
-    public List<ItemStack> getKeyItems(){return this.keyItems;}
+    //Others
+    public boolean hasRoute() {
+        return this.current_route != null;
+    }
+    public void clearRoute() {
+        this.current_route = null;
+    }
+    public void unlockSeal(String name) {
+        this.unlocked_seals.add(name);
+    }
     public void addKeyItem(ItemStack item){this.keyItems.add(item);}
     public void removeKeyItem(String displayName){
         for(ItemStack item:this.keyItems){
@@ -115,8 +113,6 @@ public class OOPlayerData implements IPlayerData {
         }
     }
     public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
-
-    public List<ItemStack> getTMs(){return this.tms;}
     public boolean unlockTM(ItemStack tm){
         if(tm.getItem() instanceof ItemTM) {
             ItemTM newTM = (ItemTM) tm.getItem();

@@ -188,7 +188,7 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void onLevelUp(LevelUpEvent event){
-        SongManager.playSound(event.player, "neutral", GoldenGlow.songManager.levelUpSound);
+        SongManager.playSound(event.player, "neutral", SongManager.levelUpDefault);
     }
 
     @SubscribeEvent
@@ -201,11 +201,11 @@ public class GGEventHandler {
             CustomNPCBattle battle = (CustomNPCBattle) event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
             if (results == BattleResults.VICTORY) {
-                SongManager.setCurrentSong(mcPlayer, GoldenGlow.songManager.victorySong);
+                SongManager.setCurrentSong(mcPlayer, SongManager.victoryDefault);
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if (results == BattleResults.DEFEAT) {
-                SongManager.setToRouteSong(mcPlayer);
+                SongManager.setRouteSong(mcPlayer);
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
             }
         }
@@ -216,14 +216,14 @@ public class GGEventHandler {
             rules.getSecondPokemon().unloadEntity();
             rules.getFirstPokemon().unloadEntity();
         }
-        else{
+        else {
             for(BattleParticipant participant:event.bc.participants){
                 if(participant instanceof PlayerParticipant){
                     if(event.results.get(participant)==BattleResults.DEFEAT){
                         WorldFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant) participant).player));
                     }
                     else {
-                        SongManager.setToRouteSong(((PlayerParticipant) participant).player);
+                        SongManager.setRouteSong(((PlayerParticipant) participant).player);
                     }
                 }
             }

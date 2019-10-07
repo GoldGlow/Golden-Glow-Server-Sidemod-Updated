@@ -1,6 +1,7 @@
 package com.goldenglow.common.battles;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.teams.Team;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -134,16 +135,4 @@ public class CustomBattleHandler
         }catch (Exception e){
         }
     }
-
-    public static String getCustomTheme(BattleParticipant[] participants){
-        for (BattleParticipant participant : participants) {
-            if (participant instanceof PlayerParticipant) {
-                if (GoldenGlow.songManager.playerThemes.containsKey(((PlayerParticipant) participant).player.getName())){
-                    return GoldenGlow.songManager.playerThemes.get(((PlayerParticipant) participant).player.getName());
-                }
-            }
-        }
-        return "";
-    }
-
 }
