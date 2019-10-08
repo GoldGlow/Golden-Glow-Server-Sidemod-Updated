@@ -9,6 +9,11 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenReplaceMoveScreen;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.Node;
+import me.lucko.luckperms.api.User;
+import me.lucko.luckperms.api.manager.UserManager;
+import me.lucko.luckperms.common.node.factory.NodeFactory;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -18,6 +23,8 @@ import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+
+import java.util.List;
 
 /**
  * Created by JeanMarc on 6/19/2019.
@@ -129,6 +136,17 @@ public class Action {
                 player.sendMessage(new TextComponentString(Reference.red+"Already knows the move!"));
             }
         }
+        else if(this.actionType==ActionType.CHANGE_TITLE){
+            User user=LuckPerms.getApi().getUser(player.getName());
+            List<Node> nodes=user.getOwnNodes();
+            for(Node node: nodes){
+                if(node.getPermission().startsWith("prefix.3.")){
+                    user.unsetPermission(node);
+                }
+            }
+            Node.Builder node= NodeFactory.buildPrefixNode(3, value);
+            user.setPermission(node.build());
+        }
     }
 
     public enum ActionType{
@@ -138,6 +156,7 @@ public class Action {
         OPEN_INV,
         SEAL_SET,
         TM_PARTY,
-        TEACH_MOVE
+        TEACH_MOVE,
+        CHANGE_TITLE
     }
 }
