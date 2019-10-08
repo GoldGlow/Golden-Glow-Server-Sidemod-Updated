@@ -1,5 +1,5 @@
 function achievement(player, firstLine, secondLine){
-	Packages.com.goldenglow.common.util.NPCFunctions.showAchievement(player, firstLine, secondLine);
+	Packages.com.goldenglow.common.util.scripting.OtherFunctions.showAchievement(player, firstLine, secondLine);
 }
 
 function playSong(player){
@@ -38,4 +38,14 @@ function removeKeyItem(player, displayName){
 
 function unlockTM(player, itemID){
 	Packages.com.goldenglow.common.util.scripting.InventoryFunctions.unlockTM(player, itemID);
+}
+
+function addKeyItemAndQuestObjective(player, questId, objectiveId, itemstack){
+	addKeyItem(player, itemstack);
+	var quests=player.getActiveQuests();
+	for(var i=0;i<quests.length;i++){
+		if(quests[i].getId()==questId){
+			quests[i].getObjectives(player)[objectiveId].setProgress(quests[i].getObjectives(player)[objectiveId]++);
+		}
+	}
 }

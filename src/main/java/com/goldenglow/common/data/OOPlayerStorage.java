@@ -40,7 +40,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(instance.getTMs()!=null){
             NBTTagList items=new NBTTagList();
-            for(ItemStack item:instance.getKeyItems()){
+            for(ItemStack item:instance.getTMs()){
                 if(item!=null)
                     items.appendTag(item.serializeNBT());
             }

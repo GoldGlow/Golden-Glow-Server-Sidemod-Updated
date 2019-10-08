@@ -122,7 +122,7 @@ public class Action {
                 } else {
                     player.closeScreen();
                     pokemon.getMoveset().add(attack);
-                    player.sendMessage(new TextComponentString(pokemon.getDisplayName()+"successfully learned the move "+attack.getActualMove().getAttackName()));
+                    player.sendMessage(new TextComponentString(pokemon.getDisplayName()+" successfully learned the move "+attack.getActualMove().getAttackName()));
                 }
             } else {
                 player.closeScreen();
