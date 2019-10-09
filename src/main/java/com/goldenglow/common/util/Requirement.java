@@ -41,12 +41,11 @@ public class Requirement {
     }
 
     public static boolean checkRequirement(Requirement requirement, EntityPlayerMP playerEntity) {
-        Player p = Sponge.getServer().getPlayer(playerEntity.getUniqueID()).get();
-        if(p.hasPermission(requirement.override)){
+        PlayerWrapper player = new PlayerWrapper(playerEntity);
+
+        if(PermissionUtils.checkPermission(playerEntity, requirement.override)){
             return true;
         }
-
-        PlayerWrapper player = new PlayerWrapper(playerEntity);
 
         if(requirement.type == RequirementType.QUEST_STARTED) {
             return ((IPlayer)player).hasActiveQuest(requirement.id);
@@ -58,7 +57,7 @@ public class Requirement {
             return ((IPlayer)player).hasReadDialog(requirement.id);
         }
         else if(requirement.type == RequirementType.PERMISSION) {
-            return player.hasPermission(requirement.value);
+            return PermissionUtils.checkPermission(playerEntity, requirement.value);
         }
         else if(requirement.type == RequirementType.TIME) {
             if(requirement.value.equals("day")) {

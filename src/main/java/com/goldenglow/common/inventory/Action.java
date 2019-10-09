@@ -2,6 +2,7 @@ package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -12,7 +13,6 @@ import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
-import me.lucko.luckperms.api.manager.UserManager;
 import me.lucko.luckperms.common.node.factory.NodeFactory;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,7 +21,6 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 
 import java.util.List;
@@ -137,15 +136,8 @@ public class Action {
             }
         }
         else if(this.actionType==ActionType.CHANGE_TITLE){
-            User user=LuckPerms.getApi().getUser(player.getName());
-            List<Node> nodes=user.getOwnNodes();
-            for(Node node: nodes){
-                if(node.getPermission().startsWith("prefix.3.")){
-                    user.unsetPermission(node);
-                }
-            }
-            Node.Builder node= NodeFactory.buildPrefixNode(3, value);
-            user.setPermission(node.build());
+            PermissionUtils.unsetPermissionsWithStart(player, "prefix.3.");
+            PermissionUtils.setPrefix(player, value);
         }
     }
 

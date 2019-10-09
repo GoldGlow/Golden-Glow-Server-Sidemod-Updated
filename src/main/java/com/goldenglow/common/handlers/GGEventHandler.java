@@ -11,17 +11,20 @@ import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
+import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
-import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
-import com.pixelmonmod.pixelmon.api.events.BerryEvent;
-import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
+import com.pixelmonmod.pixelmon.api.events.*;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonBase;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
+import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
@@ -30,8 +33,13 @@ import com.pixelmonmod.pixelmon.blocks.apricornTrees.BlockApricornTree;
 import com.pixelmonmod.pixelmon.blocks.enums.EnumBlockPos;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
+import com.pixelmonmod.pixelmon.pokedex.Pokedex;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -50,6 +58,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.Server;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.event.BlockEvent;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
@@ -60,11 +69,13 @@ import noppes.npcs.constants.EnumScriptType;
 import noppes.npcs.controllers.IScriptBlockHandler;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -87,6 +98,32 @@ public class GGEventHandler {
                     event.setCanceled(true);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void pokedexRegisteredEvent(PokedexEvent event){
+        Map<Integer, EnumPokedexRegisterStatus> seen=Pixelmon.storageManager.getParty(event.uuid).pokedex.getSeenMap();
+        GGLogger.info(seen.size());
+        ArrayList<Integer> caught=new ArrayList<Integer>();
+        int bugTypes=0;
+        for(Map.Entry<Integer, EnumPokedexRegisterStatus> entry:seen.entrySet()){
+            if(entry.getValue()==EnumPokedexRegisterStatus.caught){
+                caught.add(entry.getKey());
+            }
+        }
+        GGLogger.info("Caught in dex: "+caught.size());
+        for(int species:caught) {
+            for (EnumType type : EnumSpecies.getFromDex(species).getBaseStats().types) {
+                if (type == EnumType.Bug) {
+                    bugTypes++;
+                    if(bugTypes>=5){
+                        OtherFunctions.unlockBugCatcher(Pixelmon.storageManager.getParty(event.uuid).getPlayer());
+                        return;
+                    }
+                }
+            }
+        }
+        GGLogger.info("Bug types: "+bugTypes);
     }
 
     //ToDo: Change login Event considering we now use a different way for storing this info.
