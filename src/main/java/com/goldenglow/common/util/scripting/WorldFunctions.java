@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.rcon.RConConsoleSource;
 import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
+import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WorldWrapper;
 
@@ -100,4 +101,26 @@ public class WorldFunctions {
         scriptedBlock.getMCTileEntity().getTileData().setLong(player.getUUID(), getCurrentDay((WorldWrapper)player.getWorld()));
         return true;
     }
+
+    public static boolean isDifferentIRLDay(PlayerWrapper player, BlockScriptedWrapper scriptedBlock){
+        if(scriptedBlock.getMCTileEntity().getTileData().hasKey(player.getUUID())) {
+            if (scriptedBlock.getMCTileEntity().getTileData().getLong(player.getUUID()) == lastDailyRefresh){
+                return false;
+            }
+        }
+        scriptedBlock.getMCTileEntity().getTileData().setLong(player.getUUID(), lastDailyRefresh);
+        return true;
+    }
+
+    public static boolean isDifferentIRLDay(PlayerWrapper player, NPCWrapper npcWrapper){
+        if(npcWrapper.getEntityNbt().getMCNBT().hasKey(player.getUUID())) {
+            if (npcWrapper.getEntityNbt().getMCNBT().getLong(player.getUUID()) == lastDailyRefresh){
+                return false;
+            }
+        }
+        npcWrapper.getEntityNbt().getMCNBT().setLong(player.getUUID(), lastDailyRefresh);
+        return true;
+    }
+
+    public static long getLastDailyRefresh(){return lastDailyRefresh;}
 }

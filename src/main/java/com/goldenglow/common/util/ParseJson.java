@@ -1,6 +1,7 @@
 package com.goldenglow.common.util;
 
 import com.goldenglow.common.inventory.Action;
+import com.goldenglow.common.routes.SpawnPokemon;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -37,5 +38,17 @@ public class ParseJson {
             a.closeInv=o.get("closeInv").getAsBoolean();
         }
         return a;
+    }
+
+    public static SpawnPokemon parseSpawnPokemon(JsonObject o){
+        SpawnPokemon pokemon=new SpawnPokemon();
+        pokemon.species=o.getAsJsonObject().get("species").getAsString();
+        if(o.has("form")){
+            pokemon.form=o.getAsJsonObject().get("form").getAsByte();
+        }
+        pokemon.minLvl=o.getAsJsonObject().get("minLvl").getAsInt();
+        pokemon.maxLvl=o.getAsJsonObject().get("maxLvl").getAsInt();
+        pokemon.weight=o.getAsJsonObject().get("weight").getAsInt();
+        return pokemon;
     }
 }

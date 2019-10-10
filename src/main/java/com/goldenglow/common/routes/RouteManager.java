@@ -123,6 +123,15 @@ public class RouteManager {
                 route.requirements.add(r);
             }
         }
+
+        if(json.has("apricornPokemon")){
+            JsonArray apricornPokemonArray=json.getAsJsonArray("apricornPokemon");
+            for(JsonElement o:apricornPokemonArray){
+                SpawnPokemon pokemon=ParseJson.parseSpawnPokemon((JsonObject) o);
+                route.apricornPokemon.add(pokemon);
+            }
+        }
+
         this.routes.add(route);
     }
 
@@ -198,6 +207,19 @@ public class RouteManager {
                 file.name("id").value(requirement.id);
             }
             file.name("override").value(requirement.override);
+            file.endObject();
+        }
+        file.endArray();
+
+        file.name("apricornPokemon");
+        file.beginArray();
+        for(SpawnPokemon pokemon: route.apricornPokemon){
+            file.beginObject();
+            file.name("species").value(pokemon.species);
+            file.name("form").value(pokemon.form);
+            file.name("minLvl").value(pokemon.minLvl);
+            file.name("maxLvl").value(pokemon.minLvl);
+            file.name("weight").value(pokemon.weight);
             file.endObject();
         }
         file.endArray();

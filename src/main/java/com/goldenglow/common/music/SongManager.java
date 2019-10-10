@@ -28,7 +28,7 @@ import java.util.HashMap;
 public class SongManager {
 
     static File config = new File(Reference.configDir, "songs/config.cfg");
-    public static String wildDefault,trainerDefault,encounterDefault,victoryDefault,evolutionDefault,levelUpDefault;
+    public static String wildDefault,trainerDefault,encounterDefault,victoryDefault,evolutionDefault,levelUpDefault="obscureobsidian:sound.level_up";
 
     public static void init() {
         GoldenGlow.logger.info("Loading Song Config...");

@@ -30,6 +30,7 @@ public class Route {
     public int warpY=100;
     public int warpZ=0;
     public World world;
+    public List<SpawnPokemon> apricornPokemon=new ArrayList<>();
 
     List<EntityPlayerMP> players = new ArrayList<>();
 

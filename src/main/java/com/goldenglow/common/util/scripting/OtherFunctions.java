@@ -2,8 +2,14 @@ package com.goldenglow.common.util.scripting;
 
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PermissionUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.controllers.DialogController;
+import noppes.npcs.controllers.data.Dialog;
+import noppes.npcs.entity.EntityNPCInterface;
 
 public class OtherFunctions {
     public static void showAchievement(PlayerWrapper playerWrapper, String firstLine, String secondLine){
@@ -21,4 +27,9 @@ public class OtherFunctions {
             GGLogger.info("unlocked Bug Catcher");
         }
     }
+
+    public static void openDialog(PlayerWrapper player, NPCWrapper npc, int dialogId){
+        NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface) npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
+    }
+
 }

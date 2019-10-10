@@ -68,7 +68,7 @@ public class TickHandler {
         }
     }
 
-    static void npcBattleDialog(EntityPlayerMP player, EntityNPCInterface npc, int initDialogID) {
+    public static void npcBattleDialog(EntityPlayerMP player, EntityNPCInterface npc, int initDialogID) {
         SongManager.setCurrentSong(player, SongManager.encounterDefault);
         NoppesUtilServer.openDialog(player, npc, (Dialog) DialogController.instance.get(initDialogID));
     }
