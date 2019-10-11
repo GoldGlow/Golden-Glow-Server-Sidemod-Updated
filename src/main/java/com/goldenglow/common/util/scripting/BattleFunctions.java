@@ -22,12 +22,14 @@ import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.entity.EntityNPCInterface;
 
 public class BattleFunctions {
+    //used to do Blue vs May battle sequence, might be used again later
     public static void createNPCBattle(NPCWrapper firstNPC, String firstTeamName, NPCWrapper secondNPC, String secondTeamName){
         EntityNPCInterface firstNpc=(EntityNPCInterface) firstNPC.getMCEntity();
         EntityNPCInterface secondNpc=(EntityNPCInterface) secondNPC.getMCEntity();
         CustomBattleHandler.createCustomNPCBattle(firstNpc, firstTeamName, secondNpc, secondTeamName);
     }
 
+    //Used for Trainer Battles, doesn't include LoS
     public static void createCustomBattle(PlayerWrapper playerWrapper, String teamName, int initDialogID, int winDialogID, int loseDialogID, NPCWrapper npcWrapper) {
         EntityNPCInterface npc=(EntityNPCInterface) npcWrapper.getMCEntity();
         EntityPlayerMP player=(EntityPlayerMP)playerWrapper.getMCEntity();
@@ -37,10 +39,12 @@ public class BattleFunctions {
         CustomBattleHandler.createCustomBattle(player, teamName, initDialogID, winDialogID, loseDialogID, npc);
     }
 
+    // Line of sight code, used for sneaking portions and trainers
     public static void registerLOSBattle(NPCWrapper npc, int initDialogID) {
         TickHandler.battleNPCs.put(npc, initDialogID);
     }
 
+    //code to start wild battles, currently used for apricorns
     public static void startWildBattle(PlayerWrapper player, SpawnPokemon pokemon){
         EntityPlayerMP playerMP=(EntityPlayerMP)player.getMCEntity();
         PokemonSpec pokemonSpec=PokemonSpec.from(pokemon.species);
@@ -54,6 +58,7 @@ public class BattleFunctions {
         BattleRegistry.startBattle(new PlayerParticipant(playerMP, Pixelmon.storageManager.getParty(playerMP).getAndSendOutFirstAblePokemon(playerMP)), new WildPixelmonParticipant(pixelmon));
     }
 
+    //Used to set a dialog as a battle start dialog, sets the song to the encounter theme
     public static void battleInitDialog(PlayerWrapper player, NPCWrapper npc, int dialogId){
         SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), SongManager.encounterDefault);
         NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface)npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));

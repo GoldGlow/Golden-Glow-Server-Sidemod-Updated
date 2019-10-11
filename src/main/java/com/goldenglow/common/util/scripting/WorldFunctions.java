@@ -17,15 +17,18 @@ import noppes.npcs.api.wrapper.WorldWrapper;
 
 public class WorldFunctions {
     private static long lastDailyRefresh = 0;
+
+    //Whiting out
     public static void warpToSafeZone(PlayerWrapper playerWrapper){
-        Route safeZone= GoldenGlow.routeManager.getRoute(playerWrapper.getMCEntity().getEntityData().getString("safeZone"));
-        safeZone.warp((EntityPlayerMP)playerWrapper.getMCEntity());
+        IPlayerData playerData = playerWrapper.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.getSafezone().warp((EntityPlayerMP)playerWrapper.getMCEntity());
         Pixelmon.storageManager.getParty((EntityPlayerMP)playerWrapper.getMCEntity()).getTeam().forEach(Pokemon::heal);
         playerWrapper.message("You whited out!");
         ICommandManager icommandmanager = playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer().getCommandManager();
         icommandmanager.executeCommand(new RConConsoleSource(playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer()), "pokeheal "+playerWrapper.getName());
     }
 
+    //World script
     public static void checkRoute(EntityPlayerMP playerMP, int lastPosX, int lastPosY, int lastPosZ) {
         IPlayerData playerData = playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
         Route currentRoute = null;

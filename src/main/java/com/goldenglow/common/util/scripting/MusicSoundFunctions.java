@@ -1,17 +1,21 @@
 package com.goldenglow.common.util.scripting;
 
+import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.Server;
 import noppes.npcs.constants.EnumPacketClient;
 
 public class MusicSoundFunctions {
+    //Used to play random short sounds, not really used yet, kept from leftovers from the early day music scripts
     public static void playSound(EntityPlayerMP player, String source, String path){
         SongManager.playSound(player, source, path);
     }
 
+
+    //pretty much used to loop music, in the player tick scripts with the route checks
     public static void playSong(EntityPlayerMP player){
-        if(player.getEntityData().hasKey("Song"))
-            Server.sendData(player, EnumPacketClient.PLAY_MUSIC, player.getEntityData().getString("Song"));
+        SongManager.setCurrentSong(player, player.getCapability(OOPlayerProvider.OO_DATA, null).getCurrentSong());
     }
 }

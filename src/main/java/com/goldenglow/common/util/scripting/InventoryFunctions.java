@@ -20,6 +20,8 @@ import noppes.npcs.controllers.data.QuestData;
 import java.util.HashMap;
 
 public class InventoryFunctions {
+
+    //Add a key item to the player's Key Items Pocket. Used for different main and side quests
     public static void addKeyItem(PlayerWrapper playerWrapper, String itemStack){
         IPlayerData playerData = playerWrapper.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
         ItemStack item=null;
@@ -44,6 +46,7 @@ public class InventoryFunctions {
         }
     }
 
+    //Remove Key items from quests when they're completed/you give the item
     public static void removeKeyItem(PlayerWrapper playerWrapper, String displayName){
         IPlayerData playerData = playerWrapper.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
         playerData.removeKeyItem(displayName);
@@ -60,6 +63,7 @@ public class InventoryFunctions {
         }
     }
 
+    //Needs to be updated
     public static void createInstancedInv(EntityPlayerMP playerMP, String[] items, String containerName, int questID) {
         HashMap<Integer, QuestData> data = PlayerData.get(playerMP).questData.activeQuests;
         if(data.containsKey(questID)) {
@@ -88,9 +92,11 @@ public class InventoryFunctions {
         }
     }
 
-    public static void unlockTM(PlayerWrapper player, String ItemID) {
+
+    //Used at a few pokeloots, probably for a quest too
+    public static boolean unlockTM(PlayerWrapper player, String ItemID) {
         ItemStack tm=new ItemStack(Item.getByNameOrId(ItemID));
         IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
-        playerData.unlockTM(tm);
+        return playerData.unlockTM(tm);
     }
 }
