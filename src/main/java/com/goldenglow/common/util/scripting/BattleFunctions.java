@@ -1,5 +1,6 @@
 package com.goldenglow.common.util.scripting;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.CustomBattleHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
@@ -60,7 +61,7 @@ public class BattleFunctions {
 
     //Used to set a dialog as a battle start dialog, sets the song to the encounter theme
     public static void battleInitDialog(PlayerWrapper player, NPCWrapper npc, int dialogId){
-        SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), SongManager.encounterDefault);
+        SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), GoldenGlow.songManager.encounterDefault);
         NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface)npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
     }
 }

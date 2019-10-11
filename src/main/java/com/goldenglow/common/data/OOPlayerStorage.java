@@ -1,5 +1,6 @@
 package com.goldenglow.common.data;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.GGLogger;
@@ -83,12 +84,12 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(tag.hasKey("theme_wild"))
             instance.setWildTheme(tag.getString("theme_wild"));
         else
-            instance.setWildTheme(SongManager.wildDefault);
+            instance.setWildTheme(GoldenGlow.songManager.wildDefault);
 
         if(tag.hasKey("theme_trainer"))
             instance.setTrainerTheme(tag.getString("theme_trainer"));
         else
-            instance.setWildTheme(SongManager.trainerDefault);
+            instance.setTrainerTheme(GoldenGlow.songManager.trainerDefault);
 
         if(tag.hasKey("theme_pvp"))
             instance.setPVPTheme(tag.getString("theme_pvp"));

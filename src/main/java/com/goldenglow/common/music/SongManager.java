@@ -28,9 +28,9 @@ import java.util.HashMap;
 public class SongManager {
 
     static File config = new File(Reference.configDir, "songs/config.cfg");
-    public static String wildDefault,trainerDefault,encounterDefault,victoryDefault,evolutionDefault,levelUpDefault="obscureobsidian:sound.level_up";
+    public String wildDefault,trainerDefault,encounterDefault,victoryDefault,evolutionDefault,levelUpDefault;
 
-    public static void init() {
+    public void init() {
         GoldenGlow.logger.info("Loading Song Config...");
         try {
             if(!config.createNewFile()) {
@@ -38,32 +38,38 @@ public class SongManager {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     if (line.startsWith("wildBattleSong="))
-                        wildDefault = line.replace("wildBattleSong=", "").replace(" ", "");
+                        this.wildDefault = line.replace("wildBattleSong=", "").replace(" ", "");
                     if (line.startsWith("trainerBattleSong="))
-                        trainerDefault = line.replace("trainerBattleSong=", "").replace(" ", "");
+                        this.trainerDefault = line.replace("trainerBattleSong=", "").replace(" ", "");
                     if (line.startsWith("encounterSong="))
-                        encounterDefault = line.replace("encounterSong=", "").replace(" ", "");
+                        this.encounterDefault = line.replace("encounterSong=", "").replace(" ", "");
                     if (line.startsWith("victorySong="))
-                        victoryDefault = line.replace("victorySong=", "").replace(" ", "");
+                        this.victoryDefault = line.replace("victorySong=", "").replace(" ", "");
                     if (line.startsWith("evolutionSong="))
-                        evolutionDefault = line.replace("evolutionSong=", "").replace(" ", "");
+                        this.evolutionDefault = line.replace("evolutionSong=", "").replace(" ", "");
                     if (line.startsWith("levelUpSound="))
-                        levelUpDefault = line.replace("levelUpSound=", "").replace(" ", "");
+                        this.levelUpDefault = line.replace("levelUpSound=", "").replace(" ", "");
                 }
             } else {
                 FileOutputStream os = new FileOutputStream(config);
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
-                writer.write("wildBattleSong=obscureobsidian:wild.lgpe");
+                this.wildDefault="obscureobsidian:wild.lgpe";
+                writer.write("wildBattleSong="+wildDefault);
                 writer.newLine();
-                writer.write("trainerBattleSong=obscureobsidian:trainer.lgpe");
+                this.trainerDefault="obscureobsidian:trainer.lgpe";
+                writer.write("trainerBattleSong="+trainerDefault);
                 writer.newLine();
-                writer.write("encounterSong=obscureobsidian:encounter.rival_lgpe");
+                this.encounterDefault="obscureobsidian:encounter.rival_lgpe";
+                writer.write("encounterSong="+encounterDefault);
                 writer.newLine();
-                writer.write("victorySong=obscureobsidian:victory.lgpe");
+                this.victoryDefault="obscureobsidian:victory.lgpe";
+                writer.write("victorySong="+victoryDefault);
                 writer.newLine();
-                writer.write("evolutionSong=obscureobsidian:sound.evolution");
+                this.evolutionDefault="obscureobsidian:sound.evolution";
+                writer.write("evolutionSong="+evolutionDefault);
                 writer.newLine();
-                writer.write("levelUpSound=obscureobsidian:sound.level_up");
+                this.levelUpDefault="obscureobsidian:sound.level_up";
+                writer.write("levelUpSound="+levelUpDefault);
                 writer.newLine();
                 writer.close();
             }

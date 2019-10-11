@@ -225,7 +225,7 @@ public class GGEventHandler {
 
     @SubscribeEvent
     public void onLevelUp(LevelUpEvent event){
-        SongManager.playSound(event.player, "neutral", SongManager.levelUpDefault);
+        SongManager.playSound(event.player, "neutral", GoldenGlow.songManager.levelUpDefault);
     }
 
     @SubscribeEvent
@@ -238,7 +238,7 @@ public class GGEventHandler {
             CustomNPCBattle battle = (CustomNPCBattle) event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
             if (results == BattleResults.VICTORY) {
-                SongManager.setCurrentSong(mcPlayer, SongManager.victoryDefault);
+                SongManager.setCurrentSong(mcPlayer, GoldenGlow.songManager.victoryDefault);
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if (results == BattleResults.DEFEAT) {

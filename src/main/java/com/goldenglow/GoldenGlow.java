@@ -53,6 +53,7 @@ public class GoldenGlow {
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
 
+    public static SongManager songManager= new SongManager();
     public static TeamManager teamManager = new TeamManager();
     public static RouteManager routeManager = new RouteManager();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
@@ -99,6 +100,7 @@ public class GoldenGlow {
     public void serverStarting(FMLServerStartingEvent event) {
         teamManager.init();
         pixelmonSpawnerHandler.init();
+        songManager.init();
         event.registerServerCommand(new CommandInstanceInv());
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRouteNotificationOption());
