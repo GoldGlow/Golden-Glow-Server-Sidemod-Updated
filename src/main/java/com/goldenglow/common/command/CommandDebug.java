@@ -1,6 +1,8 @@
 package com.goldenglow.common.command;
 
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.routes.Route;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.ScoreboardLocation;
@@ -8,6 +10,12 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticeP
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardDisplayPacket;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardUpdatePacket;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.forge.ForgeWorldEdit;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.regions.selector.Polygonal2DRegionSelector;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -15,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 
@@ -49,7 +58,15 @@ public class CommandDebug extends CommandBase {
         nbt.setString("id", "minecraft:skull");
         nbt.setShort("Damage", (short)3);
         Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(true).setLines(new String[] {"§0§lThis is a test for potential dialgue!","§0§lLet's see how this looks..."}).setItemStack(new ItemStack(nbt), EnumOverlayLayout.LEFT), (EntityPlayerMP)sender);
-        */
         CustomInventory.openInventory("Seals", (EntityPlayerMP)sender);
+         */
+        EntityPlayerMP player = (EntityPlayerMP)sender;
+        if(player.getCapability(OOPlayerProvider.OO_DATA, null).hasRoute()) {
+            Route route = player.getCapability(OOPlayerProvider.OO_DATA, null).getRoute();
+            LocalSession session = WorldEdit.getInstance().getSessionManager().findByName(player.getName());
+            Polygonal2DRegionSelector selector = new Polygonal2DRegionSelector(session.getSelectionWorld(), route.region.getPoints(), route.region.getMinimumY(), route.region.getMaximumY());
+            session.setRegionSelector(session.getSelectionWorld(), selector);
+            session.dispatchCUISelection(ForgeWorldEdit.inst.wrap(player));
+        }
     }
 }
