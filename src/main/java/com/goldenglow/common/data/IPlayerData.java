@@ -2,6 +2,7 @@ package com.goldenglow.common.data;
 
         import com.goldenglow.common.routes.Route;
         import com.goldenglow.common.seals.Seal;
+        import com.goldenglow.common.util.Scoreboards;
         import net.minecraft.item.Item;
         import net.minecraft.item.ItemStack;
 
@@ -31,6 +32,9 @@ public interface IPlayerData {
 
     int getNotificationScheme();
     void setNotificationScheme(int id);
+
+    Scoreboards.EnumScoreboardType getScoreboardType();
+    void setScoreboardType(Scoreboards.EnumScoreboardType scoreboardType);
 
     String[] getEquippedSeals();
     List<String> getUnlockedSeals();

@@ -3,6 +3,7 @@ package com.goldenglow.common.data;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
+import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.items.ItemTM;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ public class OOPlayerData implements IPlayerData {
     private List<ItemStack> tms=new ArrayList<>();
 
     private int notification_scheme = 0;
+    private Scoreboards.EnumScoreboardType scoreboardType= Scoreboards.EnumScoreboardType.NONE;
 
     private String[] player_seals = new String[6];
     private List<String> unlocked_seals = new ArrayList<>();
@@ -61,6 +63,7 @@ public class OOPlayerData implements IPlayerData {
     }
     public List<ItemStack> getKeyItems(){return this.keyItems;}
     public List<ItemStack> getTMs(){return this.tms;}
+    public Scoreboards.EnumScoreboardType getScoreboardType(){return this.scoreboardType;}
 
     //Setters
     public void setRoute(Route route) {
@@ -92,6 +95,7 @@ public class OOPlayerData implements IPlayerData {
     public void setPlayerSeals(String[] seals) {
         this.player_seals = seals;
     }
+    public void setScoreboardType(Scoreboards.EnumScoreboardType scoreboardType){this.scoreboardType=scoreboardType;}
 
     //Others
     public boolean hasRoute() {

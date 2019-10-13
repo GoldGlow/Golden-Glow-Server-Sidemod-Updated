@@ -1,7 +1,16 @@
 package com.goldenglow.common.util.scripting;
 
+import com.goldenglow.common.data.IPlayerData;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PermissionUtils;
+import com.goldenglow.common.util.Scoreboards;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
+import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
+import com.pixelmonmod.pixelmon.client.gui.custom.overlays.ScoreboardLocation;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardDisplayPacket;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardUpdatePacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.NoppesUtilServer;
@@ -10,6 +19,8 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.entity.EntityNPCInterface;
+
+import java.util.ArrayList;
 
 public class OtherFunctions {
     //Probably needs to be updated to use the MC notification system instead of CNPCs
@@ -33,6 +44,10 @@ public class OtherFunctions {
     //Opens a dialog for a NPC. Used for other scripting stuff
     public static void openDialog(PlayerWrapper player, NPCWrapper npc, int dialogId){
         NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface) npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
+    }
+
+    public static void setScoreboard(PlayerWrapper player){
+        Scoreboards.buildScoreboard((EntityPlayerMP)player.getMCEntity());
     }
 
 }

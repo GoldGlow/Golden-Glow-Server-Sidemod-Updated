@@ -112,7 +112,6 @@ public class GoldenGlow {
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
-        event.registerServerCommand(new CommandRouteDebug());
         event.registerServerCommand(new CommandScriptable());
 
         event.registerServerCommand(new CommandRoutes());

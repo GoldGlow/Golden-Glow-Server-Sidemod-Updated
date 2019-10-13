@@ -24,8 +24,6 @@ public class WorldFunctions {
         playerData.getSafezone().warp((EntityPlayerMP)playerWrapper.getMCEntity());
         Pixelmon.storageManager.getParty((EntityPlayerMP)playerWrapper.getMCEntity()).getTeam().forEach(Pokemon::heal);
         playerWrapper.message("You whited out!");
-        ICommandManager icommandmanager = playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer().getCommandManager();
-        icommandmanager.executeCommand(new RConConsoleSource(playerWrapper.getMCEntity().getEntityWorld().getMinecraftServer()), "pokeheal "+playerWrapper.getName());
     }
 
     //World script
@@ -57,15 +55,11 @@ public class WorldFunctions {
                     //If route has a safeZone, set player's last safeZone to this Route's safeZone
                     if (actualRoute.isSafeZone)
                         playerData.setSafezone(actualRoute.unlocalizedName);
-                    if(playerData.getHasRouteDebug())
-                        playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName(playerData.getRoute().unlocalizedName == null ? "Null" : playerData.getRoute().unlocalizedName);
                 }
             }
         }
         else {
-            if(playerData.getHasRouteDebug())
-                playerMP.getWorldScoreboard().getObjective("RD_"+playerMP.getName()).setDisplayName("null");
-	        /* Ensure players are always in a route. (Stop players leaving the map)
+            /* Ensure players are always in a route. (Stop players leaving the map)
             playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
             playerMP.sendMessage(new TextComponentString("You can't go this way!").setStyle(new Style().setBold(true)));
 	         */
@@ -97,11 +91,11 @@ public class WorldFunctions {
 
     public static boolean hasWaitedForDay(PlayerWrapper player, BlockScriptedWrapper scriptedBlock){
         if(scriptedBlock.getMCTileEntity().getTileData().hasKey(player.getUUID())) {
-            if (scriptedBlock.getMCTileEntity().getTileData().getLong(player.getUUID()) == getCurrentDay((WorldWrapper)player.getWorld())){
+            if (scriptedBlock.getMCTileEntity().getTileData().getInteger(player.getUUID()) == getCurrentDay((WorldWrapper)player.getWorld())){
                 return false;
             }
         }
-        scriptedBlock.getMCTileEntity().getTileData().setLong(player.getUUID(), getCurrentDay((WorldWrapper)player.getWorld()));
+        scriptedBlock.getMCTileEntity().getTileData().setInteger(player.getUUID(), getCurrentDay((WorldWrapper)player.getWorld()));
         return true;
     }
 

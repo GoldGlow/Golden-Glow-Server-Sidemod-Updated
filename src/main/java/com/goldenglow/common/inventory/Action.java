@@ -5,6 +5,7 @@ import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
@@ -137,7 +138,11 @@ public class Action {
         }
         else if(this.actionType==ActionType.CHANGE_TITLE){
             PermissionUtils.unsetPermissionsWithStart(player, "prefix.3.");
-            PermissionUtils.setPrefix(player, value);
+            PermissionUtils.setPrefix(player, this.value);
+        }
+        else if(this.actionType==ActionType.SCOREBOARD_TYPE){
+            OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
+            data.setScoreboardType(Scoreboards.EnumScoreboardType.valueOf(this.value));
         }
     }
 
@@ -149,6 +154,7 @@ public class Action {
         SEAL_SET,
         TM_PARTY,
         TEACH_MOVE,
-        CHANGE_TITLE
+        CHANGE_TITLE,
+        SCOREBOARD_TYPE
     }
 }

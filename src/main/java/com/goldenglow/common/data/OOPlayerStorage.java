@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.Scoreboards;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.EnumFacing;
@@ -29,6 +30,8 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             tag.setString("theme_pvp", instance.getPVPTheme());
 
         tag.setInteger("notification_style", instance.getNotificationScheme());
+
+        tag.setString("scoreboardType", instance.getScoreboardType().name());
 
         if(instance.getKeyItems()!=null){
             NBTTagList items=new NBTTagList();
@@ -120,6 +123,9 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(tag.hasKey("safezone")){
             instance.setSafezone(tag.getString("safezone"));
+        }
+        if(tag.hasKey("scoreboardType")){
+            instance.setScoreboardType(Scoreboards.EnumScoreboardType.valueOf(tag.getString("scoreboardType")));
         }
 
         if(tag.hasKey("KeyItems")){
