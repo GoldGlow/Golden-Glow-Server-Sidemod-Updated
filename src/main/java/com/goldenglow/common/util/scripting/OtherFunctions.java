@@ -13,6 +13,7 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScorebo
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardUpdatePacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
@@ -21,6 +22,7 @@ import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class OtherFunctions {
     //Probably needs to be updated to use the MC notification system instead of CNPCs

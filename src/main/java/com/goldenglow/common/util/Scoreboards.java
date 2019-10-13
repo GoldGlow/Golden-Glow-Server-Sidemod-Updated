@@ -47,7 +47,10 @@ public class Scoreboards {
         lines.add("Time");
         lines.add("Day");
         ArrayList<String> scores = new ArrayList<>();
-        scores.add(playerData.getRoute().displayName);
+        if(playerData.getRoute()!=null)
+            scores.add(playerData.getRoute().displayName);
+        else
+            scores.add("null");
         scores.add(playerData.getCurrentSong());
         Long time=player.getServerWorld().getWorldTime()%24000L;
         String extra="";
@@ -96,7 +99,7 @@ public class Scoreboards {
                         scores.add("");
                     }
                     else{
-                        lines.add(" -"+objective.getText().replace("(unread)", ""));
+                        lines.add(" -"+objective.getText().split(":")[0].replace("(unread)", ""));
                         scores.add(objective.getProgress()+"/"+objective.getMaxProgress());
                     }
                 }

@@ -59,6 +59,7 @@ public class WorldFunctions {
             }
         }
         else {
+            playerData.setRoute(null);
             /* Ensure players are always in a route. (Stop players leaving the map)
             playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
             playerMP.sendMessage(new TextComponentString("You can't go this way!").setStyle(new Style().setBold(true)));
