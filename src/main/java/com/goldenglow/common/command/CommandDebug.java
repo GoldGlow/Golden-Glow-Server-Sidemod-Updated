@@ -65,7 +65,7 @@ public class CommandDebug extends CommandBase {
             Route route = player.getCapability(OOPlayerProvider.OO_DATA, null).getRoute();
             LocalSession session = WorldEdit.getInstance().getSessionManager().findByName(player.getName());
             Polygonal2DRegionSelector selector = new Polygonal2DRegionSelector(session.getSelectionWorld(), route.region.getPoints(), route.region.getMinimumY(), route.region.getMaximumY());
-            session.setRegionSelector(session.getSelectionWorld(), selector);
+            session.setRegionSelector(ForgeWorldEdit.inst.wrap(player).getWorld(), selector);
             session.dispatchCUISelection(ForgeWorldEdit.inst.wrap(player));
         }
     }

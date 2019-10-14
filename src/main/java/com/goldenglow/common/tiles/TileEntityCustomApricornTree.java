@@ -38,7 +38,7 @@ public class TileEntityCustomApricornTree extends TileEntityApricornTree impleme
     }
 
     @Override
-    public TileScripted getScriptedTile() {
+    public TileEntityCustomScripted getScriptedTile() {
         return this.tile;
     }
 

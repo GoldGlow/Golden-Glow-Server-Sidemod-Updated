@@ -10,7 +10,7 @@ import noppes.npcs.blocks.tiles.TileScripted;
 
 public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomScript, ITickable {
 
-    private TileScripted tile;
+    private TileEntityCustomScripted tile;
 
     public TileEntityCustomAW() {
         this.tile = new TileEntityCustomScripted();
@@ -37,7 +37,7 @@ public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomSc
     }
 
     @Override
-    public TileScripted getScriptedTile() {
+    public TileEntityCustomScripted getScriptedTile() {
         return this.tile;
     }
 

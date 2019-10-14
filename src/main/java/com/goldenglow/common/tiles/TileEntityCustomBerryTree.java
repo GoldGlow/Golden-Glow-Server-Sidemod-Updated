@@ -9,7 +9,7 @@ import noppes.npcs.blocks.tiles.TileScripted;
 
 public class TileEntityCustomBerryTree extends TileEntityBerryTree implements ICustomScript {
 
-    private TileScripted tile;
+    private TileEntityCustomScripted tile;
 
     public TileEntityCustomBerryTree() {
         this.tile = new TileEntityCustomScripted();
@@ -36,7 +36,7 @@ public class TileEntityCustomBerryTree extends TileEntityBerryTree implements IC
     }
 
     @Override
-    public TileScripted getScriptedTile() {
+    public TileEntityCustomScripted getScriptedTile() {
         return this.tile;
     }
 
