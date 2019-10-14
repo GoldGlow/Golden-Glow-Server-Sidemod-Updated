@@ -15,6 +15,7 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
@@ -61,7 +62,13 @@ public class BattleFunctions {
 
     //Used to set a dialog as a battle start dialog, sets the song to the encounter theme
     public static void battleInitDialog(PlayerWrapper player, NPCWrapper npc, int dialogId){
-        SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), GoldenGlow.songManager.encounterDefault);
+        NBTTagCompound data=npc.getMCEntity().getEntityData();
+        if(data.hasKey("encounterTheme")){
+            SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), data.getString("encounterTheme"));
+        }
+        else{
+            SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), GoldenGlow.songManager.encounterDefault);
+        }
         NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface)npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
     }
 }

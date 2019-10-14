@@ -4,13 +4,28 @@ import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import noppes.npcs.Server;
+import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.constants.EnumPacketClient;
 
 public class MusicSoundFunctions {
     //Used to play random short sounds, not really used yet, kept from leftovers from the early day music scripts
     public static void playSound(EntityPlayerMP player, String source, String path){
         SongManager.playSound(player, source, path);
+    }
+
+    public static void setThemes(NPCWrapper npc, String encounterTheme, String battleTheme, String victoryTheme){
+        NBTTagCompound data=npc.getMCEntity().getEntityData();
+        if(!encounterTheme.equals("")){
+            data.setString("encounterTheme", encounterTheme);
+        }
+        if(!battleTheme.equals("")){
+            data.setString("battleTheme", battleTheme);
+        }
+        if(!victoryTheme.equals("")){
+            data.setString("victoryTheme", victoryTheme);
+        }
     }
 
 

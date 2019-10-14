@@ -6,6 +6,7 @@ import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.tiles.ICustomScript;
@@ -193,9 +194,16 @@ public class GGEventHandler {
         BattleParticipant[] participants=event.participant1;
         BattleParticipant[] opponents=event.participant2;
         if(event.bc.rules instanceof CustomNPCBattle) {
+            CustomNPCBattle battle=(CustomNPCBattle)event.bc.rules;
+            NBTTagCompound data=battle.getNpc().getEntityData();
             for (BattleParticipant participant : participants) {
                 if (participant instanceof PlayerParticipant) {
-                    SongManager.setToTrainerMusic(((PlayerParticipant) participant).player);
+                    if(data.hasKey("battleTheme")){
+                        SongManager.setCurrentSong(((PlayerParticipant) participant).player, data.getString("battleTheme"));
+                    }
+                    else {
+                        SongManager.setToTrainerMusic(((PlayerParticipant) participant).player);
+                    }
                 }
             }
         }
@@ -238,7 +246,12 @@ public class GGEventHandler {
             CustomNPCBattle battle = (CustomNPCBattle) event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
             if (results == BattleResults.VICTORY) {
-                SongManager.setCurrentSong(mcPlayer, GoldenGlow.songManager.victoryDefault);
+                if(battle.getNpc().getEntityData().hasKey("victoryTheme")){
+                    SongManager.setCurrentSong(mcPlayer, battle.getNpc().getEntityData().getString("victoryTheme"));
+                }
+                else{
+                    SongManager.setCurrentSong(mcPlayer, GoldenGlow.songManager.victoryDefault);
+                }
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if (results == BattleResults.DEFEAT) {
