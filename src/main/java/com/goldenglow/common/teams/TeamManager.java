@@ -126,7 +126,7 @@ public class TeamManager {
             pokemonData.setGender(Gender.Female);
         if(line.split(" @ ").length>1) {
             if ((PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1])) != null) {
-                pokemonData.setHeldItem(new ItemStack(PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1])));
+                pokemonData.setHeldItem(new ItemStack(PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1].replace("  ",""))));
             } else {
                 GoldenGlow.instance.logger.error("HeldItem not found: '" + line.split(" @ ")[1] + "' on Pokemon: " + name);
             }
