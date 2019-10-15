@@ -43,6 +43,7 @@ public class PlayerParty {
                     json.beginObject();
                     json.name("Name").value(pokemon.getSpecies().name);
                     json.name("Nickname").value(pokemon.getNickname());
+                    json.name("Form").value(pokemon.getForm());
                     json.name("Ability").value(pokemon.getAbilityName());
                     json.name("EVHP").value(pokemon.getEVs().hp);
                     json.name("EVAttack").value(pokemon.getEVs().attack);
@@ -100,6 +101,7 @@ public class PlayerParty {
                 JsonObject pokemon=party.get(i).getAsJsonObject();
                 String name=pokemon.get("Name").getAsString();
                 PokemonSpec pokemonSpec=PokemonSpec.from(name);
+                pokemonSpec.form=pokemon.get("Form").getAsByte();
                 pokemonSpec.ability=pokemon.get("Ability").getAsString();
                 pokemonSpec.gender=pokemon.get("Gender").getAsByte();
                 Pokemon pixelmon=pokemonSpec.create();

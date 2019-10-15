@@ -324,6 +324,9 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
+        if(blockState.getBlock().getRegistryName().toString().equals("customnpcs:npcscripted")){
+            return;
+        }
         if(!blockState.getBlock().onBlockActivated(event.getWorld(), event.getPos(), blockState, event.getEntityPlayer(), event.getHand(), event.getFace(), (float)event.getHitVec().x, (float)event.getHitVec().y, (float)event.getHitVec().z)) {
             if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")) {
                 if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
@@ -342,19 +345,17 @@ public class GGEventHandler {
                 }
             }
             if(tile instanceof ICustomScript) {
-                ICustomScript customTile = (ICustomScript)tile;
+                ICustomScript customTile = (ICustomScript) tile;
                 if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
-                    ItemScriptedWrapper item = (ItemScriptedWrapper)NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
+                    ItemScriptedWrapper item = (ItemScriptedWrapper) NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
                     customTile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
                     customTile.getScriptedTile().setEnabled(true);
-
                     final BlockEvent.InitEvent initEvent = new BlockEvent.InitEvent(customTile.getScriptedTile().getBlock());
                     customTile.getScriptedTile().runScript(EnumScriptType.INIT, initEvent);
                     WrapperNpcAPI.EVENT_BUS.post(initEvent);
-
                     event.getEntityPlayer().sendMessage(new TextComponentString("Applied Script!"));
                 } else {
-                    EventHooks.onScriptBlockInteract( customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(),event.getPos().getY(),event.getPos().getZ());
+                    EventHooks.onScriptBlockInteract(customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
                 }
             }
         }
