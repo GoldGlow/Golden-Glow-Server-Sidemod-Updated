@@ -9,6 +9,7 @@ import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.seals.Seal;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
@@ -385,7 +386,9 @@ public class GGEventHandler {
         if(event.getEntity() instanceof EntityPixelmon) {
             Pokemon p = ((EntityPixelmon)event.getEntity()).getPokemonData();
             if(p.getOwnerPlayer()!= null) {
-                SealManager.loadedSeals.get(0).execute(event.getEntity());
+                String s = p.getOwnerPlayer().getCapability(OOPlayerProvider.OO_DATA, null).getEquippedSeals()[p.getPosition().order];
+                if(s!=null && s.isEmpty() && SealManager.loadedSeals.containsKey(s))
+                    SealManager.loadedSeals.get(s).execute(event.getEntity());
             }
         }
     }

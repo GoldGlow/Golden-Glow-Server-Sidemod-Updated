@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
 import com.goldenglow.common.util.Scoreboards;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.items.ItemTM;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,9 @@ public class OOPlayerData implements IPlayerData {
 
     private String[] player_seals = new String[6];
     private List<String> unlocked_seals = new ArrayList<>();
+
+    private EnumSpecies lastCaughtSpecies = null;
+    private int captureChain;
 
     //Getters
     public Route getRoute() {
@@ -66,6 +70,12 @@ public class OOPlayerData implements IPlayerData {
     public List<ItemStack> getKeyItems(){return this.keyItems;}
     public List<ItemStack> getTMs(){return this.tms;}
     public Scoreboards.EnumScoreboardType getScoreboardType(){return this.scoreboardType;}
+    public EnumSpecies getLastCaughtPokemon() {
+        return this.lastCaughtSpecies;
+    }
+    public int getCaptureChain() {
+        return this.captureChain;
+    }
 
     //Setters
     public void setRoute(Route route) {
@@ -99,6 +109,12 @@ public class OOPlayerData implements IPlayerData {
         this.player_seals = seals;
     }
     public void setScoreboardType(Scoreboards.EnumScoreboardType scoreboardType){this.scoreboardType=scoreboardType;}
+    public void setCaptureChain(int i) {
+        this.captureChain = i;
+    }
+    public void setLastCaughtPokemon(EnumSpecies species) {
+        this.lastCaughtSpecies = species;
+    }
 
     //Others
     public boolean hasRoute() {
@@ -151,5 +167,8 @@ public class OOPlayerData implements IPlayerData {
             return true;
         }
         return false;
+    }
+    public int increaseCaptureChain(int i) {
+        return this.captureChain += i;
     }
 }

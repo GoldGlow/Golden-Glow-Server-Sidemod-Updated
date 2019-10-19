@@ -91,6 +91,7 @@ public class GoldenGlow {
         MinecraftForge.EVENT_BUS.register(TickHandler.class);
         Pixelmon.EVENT_BUS.register(eventHandler);
         Pixelmon.EVENT_BUS.register(raidEventHandler);
+        Pixelmon.EVENT_BUS.register(HuntHandler.class);
     }
 
     @Mod.EventHandler

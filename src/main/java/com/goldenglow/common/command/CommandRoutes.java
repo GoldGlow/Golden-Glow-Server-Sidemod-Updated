@@ -101,11 +101,11 @@ public class CommandRoutes extends OOCommand {
                                                         .then(
                                                                 literal("song")
                                                                         .then(
-                                                                                argument("song", StringArgumentType.string())
+                                                                                argument("song_name", StringArgumentType.string())
                                                                                         .executes(c -> {
                                                                                             Route r = GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class));
                                                                                             String s = r.song;
-                                                                                            r.song = c.getArgument("song", String.class);
+                                                                                            r.song = c.getArgument("song_name", String.class);
                                                                                             if (!s.isEmpty())
                                                                                                 c.getSource().sendMessage(new TextComponentString("Changed " + c.getArgument("routeName", String.class) + " song from \"" + s + "\" to \"" + c.getArgument("song", String.class) + "\""));
                                                                                             else
