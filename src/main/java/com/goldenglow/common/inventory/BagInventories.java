@@ -27,13 +27,18 @@ public class BagInventories {
     static void openKeyItems(EntityPlayerMP player){
         OOPlayerData playerData = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         List<ItemStack> items=playerData.getKeyItems();
-        int rows= Math.max(((items.size()-1)/9)+1, 1);
+        int rows= Math.max((items.size()/9)+1, 1);
         CustomInventoryData data=new CustomInventoryData(rows, "KeyItems", "Key Items", new CustomItem[rows*9][], new Requirement[0]);
         InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
+        CustomItem returnButton=CustomItem.returnButton();
+        returnButton.setLeftClickActions(new Action[]{new Action(Action.ActionType.OPEN_INV, "HelperBag")});
+        returnButton.setRightClickActions(new Action[]{new Action(Action.ActionType.OPEN_INV, "HelperBag")});
         for(int i=0;i<items.size();i++){
             data.items[i]=new CustomItem[]{new CustomItem(items.get(i), null)};
             chestInventory.setInventorySlotContents(i, items.get(i));
         }
+        data.items[(rows*9)-1]=new CustomItem[]{returnButton};
+        chestInventory.setInventorySlotContents((rows*9)-1, returnButton.item);
         player.getNextWindowId();
         player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString("Key Items"), rows*9));
         player.openContainer = new CustomInventory(player.inventory, chestInventory, player);
@@ -46,10 +51,12 @@ public class BagInventories {
     static void openTMCase(EntityPlayerMP player){
         OOPlayerData playerData = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         List<ItemStack> items=playerData.getTMs();
-        int rows= Math.max(((items.size()-1)/9)+1, 1);
+        int rows= Math.max((items.size()/9)+1, 1);
         CustomInventoryData data=new CustomInventoryData(rows, "TMCase", "TM Case", new CustomItem[rows*9][], new Requirement[0]);
         InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
-        GGLogger.info("Opening TM Case");
+        CustomItem returnButton=CustomItem.returnButton();
+        returnButton.setLeftClickActions(new Action[]{new Action(Action.ActionType.OPEN_INV, "HelperBag")});
+        returnButton.setRightClickActions(new Action[]{new Action(Action.ActionType.OPEN_INV, "HelperBag")});
         for(int i=0;i<items.size();i++){
             GGLogger.info("Adding item: "+items.get(i).serializeNBT());
             data.items[i]=new CustomItem[]{new CustomItem(items.get(i), null)};
@@ -58,6 +65,8 @@ public class BagInventories {
             data.items[i][0].setRightClickActions(new Action[]{openTM});
             chestInventory.setInventorySlotContents(i, items.get(i));
         }
+        data.items[(rows*9)-1]=new CustomItem[]{returnButton};
+        chestInventory.setInventorySlotContents((rows*9)-1, returnButton.item);
         player.getNextWindowId();
         player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString("TM Case"), rows*9));
         player.openContainer = new CustomInventory(player.inventory, chestInventory, player);

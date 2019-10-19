@@ -20,6 +20,7 @@ public class OOPlayerData implements IPlayerData {
 
     private String current_song = "";
     private String theme_wild,theme_trainer,theme_pvp = "";
+    private int pvpThemeOption=0;
 
     private List<ItemStack> keyItems=new ArrayList<>();
     private List<ItemStack> tms=new ArrayList<>();
@@ -52,6 +53,7 @@ public class OOPlayerData implements IPlayerData {
     public String getPVPTheme() {
         return this.theme_pvp;
     }
+    public int getPvpThemeOption(){return this.pvpThemeOption;}
     public int getNotificationScheme() {
         return this.notification_scheme;
     }
@@ -89,6 +91,7 @@ public class OOPlayerData implements IPlayerData {
     public void setPVPTheme(String newTheme) {
         this.theme_pvp = newTheme;
     }
+    public void setPvpThemeOption(int option){this.pvpThemeOption=option;}
     public void setNotificationScheme(int id) {
         this.notification_scheme = id;
     }

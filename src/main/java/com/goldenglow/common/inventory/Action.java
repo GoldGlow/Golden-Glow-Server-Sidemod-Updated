@@ -1,5 +1,6 @@
 package com.goldenglow.common.inventory;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.util.PermissionUtils;

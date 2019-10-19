@@ -1,5 +1,7 @@
 package com.goldenglow.common.command;
 
+import com.goldenglow.common.util.scripting.OtherFunctions;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -27,9 +29,8 @@ public class CommandMoneyreward extends CommandBase {
         }
         else{
             EntityPlayerMP player = getPlayer(server, sender, args[1]);
-            NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+args[0], (EntityPlayerMP)null);
-            PlayerWrapper playerWrapper= new PlayerWrapper(player);
-            playerWrapper.sendNotification("Reward", "Obtained $"+args[0], Integer.valueOf(playerWrapper.getMCEntity().getEntityData().getInteger("RouteNotification")));
+            Pixelmon.storageManager.getParty(player).changeMoney(Integer.parseInt(args[0]));
+            OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+args[0]);
         }
     }
 }

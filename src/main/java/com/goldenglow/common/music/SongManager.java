@@ -1,6 +1,7 @@
 package com.goldenglow.common.music;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.util.GGLogger;
@@ -29,6 +30,9 @@ public class SongManager {
 
     static File config = new File(Reference.configDir, "songs/config.cfg");
     public String wildDefault,trainerDefault,encounterDefault,victoryDefault,evolutionDefault,levelUpDefault;
+    //Key: UUID
+    //Value: song name
+    public HashMap<String, String> uniqueSongs;
 
     public void init() {
         GoldenGlow.logger.info("Loading Song Config...");
@@ -101,52 +105,57 @@ public class SongManager {
     }
 
     public static void setToPvpMusic(EntityPlayerMP player, BattleParticipant[] opponents){
-        /*
-        int pvpOption=player.getEntityData().getInteger("PvpOption");
-        String song="";
-        if(pvpOption==0){
-            for(BattleParticipant opponent:opponents){
-                if(opponent instanceof PlayerParticipant){
-                    song=getPvpSong(((PlayerParticipant) opponent).player);
-                    if(song.startsWith("obscureobsidian:custom")){
-                        setCurrentSong(player, song);
+        IPlayerData playerData = player.getCapability(OOPlayerProvider.OO_DATA, null);
+        switch (playerData.getPvpThemeOption()){
+            //Always use the opponent's battle theme
+            case 0:
+                SongManager.setCurrentSong(player, firstOpponentTheme(opponents));
+                return;
+            //Use the opponent's when he doesn't have the default theme
+            case 1:
+                ArrayList<String> themes=getOpponentsThemes(opponents);
+                for(String theme:themes){
+                    if(!theme.equals(GoldenGlow.songManager.trainerDefault)){
+                        setCurrentSong(player, theme);
                         return;
                     }
                 }
-            }
-        }
-        else if(pvpOption==1){
-            for(BattleParticipant opponent:opponents){
-                if(opponent instanceof PlayerParticipant){
-                    if(!getPvpSong(((PlayerParticipant) opponent).player).equals(GoldenGlow.instance.songManager.trainerBattleSong))
-                        song=getPvpSong(((PlayerParticipant) opponent).player);
-                    if(song.startsWith("obscureobsidian:custom")){
-                        setCurrentSong(player, song);
+                setCurrentSong(player, playerData.getPVPTheme());
+                return;
+            //Use the opponent's if he has a unique theme
+            case 2:
+                ArrayList<String> opponentsThemes=getOpponentsThemes(opponents);
+                for(String theme:opponentsThemes){
+                    if(GoldenGlow.songManager.uniqueSongs.containsValue(theme)){
+                        setCurrentSong(player, theme);
                         return;
                     }
                 }
-            }
-            if(song.equals("")){
-                song=getPvpSong(player);
+                setCurrentSong(player, playerData.getPVPTheme());
+                return;
+            //Use the player's theme every time
+            case 3:
+                setCurrentSong(player, playerData.getPVPTheme());
+                return;
+        }
+    }
+
+    public static ArrayList<String> getOpponentsThemes(BattleParticipant[] opponents){
+        ArrayList<String> opponentPvpThemes=new ArrayList<String>();
+        for(BattleParticipant opponent: opponents){
+            if(opponent instanceof PlayerParticipant){
+                opponentPvpThemes.add(((PlayerParticipant) opponent).player.getCapability(OOPlayerProvider.OO_DATA, null).getPVPTheme());
             }
         }
-        else if(pvpOption==2){
-            for(BattleParticipant opponent:opponents){
-                if(opponent instanceof PlayerParticipant){
-                    if(song.startsWith("obscureobsidian:custom")){
-                        setCurrentSong(player, song);
-                        return;
-                    }
-                }
-            }
-            if(song.equals("")){
-                setCurrentSong(player, getPvpSong(player));
+        return opponentPvpThemes;
+    }
+
+    public static String firstOpponentTheme(BattleParticipant[] opponents){
+        for(BattleParticipant opponent: opponents){
+            if(opponent instanceof PlayerParticipant){
+                return  ((PlayerParticipant) opponent).player.getCapability(OOPlayerProvider.OO_DATA, null).getPVPTheme();
             }
         }
-        else if(pvpOption==3){
-            song=getPvpSong(player);
-        }
-        setCurrentSong(player, song);
-         */
+        return "";
     }
 }

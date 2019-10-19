@@ -5,6 +5,7 @@ import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
@@ -73,6 +74,7 @@ import noppes.npcs.items.ItemScripted;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 import java.time.Instant;
@@ -136,8 +138,8 @@ public class GGEventHandler {
     @SubscribeEvent
     public void playerLogoutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
         IPlayerData playerData= event.player.getCapability(OOPlayerProvider.OO_DATA, null);
-        if(playerData.getHasRouteDebug()){
-            event.player.getWorldScoreboard().removeObjective(event.player.getWorldScoreboard().getObjective("RD_"+event.player.getName()));
+        if(GoldenGlow.tradeManager.alreadyTrading((EntityPlayerMP) event.player)){
+            GoldenGlow.tradeManager.cancelTrade((EntityPlayerMP) event.player);
         }
         /*Instant loginTime = playerTimes.get(event.player.getUniqueID());
         playerTimes.remove(event.player.getUniqueID());
@@ -324,17 +326,15 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
-        if(blockState.getBlock().getRegistryName().toString().equals("customnpcs:npcscripted")){
-            return;
-        }
+        /*
         if(!blockState.getBlock().onBlockActivated(event.getWorld(), event.getPos(), blockState, event.getEntityPlayer(), event.getHand(), event.getFace(), (float)event.getHitVec().x, (float)event.getHitVec().y, (float)event.getHitVec().z)) {
-            if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")) {
+            if ((event.getItemStack().getItem().getRegistryName() + "").equals("variedcommodities:diamond_dagger")) {
                 if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
                     event.setCanceled(true);
                     CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
                 }
             }
-        }
+        }*/
         if(event.getHand()==EnumHand.MAIN_HAND && event.getUseBlock()!=Event.Result.DENY ) {
             TileEntity tile = null;
             if(blockState.getBlock() instanceof BlockApricornTree || blockState.getBlock() instanceof BlockBerryTree) {
@@ -358,6 +358,12 @@ public class GGEventHandler {
                     EventHooks.onScriptBlockInteract(customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
                 }
             }
+            else{
+                return;
+            }
+        }
+        else{
+            return;
         }
     }
 

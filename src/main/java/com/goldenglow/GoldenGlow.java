@@ -8,6 +8,7 @@ import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerStorage;
 import com.goldenglow.common.handlers.*;
+import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomInventoryHandler;
 import com.goldenglow.common.inventory.shops.CustomShopHandler;
@@ -58,6 +59,7 @@ public class GoldenGlow {
     public static RouteManager routeManager = new RouteManager();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
     public static DataHandler dataHandler = new DataHandler();
+    public static TradeManager tradeManager=new TradeManager();
     public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
     public static CustomShopHandler customShopHandler=new CustomShopHandler();
 
@@ -109,6 +111,7 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandMoneyreward());
         event.registerServerCommand(new CommandCustomChest());
         event.registerServerCommand(new CommandShop());
+        event.registerServerCommand(new CommandTradeTest());
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());

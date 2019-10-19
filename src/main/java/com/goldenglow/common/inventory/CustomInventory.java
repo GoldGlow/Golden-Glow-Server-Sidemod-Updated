@@ -3,9 +3,12 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.inventory.BetterTrading.OfferMakingInventory;
+import com.goldenglow.common.inventory.BetterTrading.Trade;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsPokeballs;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
@@ -57,6 +60,18 @@ public class CustomInventory extends ContainerChest {
         }
         else if(inventoryName.equalsIgnoreCase("Party")){
             CustomInventory.openPartyInventoryTest(player);
+            return;
+        }
+        else if(inventoryName.equalsIgnoreCase("TradeTest")) {
+            Trade playerTrade=null;
+            if (GoldenGlow.tradeManager.alreadyTrading(player)) {
+                playerTrade=GoldenGlow.tradeManager.getPlayerTrade(player);
+            }
+            else {
+                playerTrade = new Trade(player, player);
+                GoldenGlow.tradeManager.activeTrades.add(playerTrade);
+            }
+            OfferMakingInventory.openInventory(player, playerTrade.getOffers()[0]);
             return;
         }
         for(CustomInventoryData inventoryData: GoldenGlow.customInventoryHandler.inventories) {
@@ -160,14 +175,15 @@ public class CustomInventory extends ContainerChest {
 
     public static void openPartyInventoryTest(EntityPlayerMP playerMP){
         InventoryBasic chestInventory=new InventoryBasic("Party", true, 9);
-        ItemStack[] party=CustomInventory.getPartyIcons(playerMP);
-        CustomInventoryData data=new CustomInventoryData(1, "Party", "Party", new CustomItem[9][], null);
-        for(int i=0;i<party.length;i++){
-            if(party[i]!=null) {
-                data.items[i] = new CustomItem[]{new CustomItem(party[i], null)};
-                chestInventory.setInventorySlotContents(i, party[i]);
+        CustomItem[][] items=new CustomItem[9][];
+        for(int i=0;i<6;i++){
+            Pokemon pokemon=Pixelmon.storageManager.getParty(playerMP).get(i);
+            if(pokemon!=null){
+                items[i]=new CustomItem[]{CustomItem.getPokemonItem(pokemon)};
+                chestInventory.setInventorySlotContents(i, CustomItem.getPokemonItem(pokemon).item);
             }
         }
+        CustomInventoryData data=new CustomInventoryData(1, "Party", "Party", items, null);
         playerMP.getNextWindowId();
         playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
         playerMP.openContainer = new CustomInventory(playerMP.inventory, chestInventory, playerMP);

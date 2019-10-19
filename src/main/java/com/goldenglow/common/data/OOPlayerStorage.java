@@ -29,6 +29,8 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(instance.getPVPTheme()!=null)
             tag.setString("theme_pvp", instance.getPVPTheme());
 
+        tag.setInteger("pvpOption", instance.getPvpThemeOption());
+
         tag.setInteger("notification_style", instance.getNotificationScheme());
 
         tag.setString("scoreboardType", instance.getScoreboardType().name());
@@ -96,6 +98,10 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(tag.hasKey("theme_pvp"))
             instance.setPVPTheme(tag.getString("theme_pvp"));
+
+        if(tag.hasKey("pvpOption")){
+            instance.setPvpThemeOption(tag.getInteger("pvpOption"));
+        }
 
         instance.setNotificationScheme(tag.getInteger("notification_style"));
 

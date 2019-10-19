@@ -29,6 +29,8 @@ public interface IPlayerData {
     void setTrainerTheme(String newTheme);
     String getPVPTheme();
     void setPVPTheme(String newTheme);
+    int getPvpThemeOption();
+    void setPvpThemeOption(int option);
 
     int getNotificationScheme();
     void setNotificationScheme(int id);

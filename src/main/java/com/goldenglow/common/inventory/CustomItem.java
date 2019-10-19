@@ -1,8 +1,18 @@
 package com.goldenglow.common.inventory;
 
+import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
+import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JeanMarc on 6/18/2019.
@@ -50,5 +60,39 @@ public class CustomItem  {
             }
         }
         return null;
+    }
+
+    public static CustomItem returnButton(){
+        try {
+            return new CustomItem(new ItemStack(JsonToNBT.getTagFromJson("{\"id\":\"variedcommodities:diamond_dagger\",\"Count\":1,\"Damage\":18,\"tag\":{\"Unbreakable\":1,\"display\":{\"Name\":\""+Reference.resetText+"Back\"}}}")), null);
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static CustomItem getPokemonItem(Pokemon pokemon){
+        ItemStack item= ItemPixelmonSprite.getPhoto(pokemon);
+        NBTTagList lore=new NBTTagList();
+        String shinyText="";
+        if(pokemon.isShiny()){
+            shinyText=Reference.gold;
+        }
+        item.setStackDisplayName(Reference.resetText+shinyText+pokemon.getSpecies().name);
+        String itemString="none";
+        if(!pokemon.getHeldItem().getDisplayName().equals("Air")){
+            itemString=pokemon.getHeldItem().getDisplayName();
+        }
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"Item: "+Reference.resetText+itemString));
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"Level: "+Reference.resetText+pokemon.getLevel()));
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"Size: "+Reference.resetText+pokemon.getGrowth()));
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"Nature: "+Reference.resetText+pokemon.getNature()));
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"Ability: "+Reference.resetText+pokemon.getAbilityName()));
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"IVs: "+Reference.resetText+pokemon.getIVs().hp+"HP / "+pokemon.getIVs().attack+"ATK / "+pokemon.getIVs().defence+"DEF / "+pokemon.getIVs().specialAttack+"SPA / "+pokemon.getIVs().specialDefence+"SPD / "+pokemon.getIVs().speed+"SPE"));
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"EVs: "+Reference.resetText+pokemon.getEVs().hp+"HP / "+pokemon.getEVs().attack+"ATK / "+pokemon.getEVs().defence+"DEF / "+pokemon.getEVs().specialAttack+"SPA / "+pokemon.getEVs().specialDefence+"SPD / "+pokemon.getEVs().speed+"SPE"));
+        lore.appendTag(new NBTTagString(Reference.resetText+Reference.bold+"Moves: "+Reference.resetText+pokemon.getMoveset()));
+        item.getTagCompound().getCompoundTag("display").setTag("Lore", lore);
+        CustomItem customItem=new CustomItem(item, null);
+        return customItem;
     }
 }
