@@ -4,6 +4,8 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.google.gson.JsonArray;
@@ -93,7 +95,10 @@ public class SongManager {
     }
 
     public static void setRouteSong(EntityPlayerMP player) {
-        setCurrentSong(player, player.getCapability(OOPlayerProvider.OO_DATA, null).getRoute().song);
+        if(player.getCapability(OOPlayerProvider.OO_DATA, null).getRoute()!=null)
+            setCurrentSong(player, player.getCapability(OOPlayerProvider.OO_DATA, null).getRoute().song);
+        else
+            setCurrentSong(player, "null");
     }
 
     public static void setToTrainerMusic(EntityPlayerMP player){

@@ -3,6 +3,7 @@ package com.goldenglow.common.data;
         import com.goldenglow.common.routes.Route;
         import com.goldenglow.common.seals.Seal;
         import com.goldenglow.common.util.Scoreboards;
+        import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
         import com.pixelmonmod.pixelmon.enums.EnumSpecies;
         import net.minecraft.item.Item;
         import net.minecraft.item.ItemStack;
@@ -57,4 +58,12 @@ public interface IPlayerData {
     void setCaptureChain(int i);
     EnumSpecies getLastCaughtPokemon();
     void setLastCaughtPokemon(EnumSpecies species);
+
+    List<Pokemon> getWaitToEvolve();
+    Pokemon getPokemonWaiting(int index);
+    void removePokemonWaiting(int index);
+    void removePokemonWaiting(Pokemon pokemon);
+    void addPokemonWaiting(Pokemon pokemon);
+    boolean isEvolvingPokemon();
+    void setEvolvingPokemon(boolean evolvingPokemon);
 }

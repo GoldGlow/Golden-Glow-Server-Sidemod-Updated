@@ -80,7 +80,7 @@ public class OfferItemInventory extends CustomInventory {
         InventoryPlayer inventoryplayer = player.inventory;
         Slot slot = getSlot(slotId);
         if(slot.isSameInventory(getSlot(0))) {
-            if(slotId>=0&&slotId<=9&&CustomInventory.getItem(this.getData().getItems()[slotId], (EntityPlayerMP) player)!=null){
+            if(slotId>=0&&slotId<=8&&CustomInventory.getItem(this.getData().getItems()[slotId], (EntityPlayerMP) player)!=null){
                 if(dragType==0){
                     ItemStack item=slot.getStack().copy();
                     item.setCount(1);

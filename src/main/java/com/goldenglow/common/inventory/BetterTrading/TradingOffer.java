@@ -3,6 +3,8 @@ package com.goldenglow.common.inventory.BetterTrading;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -14,12 +16,16 @@ public class TradingOffer {
     int money;
     List<Pokemon> pokemonList;
     List<ItemStack> items;
+    List<ItemStack> inventoryBackup;
+    public boolean ready;
 
     public TradingOffer(EntityPlayerMP player){
         this.player=player;
         this.money=0;
         this.pokemonList=new ArrayList<Pokemon>();
         this.items=new ArrayList<ItemStack>();
+        this.ready=false;
+        this.inventoryBackup=new ArrayList<ItemStack>();
     }
 
     public void addPokemon(int pokemonSlot){

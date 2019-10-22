@@ -1,10 +1,16 @@
 package com.goldenglow.common.inventory.BetterTrading;
 
+import com.goldenglow.common.data.IPlayerData;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +46,8 @@ public class TradeManager {
             EntityPlayerMP playerMP=trade.getPlayers()[i];
             TradingOffer offer=trade.getOffers()[i];
             PlayerPartyStorage storage= Pixelmon.storageManager.getParty(playerMP);
-            for(ItemStack itemStack: offer.items){
-                playerMP.inventory.addItemStackToInventory(itemStack);
+            for (ItemStack itemStack : offer.items) {
+                ItemHandlerHelper.giveItemToPlayer(playerMP, itemStack);
             }
             storage.changeMoney(offer.money);
             for(Pokemon pokemon:offer.pokemonList){
@@ -50,5 +56,17 @@ public class TradeManager {
             playerMP.closeScreen();
         }
         this.activeTrades.remove(trade);
+    }
+
+    public static void evolutionTest(EntityPlayerMP player){
+        IPlayerData playerData= player.getCapability(OOPlayerProvider.OO_DATA, null);
+        for(Pokemon pokemon:playerData.getWaitToEvolve()){
+            EntityPixelmon pixelmon = pokemon.getOrSpawnPixelmon(player.world, (double)player.getPosition().getX(), (double)player.getPosition().getY(), (double)player.getPosition().getZ());
+            pixelmon.testTradeEvolution(EnumSpecies.getFromNameAnyCase(pokemon.getSpecies().name));
+            /*if(playerData.isEvolvingPokemon()){
+                return;
+            }*/
+            //playerData.removePokemonWaiting(pokemon);
+        }
     }
 }

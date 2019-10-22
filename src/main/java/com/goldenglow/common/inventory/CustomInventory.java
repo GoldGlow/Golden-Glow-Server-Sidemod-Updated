@@ -62,7 +62,7 @@ public class CustomInventory extends ContainerChest {
             CustomInventory.openPartyInventoryTest(player);
             return;
         }
-        else if(inventoryName.equalsIgnoreCase("TradeTest")) {
+        else if(inventoryName.equalsIgnoreCase("tt")) {
             Trade playerTrade=null;
             if (GoldenGlow.tradeManager.alreadyTrading(player)) {
                 playerTrade=GoldenGlow.tradeManager.getPlayerTrade(player);

@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
 import com.goldenglow.common.util.Scoreboards;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.items.ItemTM;
 import net.minecraft.item.Item;
@@ -34,6 +35,9 @@ public class OOPlayerData implements IPlayerData {
 
     private EnumSpecies lastCaughtSpecies = null;
     private int captureChain;
+
+    private boolean isEvolvingPokemon=false;
+    private List<Pokemon> waitToEvolve=new ArrayList<Pokemon>();
 
     //Getters
     public Route getRoute() {
@@ -171,4 +175,12 @@ public class OOPlayerData implements IPlayerData {
     public int increaseCaptureChain(int i) {
         return this.captureChain += i;
     }
+
+    public List<Pokemon> getWaitToEvolve(){return this.waitToEvolve;}
+    public Pokemon getPokemonWaiting(int index){return this.waitToEvolve.get(index);}
+    public void removePokemonWaiting(int index){this.waitToEvolve.remove(index);}
+    public void removePokemonWaiting(Pokemon pokemon){this.waitToEvolve.remove(pokemon);}
+    public void addPokemonWaiting(Pokemon pokemon){this.waitToEvolve.add(pokemon);}
+    public boolean isEvolvingPokemon(){return this.isEvolvingPokemon;}
+    public void setEvolvingPokemon(boolean evolvingPokemon){this.isEvolvingPokemon=evolvingPokemon;}
 }

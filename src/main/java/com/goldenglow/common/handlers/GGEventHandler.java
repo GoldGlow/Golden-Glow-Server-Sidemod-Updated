@@ -105,6 +105,24 @@ public class GGEventHandler {
     }
 
     @SubscribeEvent
+    public void onEvolutionStart(EvolveEvent.PreEvolve event){
+        IPlayerData playerData= event.player.getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.setEvolvingPokemon(true);
+        SongManager.setCurrentSong(event.player, GoldenGlow.songManager.evolutionDefault);
+    }
+
+    @SubscribeEvent
+    public void onEvolutionEnd(EvolveEvent.PostEvolve event){
+        IPlayerData playerData= event.player.getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.setEvolvingPokemon(false);
+        SongManager.setRouteSong(event.player);
+        if(playerData.getWaitToEvolve().size()>0){
+            playerData.removePokemonWaiting(0);
+            TradeManager.evolutionTest(event.player);
+        }
+    }
+
+    @SubscribeEvent
     public void pokedexRegisteredEvent(PokedexEvent event){
         Map<Integer, EnumPokedexRegisterStatus> seen=Pixelmon.storageManager.getParty(event.uuid).pokedex.getSeenMap();
         GGLogger.info(seen.size());
