@@ -7,6 +7,7 @@ import com.goldenglow.common.command.*;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerStorage;
+import com.goldenglow.common.gyms.GymManager;
 import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventoryData;
@@ -56,6 +57,7 @@ public class GoldenGlow {
 
     public static SongManager songManager= new SongManager();
     public static TeamManager teamManager = new TeamManager();
+    public static GymManager gymManager=new GymManager();
     public static RouteManager routeManager = new RouteManager();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
     public static DataHandler dataHandler = new DataHandler();
@@ -125,6 +127,7 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void serverLoaded(FMLServerStartedEvent event){
         routeManager.init();
+        gymManager.init();
         customInventoryHandler.init();
         String inventories="Inventories: ";
         for(CustomInventoryData data: customInventoryHandler.inventories){

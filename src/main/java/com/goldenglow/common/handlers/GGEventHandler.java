@@ -5,16 +5,19 @@ import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.gyms.GymBattleRules;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.Seal;
 import com.goldenglow.common.seals.SealManager;
+import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.scripting.OtherFunctions;
@@ -133,7 +136,6 @@ public class GGEventHandler {
                 caught.add(entry.getKey());
             }
         }
-        GGLogger.info("Caught in dex: "+caught.size());
         for(int species:caught) {
             for (EnumType type : EnumSpecies.getFromDex(species).getBaseStats().types) {
                 if (type == EnumType.Bug) {
@@ -194,27 +196,29 @@ public class GGEventHandler {
         }
     }
 
-    /*@SubscribeEvent
-    public void onEvolution(EvolveEvent event){
-        if(event instanceof EvolveEvent.PostEvolve){
-            NPCFunctions.stopSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
-            NPCFunctions.playSound(event.player, "music", GoldenGlow.routeManager.getRoute(event.player).song);
-        }
-        else {
-            NPCFunctions.stopSound(event.player, "music", GoldenGlow.routeManager.getRoute(event.player).song);
-            NPCFunctions.playSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
-            if (event.isCanceled()) {
-                NPCFunctions.stopSound(event.player, "music", GoldenGlow.songManager.evolutionSong);
-                NPCFunctions.playSound(event.player, "music", GoldenGlow.routeManager.getRoute(event.player).song);
-            }
-        }
-    }*/
-
     @SubscribeEvent
     public void onBattleStart(BattleStartedEvent event){
         BattleParticipant[] participants=event.participant1;
         BattleParticipant[] opponents=event.participant2;
-        if(event.bc.rules instanceof CustomNPCBattle) {
+        if(event.bc.rules instanceof GymBattleRules){
+            GymBattleRules gymBattle=(GymBattleRules)event.bc.rules;
+            for (BattleParticipant participant : participants) {
+                if (participant instanceof PlayerParticipant) {
+                    if(gymBattle.getGym().getPlayerTeams().containsKey(((PlayerParticipant) participant).player.getUniqueID())){
+                        SongManager.setToPvpMusic(((PlayerParticipant) participant).player, opponents);
+                        gymBattle.getGym().setTimeOfChallenge(((PlayerParticipant) participant).player);
+                    }
+                }
+            }
+            for (BattleParticipant participant : opponents) {
+                if (participant instanceof PlayerParticipant) {
+                    if(gymBattle.getGym().getPlayerTeams().containsKey(((PlayerParticipant) participant).player.getUniqueID())){
+                        SongManager.setToPvpMusic(((PlayerParticipant) participant).player, participants);
+                    }
+                }
+            }
+        }
+        else if(event.bc.rules instanceof CustomNPCBattle) {
             CustomNPCBattle battle=(CustomNPCBattle)event.bc.rules;
             NBTTagCompound data=battle.getNpc().getEntityData();
             for (BattleParticipant participant : participants) {
@@ -260,7 +264,19 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onBattleEnd(BattleEndEvent event)
     {
-        if(event.bc.rules instanceof CustomNPCBattle) {
+        if(event.bc.rules instanceof GymBattleRules){
+            BattleResults results=event.results.get(event.bc.participants.get(0));
+            if (results == BattleResults.VICTORY) {
+                PermissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, ((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
+                SongManager.setRouteSong(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player);
+            }
+            else{
+                WorldFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player));
+            }
+            SongManager.setRouteSong(((PlayerParticipant)event.bc.participants.get(1).getParticipantList()[0]).player);
+            PlayerParty.emptyParty(((GymBattleRules) event.bc.rules).getGym().currentLeader);
+        }
+        else if(event.bc.rules instanceof CustomNPCBattle) {
             EntityPlayerMP mcPlayer = event.getPlayers().get(0);
             BattleResults results = event.results.get(event.bc.participants.get(0));
             Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
@@ -337,7 +353,10 @@ public class GGEventHandler {
         if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")) {
             if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
                 event.setCanceled(true);
-                CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
+                if(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "gymleader.active"))
+                    CustomInventory.openInventory("Leader Tools", (EntityPlayerMP) event.getEntityPlayer());
+                else
+                    CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
             }
         }
     }

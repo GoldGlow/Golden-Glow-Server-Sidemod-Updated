@@ -3,15 +3,20 @@ package com.goldenglow.common.data;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.SealManager;
+import com.goldenglow.common.util.FullPos;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Scoreboards;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.world.World;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
@@ -77,6 +82,15 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(instance.getSafezone()!=null){
             tag.setString("safezone", instance.getSafezone().unlocalizedName);
+        }
+
+        if(instance.getBackupFullpos()!=null){
+            NBTTagCompound fullPos=new NBTTagCompound();
+            fullPos.setString("world", instance.getBackupFullpos().getWorld().getUniqueId().toString());
+            fullPos.setInteger("posX", instance.getBackupFullpos().getPos().getX());
+            fullPos.setInteger("posY", instance.getBackupFullpos().getPos().getY());
+            fullPos.setInteger("posZ", instance.getBackupFullpos().getPos().getZ());
+            tag.setTag("backupFullPos", fullPos);
         }
 
         return tag;
@@ -156,6 +170,13 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                     e.printStackTrace();
                 }
             }
+        }
+
+        if(tag.hasKey("backupFullPos")){
+            NBTTagCompound fullPos=tag.getCompoundTag("backupFullPos");
+            World world= Sponge.getServer().getWorld(UUID.fromString(fullPos.getString("world"))).get();
+            BlockPos pos=new BlockPos(fullPos.getInteger("posX"), fullPos.getInteger("posY"), fullPos.getInteger("posZ"));
+            instance.setBackupFullpos(new FullPos(world, pos));
         }
     }
 }

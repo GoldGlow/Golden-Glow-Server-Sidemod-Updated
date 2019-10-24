@@ -14,11 +14,9 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import net.minecraft.item.ItemStack;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,7 +103,7 @@ public class TeamManager {
         teams.add(getTeam(teamName));
     }
 
-    public Pokemon convertPokemon(ArrayList<String> pokemon){
+    public static Pokemon convertPokemon(ArrayList<String> pokemon){
         String line=pokemon.get(0);
         String name=line.split(" @ ")[0];
         String genderString="";
@@ -213,8 +211,8 @@ public class TeamManager {
             else if(line.startsWith("- ")&&moveset.size()<4){
                 String move=line.replace("- ","");
                 Attack attack = new Attack(move);
-                if(attack==null && otherMoves.containsKey(move))
-                    move=otherMoves.get(move);
+                if(attack==null && GoldenGlow.teamManager.otherMoves.containsKey(move))
+                    move=GoldenGlow.teamManager.otherMoves.get(move);
 
                 attack = new Attack(move);
                 if(attack!=null)
@@ -229,6 +227,35 @@ public class TeamManager {
             }
         }
         return pokemonData;
+    }
+
+    public static List<Pokemon> singleTeamFromFile(String path){
+        List<Pokemon> pixelmon=new ArrayList<Pokemon>();
+        ArrayList<String> pokemon = new ArrayList<String>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            String readLine;
+            boolean pokemonSequence=false;
+            while((readLine=reader.readLine())!=null)
+            {
+                if (!readLine.equals("") && !pokemonSequence) {
+                    pokemonSequence = true;
+                }
+                if (readLine.equals("") && pokemonSequence) {
+                    pixelmon.add(convertPokemon(pokemon));
+                    pokemon.clear();
+                    pokemonSequence = false;
+                }
+                if (pokemonSequence) {
+                    pokemon.add(readLine);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return pixelmon;
     }
 
     public void createTeam(String name)

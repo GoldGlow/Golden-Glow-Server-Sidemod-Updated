@@ -3,6 +3,7 @@ package com.goldenglow.common.data;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.seals.Seal;
+import com.goldenglow.common.util.FullPos;
 import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
@@ -18,7 +19,7 @@ public class OOPlayerData implements IPlayerData {
 
     private Route current_route;
     private Route safezone;
-    private boolean hasRouteDebug=false;
+    private FullPos backupFullPos;
 
     private String current_song = "";
     private String theme_wild,theme_trainer,theme_pvp = "";
@@ -43,12 +44,10 @@ public class OOPlayerData implements IPlayerData {
     public Route getRoute() {
         return current_route;
     }
-    public boolean getHasRouteDebug(){
-        return this.hasRouteDebug;
-    }
     public Route getSafezone() {
         return this.safezone;
     }
+    public FullPos getBackupFullPos(){return this.backupFullPos;}
     public String getCurrentSong() {
         return this.current_song;
     }
@@ -85,14 +84,12 @@ public class OOPlayerData implements IPlayerData {
     public void setRoute(Route route) {
         this.current_route = route;
     }
-    public void setHasRouteDebug(boolean hasRouteDebug){
-        this.hasRouteDebug=hasRouteDebug;
-    }
     public void setSafezone(String safezoneName) {
         if (GoldenGlow.routeManager.doesRouteExist(safezoneName)) {
             this.safezone = GoldenGlow.routeManager.getRoute(safezoneName);
         }
     }
+    public void setBackupFullPos(FullPos fullPos){this.backupFullPos=fullPos;}
     public void setSong(String song) {
         this.current_song = song;
     }

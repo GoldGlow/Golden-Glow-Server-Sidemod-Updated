@@ -2,6 +2,7 @@ package com.goldenglow.common.data;
 
         import com.goldenglow.common.routes.Route;
         import com.goldenglow.common.seals.Seal;
+        import com.goldenglow.common.util.FullPos;
         import com.goldenglow.common.util.Scoreboards;
         import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
         import com.pixelmonmod.pixelmon.enums.EnumSpecies;
@@ -21,6 +22,8 @@ public interface IPlayerData {
 
     Route getSafezone();
     void setSafezone(String safezoneName);
+    FullPos getBackupFullpos();
+    void setBackupFullpos(FullPos pos);
 
     String getCurrentSong();
     void setSong(String song);

@@ -1,0 +1,140 @@
+package com.goldenglow.common.gyms;
+
+import com.goldenglow.common.teams.Team;
+import com.goldenglow.common.teams.TeamManager;
+import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.Reference;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
+import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClause;
+import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClauseRegistry;
+import net.minecraft.util.math.BlockPos;
+import org.spongepowered.api.Sponge;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+public class GymManager {
+    List<Gym> gyms=new ArrayList<Gym>();
+
+    File dir;
+
+    public void init(){
+        dir=new File(Reference.gymsDir);
+        if(!dir.exists()) {
+            if (!dir.getParentFile().exists())
+                dir.getParentFile().mkdirs();
+            try {
+                dir.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            this.loadGyms();
+    }
+
+    public void loadGyms(){
+        GGLogger.info("Loading Gym...");
+        this.gyms.clear();
+        try {
+            for (File f : Objects.requireNonNull(dir.listFiles())) {
+                if (f.getName().endsWith(".json")) {
+                    loadGym(f.getName().replace(".json", ""));
+                }
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGym(String gymName) throws IOException {
+        InputStream iStream = new FileInputStream(new File(dir, gymName+".json"));
+        JsonObject json=new JsonParser().parse(new InputStreamReader(iStream, StandardCharsets.UTF_8)).getAsJsonObject();
+        Gym gym=new Gym();
+
+        if(json.has("name")){
+            gym.name=json.get("name").getAsString();
+        }
+
+        if(json.has("warpCoords")){
+            JsonObject coords=json.get("warpCoords").getAsJsonObject();
+            gym.warpPos=new BlockPos(coords.get("warpX").getAsInt(), coords.get("warpY").getAsInt(), coords.get("warpZ").getAsInt());
+        }
+
+        if(json.has("challengerWarp")){
+            JsonObject coords=json.get("challengerWarp").getAsJsonObject();
+            gym.challengerWarp=new BlockPos(coords.get("warpX").getAsInt(), coords.get("warpY").getAsInt(), coords.get("warpZ").getAsInt());
+        }
+
+        if(json.has("world")){
+            UUID worldUUID=UUID.fromString(json.get("world").getAsString());
+            gym.world= Sponge.getServer().getWorld(worldUUID).get();
+        }
+
+        if(json.has("gymTheme")){
+            gym.theme=json.get("gymTheme").getAsString();
+        }
+
+        if(json.has("battleRules")){
+            GymBattleRules rules=new GymBattleRules(gym);
+            rules.fullHeal=true;
+            rules.turnTime=90;
+            JsonObject battleRules=json.getAsJsonObject("battleRules");
+            if(battleRules.has("levelCap"))
+                rules.levelCap=battleRules.get("levelCap").getAsInt();
+            if(battleRules.has("clauses")){
+                JsonArray clausesJson=battleRules.getAsJsonArray("clauses");
+                List<BattleClause> clauses=new ArrayList<BattleClause>();
+                for(JsonElement clause:clausesJson){
+                    clauses.add(BattleClauseRegistry.getClauseRegistry().getClause(clause.getAsString()));
+                }
+                rules.setNewClauses(clauses);
+            }
+        }
+
+        File teamsDir=new File(Reference.gymsDir+"/"+gym.name);
+        if(!dir.exists()) {
+            try {
+                dir.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            this.loadTeams(gym);
+    }
+
+    public void loadTeams(Gym gym){
+        for (File f : Objects.requireNonNull(dir.listFiles())) {
+            if (f.getName().endsWith(".team")) {
+                loadTeam(f.getName().replace(".team", ""), gym);
+            }
+        }
+    }
+
+    public void loadTeam(String file, Gym gym){
+        Team playerTeam=new Team(file);
+        String path=Reference.gymsDir+gym.name+file+".team";
+        List<Pokemon> pokemon= TeamManager.singleTeamFromFile(path);
+        for(Pokemon pixelmon:pokemon){
+            playerTeam.addMember(pixelmon);
+        }
+        gym.playerTeams.put(UUID.fromString(file), playerTeam);
+    }
+
+    public Gym getGym(String name){
+        for(Gym gym: this.gyms){
+            if(gym.name.equals(name)){
+                return gym;
+            }
+        }
+        return null;
+    }
+}
