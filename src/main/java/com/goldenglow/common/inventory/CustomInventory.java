@@ -3,6 +3,7 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.gyms.GymInventories;
 import com.goldenglow.common.inventory.BetterTrading.OfferMakingInventory;
 import com.goldenglow.common.inventory.BetterTrading.Trade;
 import com.goldenglow.common.util.GGLogger;
@@ -61,6 +62,12 @@ public class CustomInventory extends ContainerChest {
         else if(inventoryName.equalsIgnoreCase("Party")){
             CustomInventory.openPartyInventoryTest(player);
             return;
+        }
+        else if(inventoryName.startsWith("GYM:")){
+            GymInventories.openInventory(inventoryName.split(":")[1], player);
+        }
+        else if(inventoryName.startsWith("QUEUE:")){
+            GymInventories.openQueue(inventoryName.split(":")[1], player);
         }
         else if(inventoryName.equalsIgnoreCase("tt")) {
             Trade playerTrade=null;

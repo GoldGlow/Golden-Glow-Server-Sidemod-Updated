@@ -1,8 +1,10 @@
 package com.goldenglow.common.gyms;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.teams.Team;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,8 +14,10 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClause;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClauseRegistry;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -136,5 +140,45 @@ public class GymManager {
             }
         }
         return null;
+    }
+
+    public void removeFromQueues(EntityPlayerMP player){
+        for(Gym gym:this.gyms){
+            if(gym.queue.contains(player)){
+                gym.queue.remove(player);
+            }
+        }
+    }
+
+    public Gym challengingGym(EntityPlayerMP player){
+        for(Gym gym:this.gyms){
+            if(gym.challengingPlayer.getName().equals(player.getName())){
+                return gym;
+            }
+        }
+        return null;
+    }
+
+    public Gym leadingGym(EntityPlayerMP player){
+        for(Gym gym:this.gyms){
+            if(gym.currentLeader.getName().equals(player.getName())){
+                return gym;
+            }
+        }
+        return null;
+    }
+
+    public List<EntityPlayerMP> hasGymLeaderOnline(Gym gym){
+        Collection<Player> onlinePlayers=Sponge.getServer().getOnlinePlayers();
+        ArrayList<EntityPlayerMP> onlineLeaders=new ArrayList<EntityPlayerMP>();
+        for(Player player:onlinePlayers){
+            if(PermissionUtils.checkPermission((EntityPlayerMP) player.getBaseVehicle(), "staff.gym_leader."+gym.getName().toLowerCase().replace(" ","_")))
+                onlineLeaders.add((EntityPlayerMP) player.getBaseVehicle());
+        }
+        return onlineLeaders;
+    }
+
+    public List<Gym> getGyms(){
+        return this.gyms;
     }
 }

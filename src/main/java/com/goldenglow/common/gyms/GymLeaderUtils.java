@@ -16,6 +16,7 @@ import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.text.Text;
 
 public class GymLeaderUtils {
     public static void openGym(String gymName){
@@ -23,7 +24,10 @@ public class GymLeaderUtils {
     }
 
     public static void openGym(Gym gym){
-        gym.open=true;
+        if(!gym.open){
+            gym.open=true;
+            Sponge.getServer().getBroadcastChannel().send(Text.of(Reference.darkPurple+gym.name+" has just opened!"));
+        }
     }
 
     public static void closeGym(String gymName){
@@ -33,6 +37,10 @@ public class GymLeaderUtils {
     public static void closeGym(Gym gym){
         gym.open=false;
         gym.queue.clear();
+        if(gym.currentLeader!=null){
+            GymLeaderUtils.stopTakingChallengers(gym, gym.currentLeader);
+        }
+        Sponge.getServer().getBroadcastChannel().send(Text.of(Reference.darkPurple+gym.name+" is now closed!"));
     }
 
     public static void takeChallengers(String gymName, EntityPlayerMP leader){
@@ -70,8 +78,10 @@ public class GymLeaderUtils {
             IPlayerData challengerData = challenger.getCapability(OOPlayerProvider.OO_DATA, null);
             FullPos returnPos = challengerData.getBackupFullpos();
             returnPos.warpToWorldPos(challenger);
+            challengerData.setBackupFullpos(null);
             gym.challengingPlayer = null;
         }
+        playerData.setBackupFullpos(null);
         PermissionUtils.unsetPermissionsWithStart(leader, "gymleader.active");
     }
 
@@ -94,6 +104,13 @@ public class GymLeaderUtils {
             challengerData.setBackupFullpos(new FullPos(gym.challengingPlayer));
             FullPos challengerWarpTo=new FullPos(gym.world, gym.challengerWarp);
             challengerWarpTo.warpToWorldPos(gym.challengingPlayer);
+        }else if(gym.challengingPlayer != null){
+            EntityPlayerMP challenger = gym.challengingPlayer;
+            IPlayerData playerData = challenger.getCapability(OOPlayerProvider.OO_DATA, null);
+            FullPos returnPos = playerData.getBackupFullpos();
+            returnPos.warpToWorldPos(challenger);
+            gym.challengingPlayer = null;
+            leader.sendMessage(new TextComponentString(Reference.red+"There's no one in the queue!"));
         }else{
             leader.sendMessage(new TextComponentString(Reference.red+"There's no one in the queue!"));
         }

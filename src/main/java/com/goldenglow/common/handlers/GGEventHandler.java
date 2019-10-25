@@ -5,7 +5,10 @@ import com.goldenglow.common.battles.CustomNPCBattle;
 import com.goldenglow.common.battles.DoubleNPCBattle;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.gyms.Gym;
 import com.goldenglow.common.gyms.GymBattleRules;
+import com.goldenglow.common.gyms.GymLeaderUtils;
+import com.goldenglow.common.gyms.GymManager;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.music.Song;
@@ -162,6 +165,20 @@ public class GGEventHandler {
         if(GoldenGlow.tradeManager.alreadyTrading((EntityPlayerMP) event.player)){
             GoldenGlow.tradeManager.cancelTrade((EntityPlayerMP) event.player);
         }
+        if(GoldenGlow.gymManager.leadingGym((EntityPlayerMP) event.player)!=null){
+            GymLeaderUtils.stopTakingChallengers(GoldenGlow.gymManager.leadingGym((EntityPlayerMP) event.player), (EntityPlayerMP) event.player);
+        }
+        else if(GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player)!=null){
+            GymLeaderUtils.nextInQueue(GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player), GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player).currentLeader);
+        }
+        for(Gym gym:GoldenGlow.gymManager.getGyms()){
+            if(PermissionUtils.checkPermission(((EntityPlayerMP) event.player), "staff.gym_leader."+gym.getName().toLowerCase().replace(" ","_"))){
+                if(GoldenGlow.gymManager.hasGymLeaderOnline(gym).size()==1){
+                    GymLeaderUtils.closeGym(gym);
+                }
+            }
+        }
+        GoldenGlow.gymManager.removeFromQueues((EntityPlayerMP) event.player);
         /*Instant loginTime = playerTimes.get(event.player.getUniqueID());
         playerTimes.remove(event.player.getUniqueID());
         Instant logoutTime = Instant.now();
@@ -267,10 +284,12 @@ public class GGEventHandler {
         if(event.bc.rules instanceof GymBattleRules){
             BattleResults results=event.results.get(event.bc.participants.get(0));
             if (results == BattleResults.VICTORY) {
-                PermissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, ((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
+                PermissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, "badge."+((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
                 SongManager.setRouteSong(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player);
             }
             else{
+                ((GymBattleRules) event.bc.rules).getGym().challengingPlayer.getCapability(OOPlayerProvider.OO_DATA, null).setBackupFullpos(null);
+                ((GymBattleRules) event.bc.rules).getGym().challengingPlayer=null;
                 WorldFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player));
             }
             SongManager.setRouteSong(((PlayerParticipant)event.bc.participants.get(1).getParticipantList()[0]).player);
@@ -354,7 +373,7 @@ public class GGEventHandler {
             if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
                 event.setCanceled(true);
                 if(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "gymleader.active"))
-                    CustomInventory.openInventory("Leader Tools", (EntityPlayerMP) event.getEntityPlayer());
+                    CustomInventory.openInventory("GYM:"+GoldenGlow.gymManager.leadingGym((EntityPlayerMP)event.getEntityPlayer()), (EntityPlayerMP) event.getEntityPlayer());
                 else
                     CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
             }

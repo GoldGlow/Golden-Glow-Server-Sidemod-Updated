@@ -47,7 +47,7 @@ public class OOPlayerData implements IPlayerData {
     public Route getSafezone() {
         return this.safezone;
     }
-    public FullPos getBackupFullPos(){return this.backupFullPos;}
+    public FullPos getBackupFullpos(){return this.backupFullPos;}
     public String getCurrentSong() {
         return this.current_song;
     }
@@ -89,7 +89,7 @@ public class OOPlayerData implements IPlayerData {
             this.safezone = GoldenGlow.routeManager.getRoute(safezoneName);
         }
     }
-    public void setBackupFullPos(FullPos fullPos){this.backupFullPos=fullPos;}
+    public void setBackupFullpos(FullPos fullPos){this.backupFullPos=fullPos;}
     public void setSong(String song) {
         this.current_song = song;
     }

@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 
@@ -45,6 +46,12 @@ public class CustomItem  {
         return this;
     }
 
+    public CustomItem setBothClickActions(Action[] actions){
+        this.leftClickActions=actions;
+        this.rightClickActions=actions;
+        return this;
+    }
+
     public Action[] getRightClickActions(){
         return this.rightClickActions;
     }
@@ -69,6 +76,14 @@ public class CustomItem  {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static ItemStack getPlayerHead(EntityPlayerMP player){
+        ItemStack itemStack=new ItemStack(Item.getByNameOrId("minecraft:skull"));
+        itemStack.setStackDisplayName(Reference.resetText+player.getName());
+        itemStack.setItemDamage(3);
+        itemStack.setTagInfo("SkullOwner", new NBTTagString(player.getName()));
+        return itemStack;
     }
 
     public static CustomItem getPokemonItem(Pokemon pokemon){

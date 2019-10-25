@@ -3,6 +3,8 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.gyms.Gym;
+import com.goldenglow.common.gyms.GymLeaderUtils;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
@@ -145,6 +147,24 @@ public class Action {
             OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
             data.setScoreboardType(Scoreboards.EnumScoreboardType.valueOf(this.value));
         }
+        else if(this.actionType==ActionType.CLOSE_GYM){
+            GymLeaderUtils.closeGym(this.value);
+        }
+        else if(this.actionType==ActionType.OPEN_GYM){
+            GymLeaderUtils.openGym(this.value);
+        }
+        else if(this.actionType==ActionType.TAKE_CHALLENGERS){
+            GymLeaderUtils.takeChallengers(this.value, player);
+        }
+        else if(this.actionType==ActionType.STOP_CHALLENGERS){
+            GymLeaderUtils.stopTakingChallengers(this.value, player);
+        }
+        else if(this.actionType==ActionType.NEXT_CHALLENGER){
+            GymLeaderUtils.nextInQueue(this.value, player);
+        }
+        else if(this.actionType==ActionType.START_BATTLE){
+            GymLeaderUtils.startGymBattle(this.value);
+        }
     }
 
     public enum ActionType{
@@ -156,6 +176,12 @@ public class Action {
         TM_PARTY,
         TEACH_MOVE,
         CHANGE_TITLE,
-        SCOREBOARD_TYPE
+        SCOREBOARD_TYPE,
+        CLOSE_GYM,
+        OPEN_GYM,
+        TAKE_CHALLENGERS,
+        STOP_CHALLENGERS,
+        NEXT_CHALLENGER,
+        START_BATTLE
     }
 }
