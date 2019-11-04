@@ -47,6 +47,8 @@ import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
 import com.pixelmonmod.pixelmon.pokedex.Pokedex;
+import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
+import moe.plushie.armourers_workshop.common.tileentities.TileEntitySkinnable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -59,6 +61,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -372,7 +375,7 @@ public class GGEventHandler {
         if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:diamond_dagger")) {
             if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
                 event.setCanceled(true);
-                if(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "gymleader.active"))
+                if(GoldenGlow.gymManager.leadingGym((EntityPlayerMP) event.getEntityPlayer())!=null)
                     CustomInventory.openInventory("GYM:"+GoldenGlow.gymManager.leadingGym((EntityPlayerMP)event.getEntityPlayer()), (EntityPlayerMP) event.getEntityPlayer());
                 else
                     CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
@@ -401,6 +404,9 @@ public class GGEventHandler {
                     tile = event.getWorld().getTileEntity(event.getPos());
                 }
             }
+            else if(blockState.getBlock() instanceof BlockSkinnable){
+                tile = event.getWorld().getTileEntity(event.getPos());
+            }
             if(tile instanceof ICustomScript) {
                 ICustomScript customTile = (ICustomScript) tile;
                 if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
@@ -418,6 +424,10 @@ public class GGEventHandler {
             else{
                 return;
             }
+        }
+        else if(GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString())&&!(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder")))
+        {
+            event.setCanceled(true);
         }
         else{
             return;

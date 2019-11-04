@@ -37,7 +37,7 @@ function removeKeyItem(player, displayName){
 }
 
 function unlockTM(player, itemID){
-	Packages.com.goldenglow.common.util.scripting.InventoryFunctions.unlockTM(player, itemID);
+	return Packages.com.goldenglow.common.util.scripting.InventoryFunctions.unlockTM(player, itemID);
 }
 
 function addKeyItemAndQuestObjective(player, questId, objectiveId, itemstack){

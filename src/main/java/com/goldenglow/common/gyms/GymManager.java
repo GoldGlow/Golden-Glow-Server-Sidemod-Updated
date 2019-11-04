@@ -104,19 +104,19 @@ public class GymManager {
         }
 
         File teamsDir=new File(Reference.gymsDir+"/"+gym.name);
-        if(!dir.exists()) {
+        if(!teamsDir.exists()) {
             try {
-                dir.createNewFile();
+                teamsDir.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else
-            this.loadTeams(gym);
+            this.loadTeams(gym, teamsDir);
     }
 
-    public void loadTeams(Gym gym){
-        for (File f : Objects.requireNonNull(dir.listFiles())) {
+    public void loadTeams(Gym gym, File teamsDir){
+        for (File f : Objects.requireNonNull(teamsDir.listFiles())) {
             if (f.getName().endsWith(".team")) {
                 loadTeam(f.getName().replace(".team", ""), gym);
             }
@@ -125,7 +125,7 @@ public class GymManager {
 
     public void loadTeam(String file, Gym gym){
         Team playerTeam=new Team(file);
-        String path=Reference.gymsDir+gym.name+file+".team";
+        String path=Reference.gymsDir+"/"+gym.name+file+".team";
         List<Pokemon> pokemon= TeamManager.singleTeamFromFile(path);
         for(Pokemon pixelmon:pokemon){
             playerTeam.addMember(pixelmon);

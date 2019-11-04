@@ -41,7 +41,7 @@ public class HuntHandler {
             int i = Math.max(4096-((chain/10)*750), 346);
             boolean shiny = new Random().nextInt(i) == 0;
             player.sendMessage(new TextComponentString("Chain: "+ chain +", Chance: "+i));
-            if(true) {
+            if(shiny) {
                 wild.setShiny(true);
                 player.sendMessage(new TextComponentString("What!? It's a Shiny!"));
             }

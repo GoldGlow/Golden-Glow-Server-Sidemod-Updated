@@ -56,7 +56,6 @@ public class GymLeaderUtils {
             playerData.setBackupFullpos(new FullPos(leader));
             FullPos gymPos=new FullPos(gym.world, gym.warpPos);
             gymPos.warpToWorldPos(leader);
-            PermissionUtils.addPermissionNode(leader, "gymleader.active");
         }
         else{
             leader.sendMessage(new TextComponentString(Reference.red+"Another leader is taking on challenges already!"));

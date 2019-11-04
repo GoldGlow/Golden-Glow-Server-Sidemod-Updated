@@ -100,6 +100,10 @@ public class WorldFunctions {
         return true;
     }
 
+    public static void setDayChallengedNPC(PlayerWrapper player, NPCWrapper npc){
+        npc.getMCEntity().getEntityData().setLong(player.getUUID(), getLastDailyRefresh());
+    }
+
     public static boolean isDifferentIRLDay(PlayerWrapper player, BlockScriptedWrapper scriptedBlock){
         if(scriptedBlock.getMCTileEntity().getTileData().hasKey(player.getUUID())) {
             if (scriptedBlock.getMCTileEntity().getTileData().getLong(player.getUUID()) == lastDailyRefresh){
