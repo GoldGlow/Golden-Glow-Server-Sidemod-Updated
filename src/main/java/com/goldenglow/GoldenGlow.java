@@ -54,6 +54,7 @@ public class GoldenGlow {
 
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
+    public static RightClickBlacklistHandler rightClickBlacklistHandler=new RightClickBlacklistHandler();
 
     public static SongManager songManager= new SongManager();
     public static TeamManager teamManager = new TeamManager();
@@ -74,6 +75,7 @@ public class GoldenGlow {
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
+        rightClickBlacklistHandler.init();
 
         GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));

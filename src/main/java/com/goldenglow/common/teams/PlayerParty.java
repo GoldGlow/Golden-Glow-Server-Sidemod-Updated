@@ -28,6 +28,9 @@ public class PlayerParty {
 
     public static void backupTeam(EntityPlayerMP player, String folder){
         try {
+            if(! new File(folder).exists()){
+                new File(folder).createNewFile();
+            }
             File backup = new File(Reference.configDir+folder+player.getUUID(player.getGameProfile())+".json");
             if(!backup.exists())
                 backup.createNewFile();
