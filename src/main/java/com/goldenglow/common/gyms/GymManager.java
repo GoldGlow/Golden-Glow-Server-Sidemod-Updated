@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.World;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -79,7 +80,13 @@ public class GymManager {
 
         if(json.has("world")){
             UUID worldUUID=UUID.fromString(json.get("world").getAsString());
-            gym.world= Sponge.getServer().getWorld(worldUUID).get();
+            Optional<World> w = Sponge.getServer().getWorld(worldUUID);
+            if(w.isPresent())
+                gym.world= w.get();
+            else {
+                GoldenGlow.logger.error("Gym World not found! - Gym: "+gymName);
+                return;
+            }
         }
 
         if(json.has("gymTheme")){
