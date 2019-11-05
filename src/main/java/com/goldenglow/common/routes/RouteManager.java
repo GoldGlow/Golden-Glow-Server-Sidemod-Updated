@@ -1,5 +1,6 @@
 package com.goldenglow.common.routes;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.ParseJson;
 import com.goldenglow.common.util.Reference;
@@ -22,10 +23,7 @@ import org.spongepowered.api.world.World;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class RouteManager {
 
@@ -90,7 +88,13 @@ public class RouteManager {
         }
         World world;
         if(json.has("world")) {
-            world = Sponge.getServer().getWorld(UUID.fromString(json.get("world").getAsString())).get();
+            Optional<World> w = Sponge.getServer().getWorld(UUID.fromString(json.get("world").getAsString()));
+            if(w.isPresent())
+                world = w.get();
+            else {
+                GoldenGlow.logger.error("Route World not found! - Route: "+routeName);
+                return;
+            }
         } else {
             world = Sponge.getServer().getWorld("world").get();
         }
