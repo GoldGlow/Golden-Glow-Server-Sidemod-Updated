@@ -21,7 +21,8 @@ public class Scoreboards {
     public enum EnumScoreboardType{
         NONE,
         DEBUG,
-        QUEST_LOG
+        QUEST_LOG,
+        CHAIN_INFO
     }
 
     public static void buildScoreboard(EntityPlayerMP player){
@@ -36,6 +37,9 @@ public class Scoreboards {
         }
         else if(type==EnumScoreboardType.QUEST_LOG){
             Scoreboards.buildQuestLogScoreboard(player);
+        }
+        else if(type==EnumScoreboardType.CHAIN_INFO){
+            Scoreboards.buildChainsScoreboard(player);
         }
     }
 
@@ -106,6 +110,19 @@ public class Scoreboards {
             }
         }
         Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Quest Log", lines, scores), player);
+        Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
+    }
+
+    public static void buildChainsScoreboard(EntityPlayerMP player){
+        OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
+        ArrayList<String> lines=new ArrayList<String>();
+        ArrayList<String> scores=new ArrayList<String>();
+        lines.add("Capture chain");
+        //lines.add("Battle chain");
+        //lines.add("Battle and Capture chain");
+        scores.add(data.getCaptureChain()+"");
+        //add other scores
+        Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Chains", lines, scores), player);
         Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
     }
 }

@@ -45,7 +45,7 @@ function addKeyItemAndQuestObjective(player, questId, objectiveId, itemstack){
 	var quests=player.getActiveQuests();
 	for(var i=0;i<quests.length;i++){
 		if(quests[i].getId()==questId){
-			quests[i].getObjectives(player)[objectiveId].setProgress(quests[i].getObjectives(player)[objectiveId]++);
+			quests[i].getObjectives(player)[objectiveId].setProgress(quests[i].getObjectives(player)[objectiveId].getProgress()+1);
 		}
 	}
 }
