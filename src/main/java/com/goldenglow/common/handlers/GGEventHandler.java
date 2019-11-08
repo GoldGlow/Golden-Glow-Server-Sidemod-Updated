@@ -8,12 +8,9 @@ import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.gyms.Gym;
 import com.goldenglow.common.gyms.GymBattleRules;
 import com.goldenglow.common.gyms.GymLeaderUtils;
-import com.goldenglow.common.gyms.GymManager;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventory;
-import com.goldenglow.common.music.Song;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.seals.Seal;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.tiles.ICustomScript;
@@ -25,15 +22,13 @@ import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.goldenglow.common.util.scripting.WorldFunctions;
+import com.google.gson.stream.JsonWriter;
+import com.ibm.icu.impl.duration.PeriodFormatter;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.*;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonBase;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
-import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
@@ -46,11 +41,12 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
-import com.pixelmonmod.pixelmon.pokedex.Pokedex;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.Node;
+import me.lucko.luckperms.api.User;
 import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
-import moe.plushie.armourers_workshop.common.tileentities.TileEntitySkinnable;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -61,7 +57,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -70,32 +65,29 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.Server;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.event.BlockEvent;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
-import noppes.npcs.blocks.tiles.TileScripted;
 import noppes.npcs.constants.EnumScriptType;
-import noppes.npcs.controllers.IScriptBlockHandler;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
-import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class GGEventHandler {
-
-    Map<UUID, Instant> playerTimes = new HashMap<>();
 
     @SubscribeEvent
     public void onPixelmonSpawner(PixelmonSpawnerEvent event){
@@ -156,42 +148,52 @@ public class GGEventHandler {
         GGLogger.info("Bug types: "+bugTypes);
     }
 
-    //ToDo: Change login Event considering we now use a different way for storing this info.
-    @SubscribeEvent
-    public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        playerTimes.put(event.player.getUniqueID(), Instant.now());
-    }
-
     @SubscribeEvent
     public void playerLogoutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
-        IPlayerData playerData= event.player.getCapability(OOPlayerProvider.OO_DATA, null);
-        if(GoldenGlow.tradeManager.alreadyTrading((EntityPlayerMP) event.player)){
+        IPlayerData playerData = event.player.getCapability(OOPlayerProvider.OO_DATA, null);
+        if (GoldenGlow.tradeManager.alreadyTrading((EntityPlayerMP) event.player)) {
             GoldenGlow.tradeManager.cancelTrade((EntityPlayerMP) event.player);
         }
-        if(GoldenGlow.gymManager.leadingGym((EntityPlayerMP) event.player)!=null){
+        if (GoldenGlow.gymManager.leadingGym((EntityPlayerMP) event.player) != null) {
             GymLeaderUtils.stopTakingChallengers(GoldenGlow.gymManager.leadingGym((EntityPlayerMP) event.player), (EntityPlayerMP) event.player);
-        }
-        else if(GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player)!=null){
+        } else if (GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player) != null) {
             GymLeaderUtils.nextInQueue(GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player), GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player).currentLeader);
         }
-        for(Gym gym:GoldenGlow.gymManager.getGyms()){
-            if(PermissionUtils.checkPermission(((EntityPlayerMP) event.player), "staff.gym_leader."+gym.getName().toLowerCase().replace(" ","_"))){
-                if(GoldenGlow.gymManager.hasGymLeaderOnline(gym).size()==1){
+        for (Gym gym : GoldenGlow.gymManager.getGyms()) {
+            if (PermissionUtils.checkPermission(((EntityPlayerMP) event.player), "staff.gym_leader." + gym.getName().toLowerCase().replace(" ", "_"))) {
+                if (GoldenGlow.gymManager.hasGymLeaderOnline(gym).size() == 1) {
                     GymLeaderUtils.closeGym(gym);
                 }
             }
         }
         GoldenGlow.gymManager.removeFromQueues((EntityPlayerMP) event.player);
-        /*Instant loginTime = playerTimes.get(event.player.getUniqueID());
-        playerTimes.remove(event.player.getUniqueID());
-        Instant logoutTime = Instant.now();
-        Duration sessionDuration = Duration.between(loginTime, logoutTime);
-        Duration totalDuration = Duration.ofSeconds(event.player.getEntityData().getLong("PlayTime")+sessionDuration.getSeconds());
-        event.player.getEntityData().setLong("PlayTime", totalDuration.getSeconds());
-        String time = String.format("%d:%02d:%02d", (int)totalDuration.getSeconds() / 3600, ((int)totalDuration.getSeconds() % 3600) / 60, ((int)totalDuration.getSeconds() % 60));
-        int dex = Pixelmon.storageManager.getParty((EntityPlayerMP)event.player).pokedex.countCaught();
-        int badges = 0; //ToDo: Change this when we decide how to handle badges.
-        GoldenGlow.dataHandler.sendData(event.player.getName(), dex, badges, time);*/
+
+        try {
+            User user = LuckPerms.getApi().getUser(event.player.getUniqueID());
+            File f = new File(Reference.statsDir, event.player.getUniqueID().toString() + ".json");
+            if (!f.exists()) f.createNewFile();
+            JsonWriter writer = new JsonWriter(new FileWriter(f));
+            writer.setIndent("\t");
+
+            writer.beginObject();
+
+            int badgeCount = 0;
+            for(Node n : user.getPermissions()) {
+                if(n.getPermission().startsWith("badge.")&&n.getPermission().endsWith("npc"))
+                    badgeCount++;
+            }
+            Duration timeplayed = Duration.between(Instant.now(), Sponge.getServer().getPlayer(event.player.getUniqueID()).get().getJoinData().firstPlayed().get());
+
+            writer.name("badges").value(Integer.toString(badgeCount));
+            writer.name("dex").value(Integer.toString(Pixelmon.storageManager.getParty(event.player.getUniqueID()).pokedex.countCaught()));
+            writer.name("time").value(String.format("%h:%n", timeplayed.toHours(), timeplayed.toMinutes()));
+
+            writer.endObject();
+            writer.close();
+        }
+        catch (IOException e) {
+            GoldenGlow.logger.error("Error occurred saving player stats.");
+        }
     }
 
     @SubscribeEvent

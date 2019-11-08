@@ -23,6 +23,7 @@ import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.tiles.TileEntityCustomScripted;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.http.OOStatsServer;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.ICommandSender;
@@ -68,7 +69,11 @@ public class GoldenGlow {
 
     public static CommandDispatcher<ICommandSender> commandDispatcher = new CommandDispatcher<>();
 
+    public static Thread statsServer;
+
     public GoldenGlow() {
+        statsServer = new Thread(new OOStatsServer());
+        statsServer.start();
     }
 
     @Mod.EventHandler
