@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import noppes.npcs.api.item.IItemStack;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class OOPlayerData implements IPlayerData {
 
     private boolean isEvolvingPokemon=false;
     private List<Pokemon> waitToEvolve=new ArrayList<Pokemon>();
+
+    private Instant loginTime;
 
     //Getters
     public Route getRoute() {
@@ -180,4 +183,11 @@ public class OOPlayerData implements IPlayerData {
     public void addPokemonWaiting(Pokemon pokemon){this.waitToEvolve.add(pokemon);}
     public boolean isEvolvingPokemon(){return this.isEvolvingPokemon;}
     public void setEvolvingPokemon(boolean evolvingPokemon){this.isEvolvingPokemon=evolvingPokemon;}
+
+    public void setLoginTime(Instant loginTime) {
+        this.loginTime = loginTime;
+    }
+    public Instant getLoginTime() {
+        return loginTime;
+    }
 }

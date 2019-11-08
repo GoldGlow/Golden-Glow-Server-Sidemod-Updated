@@ -149,6 +149,13 @@ public class GGEventHandler {
     }
 
     @SubscribeEvent
+    public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
+        event.player.getCapability(OOPlayerProvider.OO_DATA, null).setLoginTime(Instant.now());
+        if(!event.player.getEntityData().hasKey("playtime"))
+            event.player.getEntityData().setLong("playtime", 0);
+    }
+
+    @SubscribeEvent
     public void playerLogoutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
         IPlayerData playerData = event.player.getCapability(OOPlayerProvider.OO_DATA, null);
         if (GoldenGlow.tradeManager.alreadyTrading((EntityPlayerMP) event.player)) {
@@ -182,17 +189,24 @@ public class GGEventHandler {
                 if(n.getPermission().startsWith("badge.")&&n.getPermission().endsWith("npc"))
                     badgeCount++;
             }
-            Duration timeplayed = Duration.between(Instant.now(), Sponge.getServer().getPlayer(event.player.getUniqueID()).get().getJoinData().firstPlayed().get());
+
+
+            long sessionTime = Math.abs(Duration.between(Instant.now(), playerData.getLoginTime()).getSeconds());
+            GoldenGlow.logger.info("Session: "+sessionTime);
+            long totalTime = event.player.getEntityData().getLong("playtime")+sessionTime;
+            GoldenGlow.logger.info("Total: "+totalTime);
+            event.player.getEntityData().setLong("playtime", totalTime);
 
             writer.name("badges").value(Integer.toString(badgeCount));
             writer.name("dex").value(Integer.toString(Pixelmon.storageManager.getParty(event.player.getUniqueID()).pokedex.countCaught()));
-            writer.name("time").value(String.format("%h:%n", timeplayed.toHours(), timeplayed.toMinutes()));
+            writer.name("time").value(String.format("%sh:%sm", totalTime / 3600, (totalTime%3600)/60));
 
             writer.endObject();
             writer.close();
         }
         catch (IOException e) {
             GoldenGlow.logger.error("Error occurred saving player stats.");
+            e.printStackTrace();
         }
     }
 

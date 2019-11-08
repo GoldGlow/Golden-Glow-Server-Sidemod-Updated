@@ -9,6 +9,7 @@ package com.goldenglow.common.data;
         import net.minecraft.item.Item;
         import net.minecraft.item.ItemStack;
 
+        import java.time.Instant;
         import java.util.List;
 
 public interface IPlayerData {
@@ -67,4 +68,7 @@ public interface IPlayerData {
     void addPokemonWaiting(Pokemon pokemon);
     boolean isEvolvingPokemon();
     void setEvolvingPokemon(boolean evolvingPokemon);
+
+    void setLoginTime(Instant loginTime);
+    Instant getLoginTime();
 }
