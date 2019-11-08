@@ -35,7 +35,7 @@ public class OOStatsServer implements Runnable {
         server.get("/time/:name", ctx -> sendStat("time", ctx.pathParam("name"), ctx));
 
         GoldenGlow.logger.info("[RV97] Stats server started...");
-        server.start(7000);
+        server.start(8023);
     }
 
     void sendStat(String stat, String name, Context ctx) {
