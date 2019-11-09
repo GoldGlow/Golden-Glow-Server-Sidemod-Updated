@@ -12,11 +12,14 @@ buildscript {
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
         classpath "gradle.plugin.org.spongepowered:spongegradle:0.8.1"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
     }
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "org.spongepowered.plugin"
+apply plugin: 'com.github.johnrengelman.plugin-shadow'
+apply plugin: 'java'
 
 version = "1.0.2"
 group = "com.goldenglow" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -42,11 +45,26 @@ repositories {
     }
 }
 
+configurations {
+    provided
+    compile.extendsFrom provided
+}
+
 dependencies {
     compile 'com.mojang:brigadier:1.0.17'
     compile 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
     compile 'org.spongepowered:spongeapi:7.2.0-SNAPSHOT'
-    compile 'io.javalin:javalin:3.6.0'
+    shadow 'io.javalin:javalin:3.6.0'
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    relocate 'io.javalin', 'com.goldenglow.javalin'
+    classifier ''
+}
+
+reobf {
+    shadowJar{}
 }
 
 processResources {
