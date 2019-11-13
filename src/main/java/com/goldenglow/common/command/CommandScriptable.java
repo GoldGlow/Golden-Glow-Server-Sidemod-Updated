@@ -3,8 +3,10 @@ package com.goldenglow.common.command;
 import com.goldenglow.common.tiles.TileEntityCustomAW;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
+import com.goldenglow.common.tiles.TileEntityCustomFridge;
 import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityApricornTree;
 import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityBerryTree;
+import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityFridge;
 import moe.plushie.armourers_workshop.common.tileentities.TileEntitySkinnable;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -50,6 +52,9 @@ public class CommandScriptable extends OOCommand {
                 }
                 else if(oldTile instanceof TileEntitySkinnable) {
                     newTile = new TileEntityCustomAW(world.getBlockState(blockpos).getBlock(), blockpos);
+                }
+                else if(oldTile instanceof TileEntityFridge){
+                    newTile = new TileEntityCustomFridge(world.getBlockState(blockpos).getBlock(), oldTile.getPos());
                 }
 
                 if (newTile != null) {

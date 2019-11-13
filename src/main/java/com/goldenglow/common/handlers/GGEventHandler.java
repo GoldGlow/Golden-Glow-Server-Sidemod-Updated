@@ -16,6 +16,7 @@ import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
+import com.goldenglow.common.tiles.TileEntityCustomFridge;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.PixelmonBattleUtils;
@@ -33,8 +34,11 @@ import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.blocks.BlockBerryTree;
+import com.pixelmonmod.pixelmon.blocks.MultiBlock;
 import com.pixelmonmod.pixelmon.blocks.apricornTrees.BlockApricornTree;
 import com.pixelmonmod.pixelmon.blocks.enums.EnumBlockPos;
+import com.pixelmonmod.pixelmon.blocks.enums.EnumMultiPos;
+import com.pixelmonmod.pixelmon.blocks.multiBlocks.BlockFridge;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
@@ -46,6 +50,8 @@ import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
+import moe.plushie.armourers_workshop.common.tileentities.TileEntitySkinnable;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -418,6 +424,14 @@ public class GGEventHandler {
                 if(blockState.getValue(BlockApricornTree.BLOCKPOS) == EnumBlockPos.TOP) {
                     tile = event.getWorld().getTileEntity(event.getPos().down());
                 } else {
+                    tile = event.getWorld().getTileEntity(event.getPos());
+                }
+            }
+            else if(blockState.getBlock() instanceof BlockFridge){
+                if(blockState.getValue(MultiBlock.MULTIPOS)== EnumMultiPos.TOP){
+                    tile = event.getWorld().getTileEntity(event.getPos().down());
+                }
+                else{
                     tile = event.getWorld().getTileEntity(event.getPos());
                 }
             }

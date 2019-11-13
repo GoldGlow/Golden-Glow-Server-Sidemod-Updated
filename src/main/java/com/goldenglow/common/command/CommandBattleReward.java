@@ -37,7 +37,7 @@ public class CommandBattleReward extends CommandBase {
                 amount*=1.25;
             }
             Pixelmon.storageManager.getParty(player).changeMoney(amount);
-            OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+args[0]);
+            OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+amount);
         }
     }
 }

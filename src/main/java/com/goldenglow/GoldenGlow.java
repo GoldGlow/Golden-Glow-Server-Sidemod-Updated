@@ -18,10 +18,7 @@ import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.teams.TeamManager;
-import com.goldenglow.common.tiles.TileEntityCustomAW;
-import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
-import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
-import com.goldenglow.common.tiles.TileEntityCustomScripted;
+import com.goldenglow.common.tiles.*;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.http.OOStatsServer;
 import com.mojang.brigadier.CommandDispatcher;
@@ -86,6 +83,7 @@ public class GoldenGlow {
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomAW.class, new ResourceLocation("obscureobsidian", "custom_aw"));
         GameRegistry.registerTileEntity(TileEntityCustomScripted.class, new ResourceLocation("obscureobsidian", "custom_scripted"));
+        GameRegistry.registerTileEntity(TileEntityCustomFridge.class, new ResourceLocation("obscureobsidian", "custom_fridge"));
 
         CapabilityManager.INSTANCE.register(IPlayerData.class, new OOPlayerStorage(), OOPlayerData::new);
 
@@ -119,6 +117,7 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandSetPvpMusicOption());
         event.registerServerCommand(new CommandSetTheme());
         event.registerServerCommand(new CommandMoneyreward());
+        event.registerServerCommand(new CommandBattleReward());
         event.registerServerCommand(new CommandCustomChest());
         event.registerServerCommand(new CommandShop());
         event.registerServerCommand(new CommandTradeTest());

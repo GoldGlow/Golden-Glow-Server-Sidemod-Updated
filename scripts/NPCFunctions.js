@@ -53,3 +53,7 @@ function addKeyItemAndQuestObjective(player, questId, objectiveId, itemstack){
 function setScoreboard(player){
 	Packages.com.goldenglow.common.util.scripting.OtherFunctions.setScoreboard(player);
 }
+
+function formChange(player, species, form){
+	Packages.com.goldenglow.common.inventory.ChangeFormInventory.openInventory(player.getMCEntity(), species, form);
+}
