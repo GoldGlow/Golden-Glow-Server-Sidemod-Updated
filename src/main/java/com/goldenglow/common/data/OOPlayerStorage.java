@@ -1,7 +1,6 @@
 package com.goldenglow.common.data;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.FullPos;
 import com.goldenglow.common.util.GGLogger;
@@ -91,6 +90,15 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             fullPos.setInteger("posY", instance.getBackupFullpos().getPos().getY());
             fullPos.setInteger("posZ", instance.getBackupFullpos().getPos().getZ());
             tag.setTag("backupFullPos", fullPos);
+        }
+
+        if(instance.getCaptureChain()>0) {
+            tag.setString("lastCaughtSpecies", instance.getChainSpecies().name);
+            tag.setInteger("catchChain", instance.getCaptureChain());
+        }
+        if(instance.getCaptureChain()>0) {
+            tag.setString("lastCaughtSpecies", instance.getChainSpecies().name);
+            tag.setInteger("catchChain", instance.getCaptureChain());
         }
 
         return tag;

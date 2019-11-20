@@ -31,7 +31,7 @@ import java.util.HashMap;
 public class SongManager {
 
     static File config = new File(Reference.configDir, "songs/config.cfg");
-    public String wildDefault,trainerDefault,encounterDefault,victoryDefault,evolutionDefault,levelUpDefault;
+    public String wildDefault,trainerDefault,encounterDefault,victoryDefault,evolutionDefault,levelUpDefault,shinyDefault;
     //Key: UUID
     //Value: song name
     public HashMap<String, String> uniqueSongs;
@@ -55,6 +55,8 @@ public class SongManager {
                         this.evolutionDefault = line.replace("evolutionSong=", "").replace(" ", "");
                     if (line.startsWith("levelUpSound="))
                         this.levelUpDefault = line.replace("levelUpSound=", "").replace(" ", "");
+                    if (line.startsWith("shinySound="))
+                        this.shinyDefault = line.replace("shinySound=", "").replace(" ", "");
                 }
             } else {
                 FileOutputStream os = new FileOutputStream(config);
@@ -77,6 +79,8 @@ public class SongManager {
                 this.levelUpDefault="obscureobsidian:sound.level_up";
                 writer.write("levelUpSound="+levelUpDefault);
                 writer.newLine();
+                this.shinyDefault="obscureobsidian:sound.shiny";
+                writer.write("shinySound="+shinyDefault);
                 writer.close();
             }
         }

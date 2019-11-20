@@ -37,6 +37,8 @@ public class OOPlayerData implements IPlayerData {
 
     private EnumSpecies lastCaughtSpecies = null;
     private int captureChain;
+    private EnumSpecies lastKOSpecies = null;
+    private int KOChain;
 
     private boolean isEvolvingPokemon=false;
     private List<Pokemon> waitToEvolve=new ArrayList<Pokemon>();
@@ -76,12 +78,16 @@ public class OOPlayerData implements IPlayerData {
     public List<ItemStack> getKeyItems(){return this.keyItems;}
     public List<ItemStack> getTMs(){return this.tms;}
     public Scoreboards.EnumScoreboardType getScoreboardType(){return this.scoreboardType;}
-    public EnumSpecies getLastCaughtPokemon() {
+    public EnumSpecies getChainSpecies() {
         return this.lastCaughtSpecies;
+    }
+    public EnumSpecies getLastKOPokemon() {
+        return this.lastKOSpecies;
     }
     public int getCaptureChain() {
         return this.captureChain;
     }
+    public int getKOChain() { return this.KOChain; }
 
     //Setters
     public void setRoute(Route route) {
@@ -116,8 +122,14 @@ public class OOPlayerData implements IPlayerData {
     public void setCaptureChain(int i) {
         this.captureChain = i;
     }
-    public void setLastCaughtPokemon(EnumSpecies species) {
+    public void setKOChain(int i) {
+        this.KOChain = i;
+    }
+    public void setChainSpecies(EnumSpecies species) {
         this.lastCaughtSpecies = species;
+    }
+    public void setLastKOPokemon(EnumSpecies species) {
+        this.lastKOSpecies = species;
     }
 
     //Others
@@ -174,6 +186,9 @@ public class OOPlayerData implements IPlayerData {
     }
     public int increaseCaptureChain(int i) {
         return this.captureChain += i;
+    }
+    public int increaseKOChain(int i) {
+        return this.KOChain += i;
     }
 
     public List<Pokemon> getWaitToEvolve(){return this.waitToEvolve;}

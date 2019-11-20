@@ -58,8 +58,12 @@ public interface IPlayerData {
     int getCaptureChain();
     int increaseCaptureChain(int i);
     void setCaptureChain(int i);
-    EnumSpecies getLastCaughtPokemon();
-    void setLastCaughtPokemon(EnumSpecies species);
+    EnumSpecies getChainSpecies();
+    void setChainSpecies(EnumSpecies species);
+    int getKOChain();
+    int increaseKOChain(int i);
+    void setKOChain(int i);
+    void setLastKOPokemon(EnumSpecies species);
 
     List<Pokemon> getWaitToEvolve();
     Pokemon getPokemonWaiting(int index);
