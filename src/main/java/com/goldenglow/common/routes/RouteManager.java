@@ -28,8 +28,6 @@ import java.util.*;
 public class RouteManager {
 
     List<Route> routes = new ArrayList<Route>();
-    public List<EntityPlayerMP> visualPlayers = new ArrayList<>();
-
     File dir;
 
     public void init() {
