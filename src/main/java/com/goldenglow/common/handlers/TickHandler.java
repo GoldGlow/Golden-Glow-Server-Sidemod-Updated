@@ -60,7 +60,7 @@ public class TickHandler {
             for(IEntity e : losEntities) {
                 if(e instanceof PlayerWrapper) {
                     PlayerWrapper p = (PlayerWrapper)e;
-                    if(!p.hasReadDialog(initDialogID)) {
+                    if(!p.hasReadDialog(initDialogID) && !(p.getGamemode()==1 || p.getGamemode()==3)) {
                         npcBattleDialog((EntityPlayerMP)p.getMCEntity(), (EntityNPCInterface)npc.getMCEntity(), initDialogID);
                     }
                 }
