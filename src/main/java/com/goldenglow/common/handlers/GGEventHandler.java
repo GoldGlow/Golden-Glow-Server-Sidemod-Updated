@@ -83,6 +83,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -127,6 +128,14 @@ public class GGEventHandler {
             playerData.removePokemonWaiting(0);
             TradeManager.evolutionTest(event.player);
         }
+    }
+
+    @Listener
+    public void preventArmorItemClick(ClickInventoryEvent event){
+        if(event.getSlot().get().getInventoryProperty(SlotIndex.class).get().getValue()>=5&&event.getSlot().get().getInventoryProperty(SlotIndex.class).get().getValue()<=8){
+            event.setCancelled(true);
+        }
+        GGLogger.info(event.getSlot().get().getInventoryProperty(SlotIndex.class).get().getValue());
     }
 
     @SubscribeEvent

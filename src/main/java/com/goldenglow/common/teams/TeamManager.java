@@ -123,7 +123,7 @@ public class TeamManager {
         else if(genderString.equals("f"))
             pokemonData.setGender(Gender.Female);
         if(line.split(" @ ").length>1) {
-            if ((PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1])) != null) {
+            if ((PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1].replace("  ",""))) != null) {
                 pokemonData.setHeldItem(new ItemStack(PixelmonItemsHeld.getHeldItem(line.split(" @ ")[1].replace("  ",""))));
             } else {
                 GoldenGlow.instance.logger.error("HeldItem not found: '" + line.split(" @ ")[1] + "' on Pokemon: " + name);
@@ -135,10 +135,11 @@ public class TeamManager {
             line=line.replace("  ","");
             if(line.startsWith("Ability:"))
             {
-                String a = line.replace("Ability: ","");
+                String a = line.replace("Ability: ","").replace("  ","");
                 if(AbilityBase.getAbility(a)==null)
                     a = a.replaceAll("\\s+", "");
-                pokemonData.setAbility(a);
+                if(AbilityBase.getAbility(a)!=null)
+                    pokemonData.setAbility(a);
             }
             else if(line.startsWith("Level")){
                 int lvl = Integer.parseInt(line.replace("Level: ","").replace(" ",""));

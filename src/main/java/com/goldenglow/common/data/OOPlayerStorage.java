@@ -48,6 +48,15 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             tag.setTag("KeyItems", items);
         }
 
+        if(instance.getAWItems()!=null){
+            NBTTagList items=new NBTTagList();
+            for(ItemStack item:instance.getAWItems()){
+                if(item!=null)
+                    items.appendTag(item.serializeNBT());
+            }
+            tag.setTag("AWItems", items);
+        }
+
         if(instance.getTMs()!=null){
             NBTTagList items=new NBTTagList();
             for(ItemStack item:instance.getTMs()){
@@ -159,9 +168,19 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(tag.hasKey("KeyItems")){
             NBTTagList items=tag.getTagList("KeyItems", Constants.NBT.TAG_COMPOUND);
             for(NBTBase item: items){
-                GGLogger.info(item);
                 try {
                     instance.addKeyItem(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
+                } catch (NBTException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if(tag.hasKey("AWItems")){
+            NBTTagList items=tag.getTagList("AWItems", Constants.NBT.TAG_COMPOUND);
+            for(NBTBase item: items){
+                try {
+                    instance.addAWItem(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
                 } catch (NBTException e) {
                     e.printStackTrace();
                 }
@@ -171,7 +190,6 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(tag.hasKey("TMs")){
             NBTTagList items=tag.getTagList("TMs", Constants.NBT.TAG_COMPOUND);
             for(NBTBase item: items){
-                GGLogger.info(item);
                 try {
                     instance.unlockTM(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
                 } catch (NBTException e) {

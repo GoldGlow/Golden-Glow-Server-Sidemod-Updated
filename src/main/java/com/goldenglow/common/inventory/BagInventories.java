@@ -76,6 +76,31 @@ public class BagInventories {
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, player.openContainer));
     }
 
+    static void openAWItems(EntityPlayerMP player){
+        OOPlayerData playerData = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
+        List<ItemStack> items=playerData.getAWItems();
+        int rows= Math.max((items.size()/9)+1, 1);
+        CustomInventoryData data=new CustomInventoryData(rows, "Clothes", "Clothes", new CustomItem[rows*9][], new Requirement[0]);
+        InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
+        CustomItem returnButton=CustomItem.returnButton();
+        returnButton.setBothClickActions(new Action[]{new Action(Action.ActionType.OPEN_INV, "HelperBag")});
+        for(int i=0;i<items.size();i++){
+            data.items[i]=new CustomItem[]{new CustomItem(items.get(i), null)};
+            Action openTM=new Action(Action.ActionType.EQUIP_ARMOR, 3+"@"+items.get(i).serializeNBT());
+            data.items[i][0].setBothClickActions(new Action[]{openTM});
+            chestInventory.setInventorySlotContents(i, items.get(i));
+        }
+        data.items[(rows*9)-1]=new CustomItem[]{returnButton};
+        chestInventory.setInventorySlotContents((rows*9)-1, returnButton.item);
+        player.getNextWindowId();
+        player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString("TM Case"), rows*9));
+        player.openContainer = new CustomInventory(player.inventory, chestInventory, player);
+        ((CustomInventory)player.openContainer).setData(data);
+        player.openContainer.windowId = player.currentWindowId;
+        player.openContainer.addListener(player);
+        MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, player.openContainer));
+    }
+
     static void openTMMenu(EntityPlayerMP player, String attackName){
         PlayerPartyStorage partyStorage = Pixelmon.storageManager.getParty(player);
         ItemStack[] party=CustomInventory.getPartyIcons(player);

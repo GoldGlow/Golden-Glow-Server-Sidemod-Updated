@@ -5,14 +5,20 @@ import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.gyms.Gym;
 import com.goldenglow.common.gyms.GymLeaderUtils;
+import com.goldenglow.common.teams.DepositoryPokemon;
+import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.goldenglow.common.util.Scoreboards;
+import com.goldenglow.common.util.scripting.InventoryFunctions;
+import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenReplaceMoveScreen;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Node;
@@ -165,6 +171,25 @@ public class Action {
         else if(this.actionType==ActionType.START_BATTLE){
             GymLeaderUtils.startGymBattle(this.value);
         }
+        else if(this.actionType==ActionType.DEPOSITORY_POKEMON){
+            String[] args=this.value.split(" ");
+            if(EnumSpecies.hasPokemonAnyCase(args[0])){
+                PokemonSpec pokemonSpec= PokemonSpec.from(args[0]);
+                if(args.length==2){
+                    int form=Integer.parseInt(args[1]);
+                    int formIndex=0;
+                    while(formIndex<form){
+                        pokemonSpec.form++;
+                        formIndex++;
+                    }
+                }
+                Pokemon pokemon=DepositoryPokemon.generateDepositoryPokemon(pokemonSpec);
+                Pixelmon.storageManager.getParty(player).add(pokemon);
+            }
+        }
+        else if(this.actionType==ActionType.EQUIP_ARMOR){
+            OtherFunctions.equipArmor(player, Integer.parseInt(this.value.split("@")[0]), this.value.split("@")[1]);
+        }
     }
 
     public enum ActionType{
@@ -182,6 +207,8 @@ public class Action {
         TAKE_CHALLENGERS,
         STOP_CHALLENGERS,
         NEXT_CHALLENGER,
-        START_BATTLE
+        START_BATTLE,
+        DEPOSITORY_POKEMON,
+        EQUIP_ARMOR
     }
 }

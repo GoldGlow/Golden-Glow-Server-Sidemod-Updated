@@ -92,6 +92,17 @@ public class InventoryFunctions {
         }
     }
 
+    public static void addAwItem(PlayerWrapper player, String item){
+        IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+        ItemStack itemStack=null;
+        try {
+            itemStack=new ItemStack(JsonToNBT.getTagFromJson(item));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+        if(itemStack!=null)
+            playerData.addAWItem(itemStack);
+    }
 
     //Used at a few pokeloots, probably for a quest too
     public static boolean unlockTM(PlayerWrapper player, String ItemID) {

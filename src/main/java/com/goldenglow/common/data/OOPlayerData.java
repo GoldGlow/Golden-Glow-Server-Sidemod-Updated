@@ -28,6 +28,7 @@ public class OOPlayerData implements IPlayerData {
 
     private List<ItemStack> keyItems=new ArrayList<>();
     private List<ItemStack> tms=new ArrayList<>();
+    private List<ItemStack> awItems=new ArrayList<>();
 
     private int notification_scheme = 0;
     private Scoreboards.EnumScoreboardType scoreboardType= Scoreboards.EnumScoreboardType.NONE;
@@ -75,6 +76,7 @@ public class OOPlayerData implements IPlayerData {
     public List<String> getUnlockedSeals() {
         return this.unlocked_seals;
     }
+    public List<ItemStack> getAWItems(){return this.awItems;}
     public List<ItemStack> getKeyItems(){return this.keyItems;}
     public List<ItemStack> getTMs(){return this.tms;}
     public Scoreboards.EnumScoreboardType getScoreboardType(){return this.scoreboardType;}
@@ -150,6 +152,9 @@ public class OOPlayerData implements IPlayerData {
                 return;
             }
         }
+    }
+    public void addAWItem(ItemStack awItem){
+        this.awItems.add(awItem);
     }
     public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
     public boolean unlockTM(ItemStack tm){

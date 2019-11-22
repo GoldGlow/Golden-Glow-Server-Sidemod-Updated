@@ -13,6 +13,9 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScorebo
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardUpdatePacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.NPCWrapper;
@@ -48,8 +51,22 @@ public class OtherFunctions {
         NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface) npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
     }
 
+    public static boolean checkEquipedHead(PlayerWrapper player, String displayName){
+        EntityPlayerMP playerMP=(EntityPlayerMP) player.getMCEntity();
+        return playerMP.inventory.getStackInSlot(103).getDisplayName().equalsIgnoreCase(displayName);
+    }
+
     public static void setScoreboard(PlayerWrapper player){
         Scoreboards.buildScoreboard((EntityPlayerMP)player.getMCEntity());
     }
 
+    public static void equipArmor(EntityPlayerMP player, int slot, String item){
+        ItemStack itemStack=null;
+        try {
+            itemStack=new ItemStack(JsonToNBT.getTagFromJson(item));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+        player.inventory.setInventorySlotContents(100+slot, itemStack);
+    }
 }

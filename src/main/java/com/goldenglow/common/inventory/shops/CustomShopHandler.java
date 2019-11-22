@@ -69,7 +69,7 @@ public class CustomShopHandler {
                     ItemStack itemStack=null;
                     if(item.getAsJsonObject("item").get("id").getAsString().toLowerCase().startsWith("pokemon:")){
                         JsonObject jsonItem=item.getAsJsonObject("item");
-                        String species=jsonItem.get("id").getAsString().replace("pokemon:","");
+                        String species=jsonItem.get("id").getAsString().toLowerCase().replace("pokemon:","");
                         int form=0;
                         if(jsonItem.has("form")){
                             form=jsonItem.get("form").getAsInt();
@@ -100,6 +100,51 @@ public class CustomShopHandler {
                         String buyCommand="pokegive @dp "+species+" lvl:5";
                         if(form > 0)
                             buyCommand+=" form:"+form;
+                        if (item.has("requirements")) {
+                            JsonArray requirementArray = item.getAsJsonArray("requirements");
+                            Requirement[] requirements = new Requirement[requirementArray.size()];
+                            for (int k = 0; k < requirementArray.size(); k++) {
+                                requirements[k] = ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
+                            }
+                            customItem = new CustomShopItem(itemStack, requirements);
+                        } else {
+                            customItem = new CustomShopItem(itemStack, new Requirement[0]);
+                        }
+                        customItem.setLeftClickActions(price, buyCommand);
+                    }
+                    else if(item.getAsJsonObject("item").get("id").getAsString().toLowerCase().startsWith("depository:")){
+                        JsonObject jsonItem=item.getAsJsonObject("item");
+                        String species=jsonItem.get("id").getAsString().toLowerCase().replace("depository:","");
+                        int form=0;
+                        if(jsonItem.has("form")){
+                            form=jsonItem.get("form").getAsInt();
+                        }
+                        jsonItem.remove("id");
+                        jsonItem.addProperty("id", "pixelmon:pixelmon_sprite");
+                        if(!jsonItem.has("Count")){
+                            jsonItem.addProperty("Count", 1);
+                        }
+                        if(!jsonItem.has("tag")){
+                            jsonItem.add("tag", new JsonObject());
+                            EnumSpecies pokemon=EnumSpecies.getFromNameAnyCase(species);
+                            jsonItem.getAsJsonObject("tag").addProperty("ndex", pokemon.getNationalPokedexInteger());
+                            if(form>0){
+                                jsonItem.getAsJsonObject("tag").addProperty("form", form);
+                            }
+                        }
+                        int price=item.get("buy").getAsInt();
+                        try {
+                            jsonItem.getAsJsonObject("tag").add("display", new JsonObject());
+                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").add("Lore", new JsonArray());
+                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").addProperty("Name", Reference.resetText+species);
+                            jsonItem.getAsJsonObject("tag").getAsJsonObject("display").getAsJsonArray("Lore").add(Reference.resetText+"Left-Click: buy for "+price);
+                            itemStack = new ItemStack(JsonToNBT.getTagFromJson(item.getAsJsonObject("item").toString()));
+                        } catch (NBTException e) {
+                            e.printStackTrace();
+                        }
+                        String buyCommand="depository "+species;
+                        if(form > 0)
+                            buyCommand+=" "+form;
                         if (item.has("requirements")) {
                             JsonArray requirementArray = item.getAsJsonArray("requirements");
                             Requirement[] requirements = new Requirement[requirementArray.size()];

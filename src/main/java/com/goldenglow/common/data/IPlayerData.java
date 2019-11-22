@@ -55,6 +55,9 @@ public interface IPlayerData {
     List<ItemStack> getTMs();
     boolean unlockTM(ItemStack tm);
 
+    List<ItemStack> getAWItems();
+    void addAWItem(ItemStack item);
+
     int getCaptureChain();
     int increaseCaptureChain(int i);
     void setCaptureChain(int i);
