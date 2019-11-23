@@ -1,5 +1,6 @@
 package com.goldenglow.common.command;
 
+import com.goldenglow.common.util.Reference;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -30,6 +31,7 @@ public class CommandPhone extends CommandBase {
             Item item = getItemByText(sender, "variedcommodities:diamond_dagger");
             ItemStack itemstack = new ItemStack(item);
             itemstack.setItemDamage(100);
+            itemstack.setStackDisplayName(Reference.resetText+"Phone");
             player.addItemStackToInventory(itemstack);
         }
     }

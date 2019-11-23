@@ -34,7 +34,7 @@ public class CommandBattleReward extends CommandBase {
             int amount=Integer.parseInt(args[0]);
             EntityPlayerMP player = getPlayer(server, sender, args[1]);
             PlayerWrapper playerWrapper=new PlayerWrapper(player);
-            if(playerWrapper.hasPermission("hard")){
+            if(PermissionUtils.checkPermission(player, "hard")){
                 amount*=1.25;
             }
             NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+args[0], (EntityPlayerMP)null);
