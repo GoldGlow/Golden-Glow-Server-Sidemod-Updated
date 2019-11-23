@@ -27,8 +27,9 @@ public class CommandPhone extends CommandBase {
         }
         else{
             EntityPlayerMP player = getPlayer(server, sender, sender.getName());
-            Item item = getItemByText(sender, "variedcommodities:phone");
+            Item item = getItemByText(sender, "variedcommodities:diamond_dagger");
             ItemStack itemstack = new ItemStack(item);
+            itemstack.setItemDamage(100);
             player.addItemStackToInventory(itemstack);
         }
     }

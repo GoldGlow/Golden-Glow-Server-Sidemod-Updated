@@ -116,15 +116,17 @@ public class HuntHandler {
     @SubscribeEvent
     public static void wildDropEvent(DropEvent event) {
         OOPlayerData data = (OOPlayerData)event.player.getCapability(OOPlayerProvider.OO_DATA, null);
-        int chainTotal = data.getKOChain() + data.getCaptureChain();
-        if(data.getKOChain()>0) {
-            if (event.dropMode == ItemDropMode.NormalPokemon) {
-                ImmutableList<DroppedItem> drops = event.getDrops();
-                for(int i = 0; i < drops.size(); i++) {
-                    event.removeDrop(drops.get(i));
-                    ItemStack newItem = drops.get(i).itemStack;
-                    newItem.setCount(newItem.getCount() * Ints.constrainToRange((chainTotal/10)+1, 1, 4));
-                    event.addDrop(newItem);
+        if(data.getChainSpecies()==data.getLastKOPokemon()) {
+            int chainTotal = data.getKOChain() + data.getCaptureChain();
+            if (chainTotal > 0) {
+                if (event.dropMode == ItemDropMode.NormalPokemon) {
+                    ImmutableList<DroppedItem> drops = event.getDrops();
+                    for (int i = 0; i < drops.size(); i++) {
+                        event.removeDrop(drops.get(i));
+                        ItemStack newItem = drops.get(i).itemStack;
+                        newItem.setCount(newItem.getCount() * Ints.constrainToRange((chainTotal / 10) + 1, 1, 4));
+                        event.addDrop(newItem);
+                    }
                 }
             }
         }
@@ -136,6 +138,14 @@ public class HuntHandler {
             OOPlayerData data = (OOPlayerData) event.getPlayers().get(0).getCapability(OOPlayerProvider.OO_DATA, null);
             if (event.bc.participants.get(1).getEntity() instanceof EntityPixelmon) {
                 EntityPixelmon e = (EntityPixelmon)event.bc.participants.get(1).getEntity();
+                if(e.getSpecies()==data.getLastKOPokemon()) {
+                    data.setLastKOPokemon(null);
+                    data.setKOChain(0);
+                }
+                if(e.getSpecies()==data.getChainSpecies()) {
+                    data.setChainSpecies(null);
+                    data.setCaptureChain(0);
+                }
                 Pixelmon.network.sendToDimension(new PlayParticleSystem(ParticleSystems.BLOOM, e.posX, e.posY, e.posZ, e.dimension, e.getPixelmonScale(), e.getPokemonData().isShiny(), new double[0]), e.dimension);
                 e.setDead();
             }

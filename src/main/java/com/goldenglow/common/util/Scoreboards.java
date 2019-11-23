@@ -133,7 +133,7 @@ public class Scoreboards {
         lines.add(data.getLastKOPokemon().name);
         lines.add("==================");
         lines.add("Battle and Capture chain");
-        lines.add("ADD THE SPECIES OF THIS CHAIN HERE");
+        lines.add(data.getChainSpecies()==data.getLastKOPokemon() ? data.getChainSpecies().name : "Chain species don't match!");
         lines.add("==================");
         scores.add("");
         scores.add("");
@@ -143,7 +143,7 @@ public class Scoreboards {
         scores.add(data.getKOChain()+"");
         scores.add("");
         scores.add("");
-        scores.add("ADD THE CHAIN SCORE HERE");
+        scores.add(data.getChainSpecies()==data.getLastKOPokemon() ? (data.getCaptureChain()+data.getKOChain())+"" : "0");
         Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Chains", lines, scores), player);
         Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
     }
