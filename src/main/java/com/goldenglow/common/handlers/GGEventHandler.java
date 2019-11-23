@@ -46,6 +46,8 @@ import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import io.github.eufranio.spongybackpacks.backpack.Backpack;
+import io.github.eufranio.spongybackpacks.data.DataManager;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
@@ -56,6 +58,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -84,6 +87,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.text.Text;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -130,14 +134,6 @@ public class GGEventHandler {
         }
     }
 
-    @Listener
-    public void preventArmorItemClick(ClickInventoryEvent event){
-        if(event.getSlot().get().getInventoryProperty(SlotIndex.class).get().getValue()>=5&&event.getSlot().get().getInventoryProperty(SlotIndex.class).get().getValue()<=8){
-            event.setCancelled(true);
-        }
-        GGLogger.info(event.getSlot().get().getInventoryProperty(SlotIndex.class).get().getValue());
-    }
-
     @SubscribeEvent
     public void pokedexRegisteredEvent(PokedexEvent event){
         Map<Integer, EnumPokedexRegisterStatus> seen=Pixelmon.storageManager.getParty(event.uuid).pokedex.getSeenMap();
@@ -166,8 +162,10 @@ public class GGEventHandler {
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         event.player.getCapability(OOPlayerProvider.OO_DATA, null).setLoginTime(Instant.now());
-        if(!event.player.getEntityData().hasKey("playtime"))
+        if(!event.player.getEntityData().hasKey("playtime")) {
             event.player.getEntityData().setLong("playtime", 0);
+            DataManager.getDataFor(event.player.getUniqueID()).addBackpack(Backpack.of(Text.of("Pocket1"), event.player.getUniqueID(), 6));
+        }
     }
 
     @SubscribeEvent
@@ -411,6 +409,10 @@ public class GGEventHandler {
                     CustomInventory.openInventory("GYM:"+GoldenGlow.gymManager.leadingGym((EntityPlayerMP)event.getEntityPlayer()), (EntityPlayerMP) event.getEntityPlayer());
                 else
                     CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
+            }
+            else if(event.getItemStack().getItemDamage()==201){
+                event.getEntityPlayer().setItemStackToSlot(EntityEquipmentSlot.HEAD, event.getItemStack().copy());
+                event.getItemStack().setCount(0);
             }
         }
     }

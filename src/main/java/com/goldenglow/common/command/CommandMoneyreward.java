@@ -29,7 +29,7 @@ public class CommandMoneyreward extends CommandBase {
         }
         else{
             EntityPlayerMP player = getPlayer(server, sender, args[1]);
-            Pixelmon.storageManager.getParty(player).changeMoney(Integer.parseInt(args[0]));
+            NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+args[0], (EntityPlayerMP)null);
             OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+args[0]);
         }
     }

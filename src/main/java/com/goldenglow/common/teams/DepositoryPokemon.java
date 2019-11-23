@@ -23,12 +23,10 @@ public class DepositoryPokemon {
         while(moves.size()>2){
             moves.remove(moves.size()-1);
         }
-        ArrayList<Attack> eggMoves=pokemon.getBaseStats().getAllMoves();
+        ArrayList<Attack> eggMoves=pokemon.getBaseStats().getEggMoves();
         for(Attack move: moves){
-            for(Attack eggMove: eggMoves){
-                if(eggMove.equals(move)){
-                    eggMoves.remove(move);
-                }
+            if(eggMoves.contains(move)){
+                eggMoves.remove(move);
             }
         }
         while(moves.size()<4&&eggMoves.size()>0){

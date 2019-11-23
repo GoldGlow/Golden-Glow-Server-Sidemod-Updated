@@ -47,23 +47,31 @@ public class Scoreboards {
         IPlayerData playerData=player.getCapability(OOPlayerProvider.OO_DATA, null);
         ArrayList<String> lines = new ArrayList<>();
         lines.add("Route");
-        lines.add("Song");
+        if(PermissionUtils.checkPermission(player, "*")) {
+            lines.add("Song");
+        }
         lines.add("Time");
-        lines.add("Day");
+        if(PermissionUtils.checkPermission(player, "*")) {
+            lines.add("Day");
+        }
         ArrayList<String> scores = new ArrayList<>();
         if(playerData.getRoute()!=null)
             scores.add(playerData.getRoute().displayName);
         else
             scores.add("null");
-        scores.add(playerData.getCurrentSong());
+        if(PermissionUtils.checkPermission(player, "*")) {
+            scores.add(playerData.getCurrentSong());
+        }
         Long time=player.getServerWorld().getWorldTime()%24000L;
         String extra="";
         if((time%1000)*60/1000<10){
             extra="0";
         }
         scores.add(((time/1000)+6)%24+":"+extra+(time%1000)*60/1000);
-        PlayerWrapper playerWrapper=new PlayerWrapper(player);
-        scores.add(WorldFunctions.getCurrentDay((WorldWrapper) playerWrapper.getWorld())+"");
+        if(PermissionUtils.checkPermission(player, "*")) {
+            PlayerWrapper playerWrapper = new PlayerWrapper(player);
+            scores.add(WorldFunctions.getCurrentDay((WorldWrapper) playerWrapper.getWorld()) + "");
+        }
         Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Debug", lines, scores), player);
         Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
     }
@@ -117,11 +125,25 @@ public class Scoreboards {
         OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         ArrayList<String> lines=new ArrayList<String>();
         ArrayList<String> scores=new ArrayList<String>();
+        lines.add("==================");
         lines.add("Capture chain");
-        //lines.add("Battle chain");
-        //lines.add("Battle and Capture chain");
+        lines.add(data.getChainSpecies().name);
+        lines.add("==================");
+        lines.add("Battle chain");
+        lines.add(data.getLastKOPokemon().name);
+        lines.add("==================");
+        lines.add("Battle and Capture chain");
+        lines.add("ADD THE SPECIES OF THIS CHAIN HERE");
+        lines.add("==================");
+        scores.add("");
+        scores.add("");
         scores.add(data.getCaptureChain()+"");
-        //add other scores
+        scores.add("");
+        scores.add("");
+        scores.add(data.getKOChain()+"");
+        scores.add("");
+        scores.add("");
+        scores.add("ADD THE CHAIN SCORE HERE");
         Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Chains", lines, scores), player);
         Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
     }

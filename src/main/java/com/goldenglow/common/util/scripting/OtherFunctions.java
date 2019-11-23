@@ -51,11 +51,6 @@ public class OtherFunctions {
         NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface) npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
     }
 
-    public static boolean checkEquipedHead(PlayerWrapper player, String displayName){
-        EntityPlayerMP playerMP=(EntityPlayerMP) player.getMCEntity();
-        return playerMP.inventory.getStackInSlot(103).getDisplayName().equalsIgnoreCase(displayName);
-    }
-
     public static void setScoreboard(PlayerWrapper player){
         Scoreboards.buildScoreboard((EntityPlayerMP)player.getMCEntity());
     }

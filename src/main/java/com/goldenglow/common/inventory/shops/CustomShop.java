@@ -2,6 +2,7 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.Action;
 import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -69,7 +70,13 @@ public class CustomShop extends CustomInventory {
                                     bankAccount.changeMoney(-1 * item.buyPrice);
                                     action.doAction((EntityPlayerMP)player);
                                     didAction=true;
+                                    break;
+                                }
+                                else if(action.getActionType()== Action.ActionType.DEPOSITORY_POKEMON){
+                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.getValue().split(" ")[0] + "!"));
                                     bankAccount.changeMoney(-1 * item.buyPrice);
+                                    action.doAction((EntityPlayerMP)player);
+                                    didAction=true;
                                     break;
                                 }
                                 else {

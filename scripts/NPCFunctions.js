@@ -54,6 +54,11 @@ function setScoreboard(player){
 	Packages.com.goldenglow.common.util.scripting.OtherFunctions.setScoreboard(player);
 }
 
+function checkEquippedHead(player, displayName){
+	var value=Packages.com.goldenglow.common.util.scripting.OtherFunctions.checkEquippedHead(player, displayName);
+	return value;
+}
+
 function formChange(player, species, form){
 	Packages.com.goldenglow.common.inventory.ChangeFormInventory.openInventory(player.getMCEntity(), species, form);
 }

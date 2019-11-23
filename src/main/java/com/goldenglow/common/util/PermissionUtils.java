@@ -23,6 +23,7 @@ public class PermissionUtils {
     public static void setPrefix(EntityPlayerMP player, String prefix){
         User user= LuckPerms.getApi().getUser(player.getName());
         Node.Builder node= NodeFactory.buildPrefixNode(3, prefix);
+        node.clearExpiry();
         user.setPermission(node.build());
     }
 

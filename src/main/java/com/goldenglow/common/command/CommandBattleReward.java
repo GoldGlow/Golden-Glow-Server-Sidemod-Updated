@@ -33,10 +33,11 @@ public class CommandBattleReward extends CommandBase {
         else{
             int amount=Integer.parseInt(args[0]);
             EntityPlayerMP player = getPlayer(server, sender, args[1]);
-            if(PermissionUtils.checkPermission(player, "hard")){
+            PlayerWrapper playerWrapper=new PlayerWrapper(player);
+            if(playerWrapper.hasPermission("hard")){
                 amount*=1.25;
             }
-            Pixelmon.storageManager.getParty(player).changeMoney(amount);
+            NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+args[0], (EntityPlayerMP)null);
             OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+amount);
         }
     }
