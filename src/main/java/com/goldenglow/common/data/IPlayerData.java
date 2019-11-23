@@ -64,6 +64,7 @@ public interface IPlayerData {
     EnumSpecies getChainSpecies();
     void setChainSpecies(EnumSpecies species);
     int getKOChain();
+    EnumSpecies getLastKOPokemon();
     int increaseKOChain(int i);
     void setKOChain(int i);
     void setLastKOPokemon(EnumSpecies species);

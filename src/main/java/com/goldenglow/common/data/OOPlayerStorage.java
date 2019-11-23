@@ -5,6 +5,7 @@ import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.FullPos;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Scoreboards;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.EnumFacing;
@@ -105,9 +106,9 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             tag.setString("lastCaughtSpecies", instance.getChainSpecies().name);
             tag.setInteger("catchChain", instance.getCaptureChain());
         }
-        if(instance.getCaptureChain()>0) {
-            tag.setString("lastCaughtSpecies", instance.getChainSpecies().name);
-            tag.setInteger("catchChain", instance.getCaptureChain());
+        if(instance.getKOChain()>0) {
+            tag.setString("lastKOSpecies", instance.getLastKOPokemon().name);
+            tag.setInteger("koChain", instance.getKOChain());
         }
 
         return tag;
@@ -203,6 +204,15 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             World world= Sponge.getServer().getWorld(UUID.fromString(fullPos.getString("world"))).get();
             BlockPos pos=new BlockPos(fullPos.getInteger("posX"), fullPos.getInteger("posY"), fullPos.getInteger("posZ"));
             instance.setBackupFullpos(new FullPos(world, pos));
+        }
+
+        if(tag.hasKey("lastCaughtSpecies")) {
+            instance.setChainSpecies(EnumSpecies.getFromName(tag.getString("lastCaughtSpecies")).get());
+            instance.setCaptureChain(tag.getInteger("catchChain"));
+        }
+        if(tag.hasKey("lastKOSpecies")) {
+            instance.setChainSpecies(EnumSpecies.getFromName(tag.getString("lastKOSpecies")).get());
+            instance.setCaptureChain(tag.getInteger("koChain"));
         }
     }
 }
