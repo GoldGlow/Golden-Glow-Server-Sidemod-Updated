@@ -26,9 +26,13 @@ public class Route {
     public Polygonal2DRegion region;
     public List<Requirement> requirements = new ArrayList<>();
     public boolean isSafeZone = false;
+    public boolean kickWarp = false;
     public int warpX=0;
     public int warpY=100;
     public int warpZ=0;
+    public int kickWarpX=0;
+    public int kickWarpY=100;
+    public int kickWarpZ=0;
     public World world;
     public List<SpawnPokemon> apricornPokemon=new ArrayList<>();
 

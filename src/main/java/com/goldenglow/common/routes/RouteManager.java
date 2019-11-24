@@ -118,6 +118,22 @@ public class RouteManager {
             route.warpZ=json.get("warpZ").getAsInt();
         }
 
+        if(json.has("kickWarp")){
+            route.kickWarp=json.get("kickWarp").getAsBoolean();
+        }
+
+        if(json.has("kickWarpX")){
+            route.kickWarpX=json.get("kickWarpX").getAsInt();
+        }
+
+        if(json.has("kickWarpY")){
+            route.kickWarpY=json.get("kickWarpY").getAsInt();
+        }
+
+        if(json.has("kickWarpZ")){
+            route.kickWarpZ=json.get("kickWarpZ").getAsInt();
+        }
+
         if(json.has("requirements")) {
             JsonArray requirementsArray = json.get("requirements").getAsJsonArray();
             for (JsonElement o : requirementsArray) {
@@ -197,6 +213,11 @@ public class RouteManager {
         file.name("warpX").value(route.warpX);
         file.name("warpY").value(route.warpY);
         file.name("warpZ").value(route.warpZ);
+
+        file.name("kickWarp").value(route.kickWarp);
+        file.name("kickWarpX").value(route.kickWarpX);
+        file.name("kickWarpY").value(route.kickWarpY);
+        file.name("kickWarpZ").value(route.kickWarpZ);
 
         file.name("requirements");
         file.beginArray();

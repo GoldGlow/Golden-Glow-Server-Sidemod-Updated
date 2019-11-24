@@ -9,6 +9,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.rcon.RConConsoleSource;
+import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
@@ -41,8 +42,13 @@ public class WorldFunctions {
 
                 //Check if player is restricted from entering
                 if (!actualRoute.canPlayerEnter(playerMP)) {
-                    playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
-                    playerMP.sendMessage(actualRoute.getRequirementMessage(playerMP));
+                    if(actualRoute.kickWarp) {
+                        playerMP.setPositionAndUpdate(actualRoute.kickWarpX, actualRoute.kickWarpY, actualRoute.kickWarpZ);
+                        playerMP.sendMessage(new TextComponentString("You were kicked out of the zone!"));
+                    } else {
+                        playerMP.setPositionAndUpdate(lastPosX, lastPosY, lastPosZ);
+                        playerMP.sendMessage(actualRoute.getRequirementMessage(playerMP));
+                    }
                 }
                 //If player is allowed to enter
                 else {

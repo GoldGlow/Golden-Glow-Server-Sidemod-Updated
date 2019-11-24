@@ -59,7 +59,6 @@ public class GoldenGlow {
     public static GymManager gymManager=new GymManager();
     public static RouteManager routeManager = new RouteManager();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
-    public static DataHandler dataHandler = new DataHandler();
     public static TradeManager tradeManager=new TradeManager();
     public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
     public static CustomShopHandler customShopHandler=new CustomShopHandler();
