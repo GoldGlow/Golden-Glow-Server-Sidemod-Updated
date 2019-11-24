@@ -1,7 +1,7 @@
 package com.goldenglow.common.util.scripting;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.battles.CustomBattleHandler;
+import com.goldenglow.common.battles.npc.CustomBattleHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.SpawnPokemon;

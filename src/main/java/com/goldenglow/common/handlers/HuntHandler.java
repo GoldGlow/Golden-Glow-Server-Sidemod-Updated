@@ -2,14 +2,13 @@ package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.raids.RaidBattleRules;
-import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.PermissionUtils;
-import com.google.common.collect.ImmutableList;
-import com.google.common.primitives.Ints;
+import com.goldenglow.common.api.IDrop;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.RandomHelper;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.BeatWildPixelmonEvent;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
@@ -21,19 +20,25 @@ import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnAc
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.client.particle.ParticleSystems;
+import com.pixelmonmod.pixelmon.comm.ChatHandler;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayParticleSystem;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.itemDrops.ItemDropMode;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.itemDrops.ItemDropPacket;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.drops.DropItemQuery;
+import com.pixelmonmod.pixelmon.entities.pixelmon.drops.DropItemQueryList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.drops.DroppedItem;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.BaseStats;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class HuntHandler {
@@ -56,9 +61,6 @@ public class HuntHandler {
 
             int shinyChance = Math.max(4096-((catchChain/5)*716), 516);
             boolean shiny = r.nextInt(shinyChance) == 0;
-
-            if(PermissionUtils.checkPermission(player, "*"))
-                player.sendMessage(new TextComponentString("Chain: "+ catchChain +", Chance: "+shinyChance));
 
             if(shiny) {
                 wild.setShiny(true);
@@ -115,18 +117,45 @@ public class HuntHandler {
 
     @SubscribeEvent
     public static void wildDropEvent(DropEvent event) {
-        OOPlayerData data = (OOPlayerData)event.player.getCapability(OOPlayerProvider.OO_DATA, null);
-        if(data.getChainSpecies()==data.getLastKOPokemon()) {
-            int chainTotal = data.getKOChain() + data.getCaptureChain();
-            if (chainTotal > 0) {
-                if (event.dropMode == ItemDropMode.NormalPokemon) {
-                    ImmutableList<DroppedItem> drops = event.getDrops();
-                    for (int i = 0; i < drops.size(); i++) {
-                        event.removeDrop(drops.get(i));
-                        ItemStack newItem = drops.get(i).itemStack;
-                        newItem.setCount(newItem.getCount() * Ints.constrainToRange((chainTotal / 10) + 1, 1, 4));
-                        event.addDrop(newItem);
+        if (event.isPokemon()) {
+            OOPlayerData data = (OOPlayerData) event.player.getCapability(OOPlayerProvider.OO_DATA, null);
+            if (data.getChainSpecies() == data.getLastKOPokemon()) {
+                event.setCanceled(true);
+                int total = data.getCaptureChain() + data.getKOChain();
+                for (PokemonDropInformation info : DropItemRegistry.pokemonDrops.get(((EntityPixelmon) event.entity).getSpecies())) {
+                    IDrop dropInfo = (IDrop) info;
+                    ArrayList<DroppedItem> drops = new ArrayList();
+                    int numDrops;
+                    int i;
+                    int id = 0;
+                    ItemStack stack;
+                    if (dropInfo.getMainDrop() != null) {
+                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getMainDropMin(), dropInfo.getMainDropMax());
+                        stack = dropInfo.getMainDrop().copy();
+                        stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
+                        drops.add(new DroppedItem(stack, id++));
                     }
+                    if (dropInfo.getOptDrop1() != null) {
+                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getOptDrop1Min(), dropInfo.getOptDrop1Max());
+                        stack = dropInfo.getMainDrop().copy();
+                        stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
+                        drops.add(new DroppedItem(stack, id++));
+                    }
+                    if (dropInfo.getOptDrop2() != null) {
+                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getOptDrop2Min(), dropInfo.getOptDrop2Max());
+                        stack = dropInfo.getMainDrop().copy();
+                        stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
+                        drops.add(new DroppedItem(stack, id++));
+                    }
+                    if (dropInfo.getRareDrop() != null && RandomHelper.getRandomChance(0.1F + (Math.min(total / 5, 5) * 0.05F))) {
+                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getRareDropMin(), dropInfo.getRareDropMax());
+                        for (i = 0; i < numDrops; ++i) {
+                            drops.add(new DroppedItem(dropInfo.getRareDrop().copy(), id++));
+                        }
+                    }
+                    DropItemQuery diq = new DropItemQuery(new Vec3d(event.entity.posX, event.entity.posY, event.entity.posZ), event.player.getUniqueID(), drops);
+                    DropItemQueryList.queryList.add(diq);
+                    Pixelmon.network.sendTo(new ItemDropPacket(ItemDropMode.NormalPokemon, ChatHandler.getMessage("gui.guiItemDrops.beatPokemon", ((EntityPixelmon) event.entity).getNickname()), drops), event.player);
                 }
             }
         }
