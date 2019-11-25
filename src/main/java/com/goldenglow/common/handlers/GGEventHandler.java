@@ -10,6 +10,7 @@ import com.goldenglow.common.gyms.GymBattleRules;
 import com.goldenglow.common.gyms.GymLeaderUtils;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.teams.PlayerParty;
@@ -60,7 +61,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -89,7 +93,10 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GGEventHandler {
 
@@ -498,5 +505,41 @@ public class GGEventHandler {
     public void onPokemonAggro(AggressionEvent event) {
         if(PlayerData.get(event.player).editingNpc!=null)
             event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onMessage(ServerChatEvent event) {
+        List<String> matches = new ArrayList<>();
+        Matcher m = Pattern.compile("<\\w*:\\d>").matcher(event.getMessage());
+        while(m.find()) {
+            matches.add(m.group());
+        }
+
+        TextComponentString pre = new TextComponentString(event.getComponent().getFormattedText().split(event.getMessage())[0]);
+        //pre.appendText(event.getMessage().split(matches.get(0))[0]);
+        String[] inbetweens = event.getMessage().split("<\\w*:\\d>");
+        int i = 0;
+        for(String match : matches) {
+            pre.appendText(inbetweens[i]);
+            try {
+                String split = (match.split("<\\w*:")[1].replace(">", ""));
+                int num = Integer.valueOf(split);
+                if(num>0 && num<7) {
+                    Pokemon p = Pixelmon.storageManager.getParty(event.getPlayer()).get(num - 1);
+                    if(p!=null) {
+                        TextComponentString share = new TextComponentString("["+ (p.getNickname()!=null ? p.getNickname() : p.getSpecies().name) +"]");
+                        share.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new TextComponentString(CustomItem.getPokemonItem(p).getItem().writeToNBT(new NBTTagCompound()).toString()))).setBold(true).setColor(TextFormatting.DARK_AQUA);
+                        pre.appendSibling(share);
+                    }
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            i++;
+        }
+        if(inbetweens.length>i)
+            pre.appendText(inbetweens[i]);
+        event.setComponent(pre);
     }
 }
