@@ -7,6 +7,7 @@ import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.api.IDrop;
+import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.RandomHelper;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
@@ -17,6 +18,7 @@ import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.SpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnActionPokemon;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.client.particle.ParticleSystems;
@@ -163,7 +165,7 @@ public class HuntHandler {
 
     @SubscribeEvent
     public static void onBattleEnd(BattleEndEvent event) {
-        if(!(event.bc.rules instanceof RaidBattleRules) && event.cause == EnumBattleEndCause.FLEE) {
+        if(PixelmonBattleUtils.isWildBattle(event.bc.participants.toArray(new BattleParticipant[0])) && event.cause == EnumBattleEndCause.FLEE) {
             OOPlayerData data = (OOPlayerData) event.getPlayers().get(0).getCapability(OOPlayerProvider.OO_DATA, null);
             if (event.bc.participants.get(1).getEntity() instanceof EntityPixelmon) {
                 EntityPixelmon e = (EntityPixelmon)event.bc.participants.get(1).getEntity();
