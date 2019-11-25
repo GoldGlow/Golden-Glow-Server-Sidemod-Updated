@@ -125,26 +125,22 @@ public class Scoreboards {
         OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         ArrayList<String> lines=new ArrayList<String>();
         ArrayList<String> scores=new ArrayList<String>();
-        lines.add("==================");
-        lines.add("Capture chain");
-        lines.add(data.getChainSpecies().name);
-        lines.add("==================");
-        lines.add("Battle chain");
-        lines.add(data.getLastKOPokemon().name);
-        lines.add("==================");
-        lines.add("Battle and Capture chain");
-        lines.add(data.getChainSpecies()==data.getLastKOPokemon() ? data.getChainSpecies().name : "Chain species don't match!");
-        lines.add("==================");
-        scores.add("");
-        scores.add("");
-        scores.add(data.getCaptureChain()+"");
-        scores.add("");
-        scores.add("");
-        scores.add(data.getKOChain()+"");
-        scores.add("");
-        scores.add("");
-        scores.add(data.getChainSpecies()==data.getLastKOPokemon() ? (data.getCaptureChain()+data.getKOChain())+"" : "0");
+        if(data.getChainSpecies()!=null)
+            addChain("Capture", data.getChainSpecies().name, data.getCaptureChain(), lines, scores);
+        if(data.getLastKOPokemon()!=null)
+            addChain("Battle", data.getLastKOPokemon().name, data.getKOChain(), lines, scores);
+        if(data.getChainSpecies()!=null && data.getChainSpecies()==data.getLastKOPokemon())
+            addChain("Combined", data.getChainSpecies().name, data.getCaptureChain()+data.getKOChain(), lines, scores);
         Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Chains", lines, scores), player);
         Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
+    }
+
+    static void addChain(String chainName, String chainSpecies, int chainCount, ArrayList<String> lines, ArrayList<String> scores) {
+        if(lines.isEmpty() || !lines.get(lines.size()-1).endsWith("=")) {
+            lines.add("=================="); scores.add("");
+        }
+        lines.add(chainName+" chain"); scores.add("");
+        lines.add(chainSpecies); scores.add(chainCount+"");
+        lines.add("=================="); scores.add("");
     }
 }
