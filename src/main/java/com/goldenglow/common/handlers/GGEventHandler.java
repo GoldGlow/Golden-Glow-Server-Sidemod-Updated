@@ -76,6 +76,7 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import noppes.npcs.constants.EnumScriptType;
 import noppes.npcs.controllers.ScriptContainer;
+import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.items.ItemScripted;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
@@ -491,5 +492,11 @@ public class GGEventHandler {
                     SealManager.loadedSeals.get(s).execute(event.getEntity());
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onPokemonAggro(AggressionEvent event) {
+        if(PlayerData.get(event.player).editingNpc!=null)
+            event.setCanceled(true);
     }
 }
