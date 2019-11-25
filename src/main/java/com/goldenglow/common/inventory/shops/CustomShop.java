@@ -109,12 +109,9 @@ public class CustomShop extends CustomInventory {
                 } else if (dragType == 1) {
                     for (Action action : item.getRightClickActions()) {
                         if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
-                            int amount = 1;
                             PlayerWrapper playerWrapper=new PlayerWrapper((EntityPlayerMP) player);
                             IItemStack iItemStack= NpcAPI.Instance().getIItemStack(item.getItem());
-                            if(clickTypeIn==ClickType.QUICK_MOVE && playerWrapper.inventoryItemCount(iItemStack)>=10);
-                                amount = 10;
-                            playerWrapper.removeItem(iItemStack, amount);
+                            playerWrapper.removeItem(iItemStack, 1);
                             action.doAction((EntityPlayerMP) player);
                             return null;
                         }
