@@ -43,6 +43,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
 import io.github.eufranio.spongybackpacks.backpack.Backpack;
 import io.github.eufranio.spongybackpacks.data.DataManager;
@@ -317,7 +318,7 @@ public class GGEventHandler {
     {
         if(event.bc.rules instanceof GymBattleRules){
             BattleResults results=event.results.get(event.bc.participants.get(0));
-            if (results == BattleResults.VICTORY) {
+            if (results == BattleResults.VICTORY && event.cause!=EnumBattleEndCause.FORCE) {
                 PermissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, "badge."+((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
                 SongManager.setRouteSong(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player);
             }
@@ -359,7 +360,7 @@ public class GGEventHandler {
         else {
             for(BattleParticipant participant:event.bc.participants){
                 if(participant instanceof PlayerParticipant){
-                    if(event.results.get(participant)==BattleResults.DEFEAT){
+                    if(event.results.get(participant)==BattleResults.DEFEAT || event.cause== EnumBattleEndCause.FORCE){
                         WorldFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant) participant).player));
                     }
                     else {
