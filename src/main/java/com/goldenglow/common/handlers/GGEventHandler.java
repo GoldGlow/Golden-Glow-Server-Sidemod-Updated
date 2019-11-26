@@ -50,6 +50,7 @@ import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -467,7 +468,7 @@ public class GGEventHandler {
                 return;
             }
         }
-        else if(GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString())&&!(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder")))
+        else if((GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString()) || blockState.getBlock() instanceof BlockContainer) && !(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder")))
         {
             event.setCanceled(true);
         }

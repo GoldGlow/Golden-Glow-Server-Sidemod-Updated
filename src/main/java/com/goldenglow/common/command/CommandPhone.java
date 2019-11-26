@@ -31,6 +31,7 @@ public class CommandPhone extends CommandBase {
             Item item = getItemByText(sender, "variedcommodities:diamond_dagger");
             ItemStack itemstack = new ItemStack(item);
             itemstack.setItemDamage(100);
+            itemstack.getTagCompound().setBoolean("Unbreakable", true);
             itemstack.setStackDisplayName(Reference.resetText+"Phone");
             player.addItemStackToInventory(itemstack);
         }
