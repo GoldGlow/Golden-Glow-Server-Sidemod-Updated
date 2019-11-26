@@ -13,13 +13,13 @@ public class Team {
     }
 
     public ArrayList<Pokemon> getMembers() {
-        return members;
+        return new ArrayList<>(members);
     }
 
     public Pokemon getMember(int slot) {
         if(slot>members.size())
             return null;
-        return members.get(slot);
+        return getMembers().get(slot);
     }
 
     public void addMember(Pokemon pixelmon) {
