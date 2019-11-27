@@ -11,9 +11,9 @@ import com.pixelmonmod.pixelmon.enums.EnumType;
 
 public class Trigger {
 
-    float hpPercentage = -1F;
-    StatusType status = null;
-    EnumType hitByType = null;
+    public float hpPercentage = -1F;
+    public StatusType status = null;
+    public EnumType hitByType = null;
 
     public boolean conditionsMet(BossParticipant participant, PixelmonWrapper activePokemon) {
         return (hpPercentage==-1F || activePokemon.getHealthPercent()<=hpPercentage) && (status==null || activePokemon.hasStatus(status)) && (hitByType==null || checkHitByType(participant, activePokemon));
