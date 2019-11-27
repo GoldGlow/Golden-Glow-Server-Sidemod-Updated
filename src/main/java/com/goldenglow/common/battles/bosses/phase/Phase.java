@@ -8,7 +8,9 @@ import com.pixelmonmod.pixelmon.enums.EnumGrowth;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.items.heldItems.HeldItem;
+import net.minecraft.item.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Phase {
@@ -16,13 +18,13 @@ public class Phase {
     Trigger[] triggers;
 
     String nickname;
-    List<EnumType> type;
+    EnumType[] type;
     AbilityBase ability;
     EnumNature nature;
     Moveset moveset;
     int form = -1;
     EnumGrowth growth;
-    HeldItem heldItem;
+    ItemStack heldItem;
 
     public Phase(Trigger[] triggers) {
         this.triggers = triggers;
@@ -32,7 +34,7 @@ public class Phase {
         if(nickname!=null)
             activePokemon.pokemon.setNickname(nickname);
         if(type!=null)
-            activePokemon.setTempType(this.type);
+            activePokemon.setTempType(Arrays.asList(this.type));
         if(ability!=null) {
             activePokemon.setTempAbility(ability);
             activePokemon.tempAbility.applySwitchInEffect(activePokemon);
@@ -63,7 +65,7 @@ public class Phase {
         this.nickname = nickname;
         return this;
     }
-    public Phase setType(List<EnumType> type) {
+    public Phase setType(EnumType[] type) {
         this.type = type;
         return this;
     }
@@ -87,7 +89,7 @@ public class Phase {
         this.growth = growth;
         return this;
     }
-    public Phase setHeldItem(HeldItem heldItem) {
+    public Phase setHeldItem(ItemStack heldItem) {
         this.heldItem = heldItem;
         return this;
     }
