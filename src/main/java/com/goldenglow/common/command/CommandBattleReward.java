@@ -37,7 +37,7 @@ public class CommandBattleReward extends CommandBase {
             if(PermissionUtils.checkPermission(player, "hard")){
                 amount*=1.25;
             }
-            NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+args[0], (EntityPlayerMP)null);
+            NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+amount, (EntityPlayerMP)null);
             OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+amount);
         }
     }
