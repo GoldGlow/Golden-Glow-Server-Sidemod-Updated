@@ -46,6 +46,8 @@ public class OOPlayerData implements IPlayerData {
 
     private Instant loginTime;
 
+    private int dialogTicks;
+
     //Getters
     public Route getRoute() {
         return current_route;
@@ -210,4 +212,8 @@ public class OOPlayerData implements IPlayerData {
     public Instant getLoginTime() {
         return loginTime;
     }
+
+    public void setDialogTicks(int ticks) { this.dialogTicks = ticks; }
+    public int getDialogTicks() { return dialogTicks; }
+
 }

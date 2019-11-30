@@ -51,13 +51,6 @@ public class CommandDebug extends CommandBase {
         Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Quest Title", lines, scores), (EntityPlayerMP)sender);
         Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), (EntityPlayerMP)sender);
 
-        //Pixelmon Custom Text + Sprite Overlay
-//        Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(false), (EntityPlayerMP)sender);
-//        Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(true).setLines(new String[] {"§0§lThis is a test for potential dialgue!","§0§lLet's see how this looks..."}).setPokemonSprite(PokemonSpec.from("rotom"), EnumOverlayLayout.LEFT), (EntityPlayerMP)sender);
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("id", "minecraft:skull");
-        nbt.setShort("Damage", (short)3);
-        Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(true).setLines(new String[] {"§0§lThis is a test for potential dialgue!","§0§lLet's see how this looks..."}).setItemStack(new ItemStack(nbt), EnumOverlayLayout.LEFT), (EntityPlayerMP)sender);
         CustomInventory.openInventory("Seals", (EntityPlayerMP)sender);
          */
         EntityPlayerMP player = (EntityPlayerMP)sender;

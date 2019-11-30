@@ -2,19 +2,24 @@ package com.goldenglow.common.util.scripting;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.npc.CustomBattleHandler;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.handlers.TickHandler;
+import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.SpawnPokemon;
 import com.goldenglow.common.util.PermissionUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.RandomHelper;
+import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.NPCWrapper;
@@ -71,4 +76,13 @@ public class BattleFunctions {
         }
         NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface)npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
     }
+
+    public static void battleDialog(PlayerWrapper player, NPCWrapper npc, String[] lines, int time) {
+        ItemStack stack = OtherFunctions.getNPCDialogItem(npc);
+        Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(true)
+                .setLines(lines)
+                .setItemStack(stack, EnumOverlayLayout.LEFT), (EntityPlayerMP)player.getMCEntity());
+        player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null).setDialogTicks(time);
+    }
+
 }

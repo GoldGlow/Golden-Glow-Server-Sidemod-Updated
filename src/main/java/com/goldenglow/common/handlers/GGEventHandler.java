@@ -27,6 +27,7 @@ import com.google.gson.stream.JsonWriter;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.*;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.TurnEndEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
@@ -543,5 +544,14 @@ public class GGEventHandler {
         if(inbetweens.length>i)
             pre.appendText(inbetweens[i]);
         event.setComponent(pre);
+    }
+
+    @SubscribeEvent
+    public void onTurnEnd(TurnEndEvent event) {
+        if(event.bcb.rules instanceof CustomNPCBattle) {
+            for(ScriptContainer s : ((CustomNPCBattle)event.bcb.rules).getNpc().script.getScripts()) {
+                s.run("turnEnd", event);
+            }
+        }
     }
 }

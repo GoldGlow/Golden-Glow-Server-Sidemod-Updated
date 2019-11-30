@@ -1,16 +1,17 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.data.IPlayerData;
+import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.routes.Route;
-import com.sk89q.worldedit.BlockVector2D;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.entity.IEntity;
+import noppes.npcs.api.event.PlayerEvent;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.DialogController;
@@ -25,7 +26,17 @@ public class TickHandler {
     public static Map<NPCWrapper, Integer> battleNPCs = new HashMap();
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.ServerTickEvent event) {
+    public static void onPlayerTick(PlayerEvent.UpdateEvent event) {
+        IPlayerData data = event.player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+        int ticks = data.getDialogTicks();
+        if(ticks>0)
+            data.setDialogTicks(ticks-1);
+        else
+            Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(false), event.player.getMCEntity());
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
         if(!battleNPCs.isEmpty()) {
             for(NPCWrapper npc : battleNPCs.keySet()) {
                 if(npc!=null) {
