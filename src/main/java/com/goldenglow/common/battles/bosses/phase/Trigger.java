@@ -14,9 +14,10 @@ public class Trigger {
     public float hpPercentage = -1F;
     public StatusType status = null;
     public EnumType hitByType = null;
+    public int turnNumber = -1;
 
     public boolean conditionsMet(BossParticipant participant, PixelmonWrapper activePokemon) {
-        return (hpPercentage==-1F || activePokemon.getHealthPercent()<=hpPercentage) && (status==null || activePokemon.hasStatus(status)) && (hitByType==null || checkHitByType(participant, activePokemon));
+        return (hpPercentage==-1F || activePokemon.getHealthPercent()<=hpPercentage) && (status==null || activePokemon.hasStatus(status)) && (hitByType==null || checkHitByType(participant, activePokemon)) && (turnNumber==-1 || activePokemon.bc.turn==turnNumber);
     }
 
     boolean checkHitByType(BossParticipant participant, PixelmonWrapper activePokemon) {
