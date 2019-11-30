@@ -1,4 +1,4 @@
-package com.goldenglow.common.battles.bosses;
+package com.goldenglow.common.battles.bosses.fights;
 
 import com.goldenglow.common.battles.bosses.phase.Phase;
 import com.goldenglow.common.battles.bosses.phase.Trigger;
@@ -42,7 +42,7 @@ public class BossBase {
 
         //Load Base Pokemon
         JsonObject p = json.getAsJsonObject("pokemon");
-        boss.pokemon = Pixelmon.pokemonFactory.create(EnumSpecies.valueOf(p.get("species").getAsString()));
+        boss.pokemon = Pixelmon.pokemonFactory.create(EnumSpecies.getFromNameAnyCase(p.get("species").getAsString()));
         if(p.has("nickname"))
             boss.pokemon.setNickname(p.get("nickname").getAsString());
         if(p.has("level"))
@@ -54,7 +54,7 @@ public class BossBase {
         if(p.has("nature"))
             boss.pokemon.setNature(EnumNature.valueOf(p.get("nature").getAsString()));
         if(p.has("growth"))
-            boss.pokemon.setGrowth(EnumGrowth.valueOf(p.get("growth").getAsString()));
+            boss.pokemon.setGrowth(EnumGrowth.growthFromString(p.get("growth").getAsString()));
         if(p.has("heldItem"))
             boss.pokemon.setHeldItem(new ItemStack(Item.getByNameOrId(p.get("heldItem").getAsString())));
         if(p.has("type")) {
@@ -119,7 +119,7 @@ public class BossBase {
                 if(phaseObj.has("form"))
                     phase.setForm(phaseObj.get("form").getAsInt());
                 if(phaseObj.has("growth"))
-                    phase.setGrowth(EnumGrowth.valueOf(phaseObj.get("growth").getAsString()));
+                    phase.setGrowth(EnumGrowth.growthFromString(phaseObj.get("growth").getAsString()));
                 if(phaseObj.has("heldItem"))
                     phase.setHeldItem(new ItemStack(Item.getByNameOrId(phaseObj.get("heldItem").getAsString())));
                 if(phaseObj.has("type")) {
