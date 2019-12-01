@@ -1,6 +1,7 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.api.ITileEntityTV;
 import com.goldenglow.common.battles.npc.CustomNPCBattle;
 import com.goldenglow.common.battles.npc.DoubleNPCBattle;
 import com.goldenglow.common.data.IPlayerData;
@@ -24,6 +25,7 @@ import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.google.gson.stream.JsonWriter;
+import com.mrcrayfish.furniture.tileentity.TileEntityTV;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.*;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
@@ -360,7 +362,7 @@ public class GGEventHandler {
         else {
             for(BattleParticipant participant:event.bc.participants){
                 if(participant instanceof PlayerParticipant){
-                    if(event.results.get(participant)==BattleResults.DEFEAT || event.cause== EnumBattleEndCause.FORCE){
+                    if(event.results.get(participant)==BattleResults.DEFEAT || (event.cause== EnumBattleEndCause.FORCE&&!(event.results.get(participant)==BattleResults.VICTORY))){
                         WorldFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant) participant).player));
                     }
                     else {
@@ -465,12 +467,23 @@ public class GGEventHandler {
                     EventHooks.onScriptBlockInteract(customTile.getScriptedTile(), event.getEntityPlayer(), 0, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
                 }
             }
+            else if(blockState.getBlock().getRegistryName().toString().equals("cfm:modern_tv")||blockState.getBlock().getRegistryName().toString().equals("cfm:tv")){
+                GGLogger.info("in");
+                TileEntityTV tileEntityTV= (TileEntityTV) event.getWorld().getTileEntity(event.getPos());
+                if(PermissionUtils.checkPermission(((EntityPlayerMP) event.getEntityPlayer()), "group.builder")){
+                    ((ITileEntityTV)tileEntityTV).setDisabled(false);
+                    GGLogger.info("builder");
+                }
+                else{
+                    ((ITileEntityTV)tileEntityTV).setDisabled(true);
+                    GGLogger.info("out");
+                }
+            }
             else{
                 return;
             }
         }
-        else if((GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString()) || blockState.getBlock() instanceof BlockContainer) && !(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder")))
-        {
+        else if((GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString()) || blockState.getBlock() instanceof BlockContainer) && !(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder"))) {
             event.setCanceled(true);
         }
         else{

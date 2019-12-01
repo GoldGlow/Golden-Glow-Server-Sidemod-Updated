@@ -1,6 +1,9 @@
 {
+  "required": true,
+  "refmap": "mixins.obscureobsidian.refmap.json",
   "package": "com.goldenglow.mixin",
   "mixins": [
-    "BetterPokemonDropInfo"
+    "BetterPokemonDropInfo",
+    "RestrictCrayfishTVs"
   ]
 }
