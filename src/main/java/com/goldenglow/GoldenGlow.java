@@ -33,6 +33,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import noppes.npcs.CustomNpcs;
+import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import org.spongepowered.api.Sponge;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop", acceptableRemoteVersions = "*")
@@ -98,6 +99,7 @@ public class GoldenGlow {
         Pixelmon.EVENT_BUS.register(eventHandler);
         Pixelmon.EVENT_BUS.register(raidEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
+        WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
     }
 
     @Mod.EventHandler

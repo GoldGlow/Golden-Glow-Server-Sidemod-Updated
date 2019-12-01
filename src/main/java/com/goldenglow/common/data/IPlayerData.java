@@ -79,4 +79,7 @@ public interface IPlayerData {
 
     void setLoginTime(Instant loginTime);
     Instant getLoginTime();
+
+    void setDialogTicks(int ticks);
+    int getDialogTicks();
 }
