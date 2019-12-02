@@ -36,7 +36,7 @@ import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import org.spongepowered.api.Sponge;
 
-@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop", acceptableRemoteVersions = "*")
+@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm", acceptableRemoteVersions = "*")
 public class GoldenGlow {
 
     public String VERSION = "1.0.1";

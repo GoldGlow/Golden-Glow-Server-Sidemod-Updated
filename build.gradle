@@ -8,11 +8,16 @@ buildscript {
         maven {
             url = "https://plugins.gradle.org/m2/"
         }
+		maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
         classpath "gradle.plugin.org.spongepowered:spongegradle:0.8.1"
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+		classpath 'org.spongepowered:mixingradle:0.5-SNAPSHOT'
     }
 }
 
@@ -20,6 +25,7 @@ apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "org.spongepowered.plugin"
 apply plugin: 'com.github.johnrengelman.plugin-shadow'
 apply plugin: 'java'
+apply plugin: 'org.spongepowered.mixin'
 
 version = "1.0.2"
 group = "com.goldenglow" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -65,6 +71,18 @@ shadowJar {
 
 reobf {
     shadowJar{}
+}
+
+jar {
+    manifest.attributes(
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'MixinConfigs': 'mixins.obscureobsidian.json',
+            'FMLCorePluginContainsFMLMod': 'true',
+    )
+}
+
+mixin {
+    add sourceSets.main, "mixins.obscureobsidian.refmap.json"
 }
 
 processResources {
