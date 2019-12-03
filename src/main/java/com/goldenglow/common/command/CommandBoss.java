@@ -5,6 +5,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 
 public class CommandBoss extends CommandBase {
 
@@ -21,6 +22,8 @@ public class CommandBoss extends CommandBase {
             String bossName = args[0];
             String playerName = args[1];
             BossRegistry.startBossBattle(server.getPlayerList().getPlayerByUsername(playerName), bossName);
+        } else {
+            sender.sendMessage(new TextComponentString(BossRegistry.getBosses()));
         }
     }
 }

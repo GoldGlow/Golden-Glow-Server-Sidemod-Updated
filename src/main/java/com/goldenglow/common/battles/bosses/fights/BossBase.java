@@ -146,4 +146,8 @@ public class BossBase {
         return boss;
     }
 
+    public Pokemon getPokemon() {
+        return this.pokemon;
+    }
+
 }
