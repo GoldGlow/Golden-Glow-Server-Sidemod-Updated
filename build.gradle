@@ -17,7 +17,7 @@ buildscript {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
         classpath "gradle.plugin.org.spongepowered:spongegradle:0.8.1"
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
-		classpath 'org.spongepowered:mixingradle:0.5-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
 
@@ -73,16 +73,9 @@ reobf {
     shadowJar{}
 }
 
-jar {
-    manifest.attributes(
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            'MixinConfigs': 'mixins.obscureobsidian.json',
-            'FMLCorePluginContainsFMLMod': 'true',
-    )
-}
-
 mixin {
     add sourceSets.main, "mixins.obscureobsidian.refmap.json"
+	defaultObfuscationEnv searge
 }
 
 processResources {

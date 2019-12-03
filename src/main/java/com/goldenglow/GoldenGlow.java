@@ -39,7 +39,7 @@ import org.spongepowered.api.Sponge;
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm", acceptableRemoteVersions = "*")
 public class GoldenGlow {
 
-    public String VERSION = "1.0.1";
+    public String VERSION = "1.0.2";
 
     @Mod.Instance("goldenglow")
     public static GoldenGlow instance;
