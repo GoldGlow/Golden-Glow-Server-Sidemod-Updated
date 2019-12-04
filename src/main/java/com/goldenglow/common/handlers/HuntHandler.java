@@ -1,12 +1,10 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.data.OOPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.util.PermissionUtils;
-import com.goldenglow.common.api.IDrop;
+import com.goldenglow.common.util.ReflectionHelper;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.RandomHelper;
@@ -125,39 +123,42 @@ public class HuntHandler {
                 event.setCanceled(true);
                 int total = data.getCaptureChain() + data.getKOChain();
                 for (PokemonDropInformation info : DropItemRegistry.pokemonDrops.get(((EntityPixelmon) event.entity).getSpecies())) {
-                    IDrop dropInfo = (IDrop) info;
-                    ArrayList<DroppedItem> drops = new ArrayList();
-                    int numDrops;
-                    int i;
-                    int id = 0;
-                    ItemStack stack;
-                    if (dropInfo.getMainDrop() != null) {
-                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getMainDropMin(), dropInfo.getMainDropMax());
-                        stack = dropInfo.getMainDrop().copy();
-                        stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
-                        drops.add(new DroppedItem(stack, id++));
-                    }
-                    if (dropInfo.getOptDrop1() != null) {
-                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getOptDrop1Min(), dropInfo.getOptDrop1Max());
-                        stack = dropInfo.getMainDrop().copy();
-                        stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
-                        drops.add(new DroppedItem(stack, id++));
-                    }
-                    if (dropInfo.getOptDrop2() != null) {
-                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getOptDrop2Min(), dropInfo.getOptDrop2Max());
-                        stack = dropInfo.getMainDrop().copy();
-                        stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
-                        drops.add(new DroppedItem(stack, id++));
-                    }
-                    if (dropInfo.getRareDrop() != null && RandomHelper.getRandomChance(0.1F + (Math.min(total / 5, 5) * 0.05F))) {
-                        numDrops = RandomHelper.getRandomNumberBetween(dropInfo.getRareDropMin(), dropInfo.getRareDropMax());
-                        for (i = 0; i < numDrops; ++i) {
-                            drops.add(new DroppedItem(dropInfo.getRareDrop().copy(), id++));
+                    try {
+                        ArrayList<DroppedItem> drops = new ArrayList();
+                        int numDrops;
+                        int i;
+                        int id = 0;
+                        ItemStack stack;
+                        if (ReflectionHelper.getPrivateStack(info, "mainDrop") != null) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "mainDropMin"), ReflectionHelper.getPrivateInt(info, "mainDropMax"));
+                            stack = ReflectionHelper.getPrivateStack(info, "mainDrop").copy();
+                            stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
+                            drops.add(new DroppedItem(stack, id++));
                         }
+                        if (ReflectionHelper.getPrivateStack(info, "optDrop1") != null) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "optDrop1Min"), ReflectionHelper.getPrivateInt(info, "optDrop1Max"));
+                            stack = ReflectionHelper.getPrivateStack(info, "optDrop1").copy();
+                            stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
+                            drops.add(new DroppedItem(stack, id++));
+                        }
+                        if (ReflectionHelper.getPrivateStack(info, "optDrop2") != null) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "optDrop2Min"), ReflectionHelper.getPrivateInt(info, "optDrop2Max"));
+                            stack = ReflectionHelper.getPrivateStack(info, "optDrop2").copy();
+                            stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
+                            drops.add(new DroppedItem(stack, id++));
+                        }
+                        if (ReflectionHelper.getPrivateStack(info, "rareDrop") != null && RandomHelper.getRandomChance(0.1F + (Math.min(total / 5, 5) * 0.05F))) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "rareDropMin"), ReflectionHelper.getPrivateInt(info, "rareDropMax"));
+                            for (i = 0; i < numDrops; ++i) {
+                                drops.add(new DroppedItem(ReflectionHelper.getPrivateStack(info, "rareDrop").copy(), id++));
+                            }
+                        }
+                        DropItemQuery diq = new DropItemQuery(new Vec3d(event.entity.posX, event.entity.posY, event.entity.posZ), event.player.getUniqueID(), drops);
+                        DropItemQueryList.queryList.add(diq);
+                        Pixelmon.network.sendTo(new ItemDropPacket(ItemDropMode.NormalPokemon, ChatHandler.getMessage("gui.guiItemDrops.beatPokemon", ((EntityPixelmon) event.entity).getNickname()), drops), event.player);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    DropItemQuery diq = new DropItemQuery(new Vec3d(event.entity.posX, event.entity.posY, event.entity.posZ), event.player.getUniqueID(), drops);
-                    DropItemQueryList.queryList.add(diq);
-                    Pixelmon.network.sendTo(new ItemDropPacket(ItemDropMode.NormalPokemon, ChatHandler.getMessage("gui.guiItemDrops.beatPokemon", ((EntityPixelmon) event.entity).getNickname()), drops), event.player);
                 }
             }
         }

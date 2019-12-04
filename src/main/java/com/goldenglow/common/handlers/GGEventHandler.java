@@ -1,7 +1,6 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.api.ITileEntityTV;
 import com.goldenglow.common.battles.npc.CustomNPCBattle;
 import com.goldenglow.common.battles.npc.DoubleNPCBattle;
 import com.goldenglow.common.data.IPlayerData;
@@ -18,10 +17,7 @@ import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
-import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.PermissionUtils;
-import com.goldenglow.common.util.PixelmonBattleUtils;
-import com.goldenglow.common.util.Reference;
+import com.goldenglow.common.util.*;
 import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.google.gson.stream.JsonWriter;
@@ -471,13 +467,16 @@ public class GGEventHandler {
             else if(blockState.getBlock().getRegistryName().toString().equals("cfm:modern_tv")||blockState.getBlock().getRegistryName().toString().equals("cfm:tv")){
                 GGLogger.info("in");
                 TileEntityTV tileEntityTV= (TileEntityTV) event.getWorld().getTileEntity(event.getPos());
-                if(PermissionUtils.checkPermission(((EntityPlayerMP) event.getEntityPlayer()), "group.builder")){
-                    ((ITileEntityTV)tileEntityTV).setDisabled(false);
-                    GGLogger.info("builder");
-                }
-                else{
-                    ((ITileEntityTV)tileEntityTV).setDisabled(true);
-                    GGLogger.info("out");
+                try {
+                    if (PermissionUtils.checkPermission(((EntityPlayerMP) event.getEntityPlayer()), "group.builder")) {
+                        ReflectionHelper.setPrivateBoolean(tileEntityTV, "disabled", false);
+                        GGLogger.info("builder");
+                    } else {
+                        ReflectionHelper.setPrivateBoolean(tileEntityTV, "disabled", true);
+                        GGLogger.info("out");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             else{
