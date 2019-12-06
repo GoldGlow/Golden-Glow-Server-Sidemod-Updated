@@ -5,6 +5,7 @@ import com.goldenglow.common.battles.npc.CustomNPCBattle;
 import com.goldenglow.common.battles.npc.DoubleNPCBattle;
 import com.goldenglow.common.data.IPlayerData;
 import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.events.CNPCBattleEvent;
 import com.goldenglow.common.gyms.Gym;
 import com.goldenglow.common.gyms.GymBattleRules;
 import com.goldenglow.common.gyms.GymLeaderUtils;
@@ -77,6 +78,7 @@ import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.event.BlockEvent;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
+import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import noppes.npcs.constants.EnumScriptType;
@@ -561,8 +563,10 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onTurnEnd(TurnEndEvent event) {
         if(event.bcb.rules instanceof CustomNPCBattle) {
+            CustomNPCBattle rules = (CustomNPCBattle)event.bcb.rules;
+            CNPCBattleEvent.TurnEnd npcEvent = new CNPCBattleEvent.TurnEnd(new NPCWrapper(rules.getNpc()), new PlayerWrapper(event.bcb.getPlayers().get(0).player), event.bcb);
             for(ScriptContainer s : ((CustomNPCBattle)event.bcb.rules).getNpc().script.getScripts()) {
-                s.run("turnEnd", event);
+                s.run("turnEnd", npcEvent);
             }
         }
     }
