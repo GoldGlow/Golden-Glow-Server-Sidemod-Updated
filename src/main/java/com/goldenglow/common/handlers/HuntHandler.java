@@ -163,9 +163,9 @@ public class HuntHandler {
 
     @SubscribeEvent
     public static void onBattleEnd(BattleEndEvent event) {
-        if(!(event.bc.rules instanceof RaidBattleRules) && event.cause == EnumBattleEndCause.FLEE) {
-            OOPlayerData data = (OOPlayerData) event.getPlayers().get(0).getCapability(OOPlayerProvider.OO_DATA, null);
+        if(!(event.bc.rules instanceof RaidBattleRules) && event.cause == EnumBattleEndCause.FLEE && event.getPlayers().size()>0) {
             if (event.bc.participants.get(1).getEntity() instanceof EntityPixelmon) {
+                OOPlayerData data = (OOPlayerData) event.getPlayers().get(0).getCapability(OOPlayerProvider.OO_DATA, null);
                 EntityPixelmon e = (EntityPixelmon)event.bc.participants.get(1).getEntity();
                 if(e.getSpecies()==data.getLastKOPokemon()) {
                     data.setLastKOPokemon(null);

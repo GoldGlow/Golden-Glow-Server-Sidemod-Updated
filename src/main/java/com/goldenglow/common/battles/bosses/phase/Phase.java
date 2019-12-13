@@ -1,6 +1,7 @@
 package com.goldenglow.common.battles.bosses.phase;
 
 import com.goldenglow.common.battles.bosses.BossParticipant;
+import com.goldenglow.common.util.GGLogger;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
@@ -31,6 +32,7 @@ public class Phase {
     }
 
     public void onPhaseChange(BossParticipant bossParticipant, PixelmonWrapper activePokemon) {
+        GGLogger.info("Phase Change");
         if(nickname!=null)
             activePokemon.pokemon.setNickname(nickname);
         if(type!=null)

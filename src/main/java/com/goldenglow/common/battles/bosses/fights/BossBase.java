@@ -1,11 +1,14 @@
 package com.goldenglow.common.battles.bosses.fights;
 
+import com.goldenglow.common.battles.bosses.BossParticipant;
 import com.goldenglow.common.battles.bosses.phase.Phase;
 import com.goldenglow.common.battles.bosses.phase.Trigger;
 import com.google.gson.*;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.status.StatusType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
@@ -105,6 +108,8 @@ public class BossBase {
                         trigger.status = StatusType.valueOf(triggerObj.get("status").getAsString());
                     if(triggerObj.has("hitByType"))
                         trigger.hitByType = EnumType.valueOf(triggerObj.get("hitByType").getAsString());
+                    if(triggerObj.has("turn"))
+                        trigger.turnNumber = triggerObj.get("turn").getAsInt();
                     triggers.add(trigger);
                 }
 
@@ -148,6 +153,12 @@ public class BossBase {
 
     public Pokemon getPokemon() {
         return this.pokemon;
+    }
+
+    public void phaseCheck(BattleControllerBase bc, BossParticipant participant) {
+        for(Phase p : this.phases) {
+            p.checkTriggers(participant, participant.controlledPokemon.get(0));
+        }
     }
 
 }
