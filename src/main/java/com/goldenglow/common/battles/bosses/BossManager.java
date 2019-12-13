@@ -4,17 +4,24 @@ import com.goldenglow.common.battles.bosses.fights.BossBase;
 import com.goldenglow.common.battles.bosses.fights.BossBirdBear;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.events.battles.TurnEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
-public class BossRegistry {
+public class BossManager {
+
     private static HashMap<String, BossBase> bosses = new HashMap<>();
 
     public static void register(String registryName, BossBase bossBase) {
@@ -43,10 +50,9 @@ public class BossRegistry {
 
     public static BattleControllerBase startBossBattle(EntityPlayerMP player, String bossName) {
         if(bosses.containsKey(bossName)) {
-//            BossParticipant participant = new BossParticipant(bosses.get(bossName));
-            WildPixelmonParticipant participant = new WildPixelmonParticipant(bosses.get(bossName).getPokemon().getOrSpawnPixelmon(player.world, player.posX, player.posY, player.posZ));
-            BattleControllerBase bc = BattleRegistry.startBattle(new PlayerParticipant(player), participant);
-            GGLogger.info(bc.participants.get(1).allPokemon[0]);
+            BossParticipant bossParticipant = new BossParticipant(bosses.get(bossName), player);
+            PlayerParticipant playerParticipant = new PlayerParticipant(player, new EntityPixelmon[]{Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player)});
+            BattleControllerBase bc = BattleRegistry.startBattle(new BattleParticipant[]{playerParticipant}, new BattleParticipant[]{bossParticipant}, new BossBattleRules(bossParticipant));
         }
         return null;
     }
@@ -57,5 +63,12 @@ public class BossRegistry {
             b.append(s);
         }
         return b.toString();
+    }
+
+    @SubscribeEvent
+    public static void onTurnEnd(TurnEndEvent event) {
+        if(event.bcb.rules instanceof BossBattleRules) {
+            ((BossBattleRules)event.bcb.rules).bossParticipant.onTurnEnd(event.bcb);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.goldenglow.common.battles.bosses.phase;
 
 import com.goldenglow.common.battles.bosses.BossParticipant;
+import com.goldenglow.common.util.GGLogger;
 import com.pixelmonmod.pixelmon.battles.controller.log.AttackAction;
 import com.pixelmonmod.pixelmon.battles.controller.log.AttackResult;
 import com.pixelmonmod.pixelmon.battles.controller.log.BattleActionBase;
@@ -17,7 +18,7 @@ public class Trigger {
     public int turnNumber = -1;
 
     public boolean conditionsMet(BossParticipant participant, PixelmonWrapper activePokemon) {
-        return (hpPercentage==-1F || activePokemon.getHealthPercent()<=hpPercentage) && (status==null || activePokemon.hasStatus(status)) && (hitByType==null || checkHitByType(participant, activePokemon)) && (turnNumber==-1 || activePokemon.bc.turn==turnNumber);
+        return (hpPercentage==-1F || activePokemon.getHealthPercent()<=hpPercentage) && (status==null || activePokemon.hasStatus(status)) && (hitByType==null || checkHitByType(participant, activePokemon)) && (turnNumber==-1 || activePokemon.bc.battleTurn==turnNumber);
     }
 
     boolean checkHitByType(BossParticipant participant, PixelmonWrapper activePokemon) {
