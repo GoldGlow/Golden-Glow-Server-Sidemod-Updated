@@ -16,6 +16,7 @@ import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.data.Dialog;
@@ -82,7 +83,7 @@ public class CustomBattleHandler
     }
 
     public static void createCustomNPCBattle(EntityNPCInterface firstNpc, String firstTeam, EntityNPCInterface secondNpc, String secondTeam){
-        WorldServer world=firstNpc.getServer().getWorld(firstNpc.dimension);
+        World world=firstNpc.getEntityWorld();
         Team firstNpcTeam;
         Team secondNpcTeam;
         EntityPixelmon firstPokemon;
