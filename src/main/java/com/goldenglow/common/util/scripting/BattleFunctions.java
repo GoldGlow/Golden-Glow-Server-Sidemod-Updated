@@ -2,6 +2,7 @@ package com.goldenglow.common.util.scripting;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.npc.CustomBattleHandler;
+import com.goldenglow.common.battles.npc.CustomNPCBattle;
 import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.inventory.CustomInventory;
@@ -14,6 +15,7 @@ import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
+import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
@@ -83,6 +85,20 @@ public class BattleFunctions {
                 .setLines(lines)
                 .setItemStack(stack, EnumOverlayLayout.LEFT), (EntityPlayerMP)player.getMCEntity());
         player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null).setDialogTicks(time);
+    }
+
+    public static boolean pokemonKOd(BattleControllerBase bcb){
+        if(bcb.rules instanceof CustomNPCBattle){
+            if(((CustomNPCBattle) bcb.rules).getRemainingNPCPokemon()!=bcb.participants.get(1).countAblePokemon()){
+                ((CustomNPCBattle) bcb.rules).setRemainingNPCPokemon(bcb.participants.get(1).countAblePokemon());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int getRemainingPokemon(BattleControllerBase bcb){
+        return bcb.participants.get(1).countAblePokemon();
     }
 
 }

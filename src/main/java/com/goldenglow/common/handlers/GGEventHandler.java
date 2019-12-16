@@ -243,7 +243,7 @@ public class GGEventHandler {
             event.setCancelled(true);
         }
         else if(event.getTargetInventory().getArchetype()!= InventoryArchetypes.PLAYER){
-            if (event.getTransactions().get(0).getFinal().getType().getName().equals("variedcommodities:diamond_dagger")) {
+            if (event.getTransactions().get(0).getFinal().getType().getName().equals("variedcommodities:diamond_dagger")&&!PermissionUtils.checkPermission(((EntityPlayerMP)event.getSource()), "*")) {
                 event.setCancelled(true);
             }
         }

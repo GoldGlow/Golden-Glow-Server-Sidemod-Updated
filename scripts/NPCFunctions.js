@@ -62,3 +62,15 @@ function checkEquippedHead(player, displayName){
 function formChange(player, species, form){
 	Packages.com.goldenglow.common.inventory.ChangeFormInventory.openInventory(player.getMCEntity(), species, form);
 }
+
+function battleDialog(player, npc, lines, time){
+	com.goldenglow.common.util.scripting.BattleFunctions.battleDialog(player, npc, lines, time);
+}
+
+function pokemonKOd(bcb){
+	return com.goldenglow.common.util.scripting.BattleFunctions.pokemonKOd(bcb);
+}
+
+function getRemainingPokemon(bcb){
+	return com.goldenglow.common.util.scripting.BattleFunctions.getRemainingPokemon(bcb);
+}

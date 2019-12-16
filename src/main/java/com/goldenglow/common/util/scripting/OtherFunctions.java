@@ -9,6 +9,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.DialogController;
@@ -54,11 +55,7 @@ public class OtherFunctions {
     }
 
     public static ItemStack getNPCDialogItem(NPCWrapper npc) {
-        NBTTagCompound nbt = new NBTTagCompound();
-
-        nbt.setString("id", "minecraft:stick");
-
-        ItemStack itemStack = new ItemStack(nbt);
-        return itemStack;
+        IItemStack item=npc.getInventory().getDropItem(0);
+        return item.getMCItemStack();
     }
 }

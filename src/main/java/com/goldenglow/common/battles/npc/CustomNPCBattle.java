@@ -10,6 +10,7 @@ public class CustomNPCBattle extends BattleRules
     private Dialog winDiag;
     private Dialog loseDiag;
     private Dialog initDiag;
+    private int remainingNPCPokemon;
     public static EntityPlayer player;
     private static EntityNPCInterface npc;
 
@@ -48,6 +49,10 @@ public class CustomNPCBattle extends BattleRules
     {
         return this.npc;
     }
+
+    public int getRemainingNPCPokemon(){return this.remainingNPCPokemon;}
+
+    public void setRemainingNPCPokemon(int count){this.remainingNPCPokemon=count;}
 
     public boolean hasPlayer(EntityPlayer participant)
     {

@@ -71,6 +71,7 @@ public class CustomBattleHandler
                     Dialog loseDialog = DialogController.instance.dialogs.get(loseDialogID);
                     Dialog initDialog = DialogController.instance.dialogs.get(initDialogID);
                     CustomNPCBattle rules=new CustomNPCBattle(npc, initDialog, winDialog, loseDialog);
+                    rules.setRemainingNPCPokemon(trainerParticipant.countAblePokemon());
                     for(int i=0;i<npcTeam.getMembers().size();i++){
                         trainer.getPokemonStorage().get(i).setLevel(levels[i]);
                     }
