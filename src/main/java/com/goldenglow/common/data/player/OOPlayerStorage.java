@@ -1,9 +1,8 @@
-package com.goldenglow.common.data;
+package com.goldenglow.common.data.player;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.FullPos;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import net.minecraft.item.ItemStack;

@@ -1,14 +1,13 @@
 package com.goldenglow.common.inventory.BetterTrading;
 
-import com.goldenglow.common.data.IPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 

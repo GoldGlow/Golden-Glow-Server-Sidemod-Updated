@@ -1,16 +1,13 @@
-package com.goldenglow.common.data;
+package com.goldenglow.common.data.player;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.seals.Seal;
 import com.goldenglow.common.util.FullPos;
 import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.items.ItemTM;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import noppes.npcs.api.item.IItemStack;
 
 import java.time.Instant;
 import java.util.ArrayList;

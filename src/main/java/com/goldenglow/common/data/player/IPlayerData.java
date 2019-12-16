@@ -1,4 +1,4 @@
-package com.goldenglow.common.data;
+package com.goldenglow.common.data.player;
 
         import com.goldenglow.common.routes.Route;
         import com.goldenglow.common.seals.Seal;

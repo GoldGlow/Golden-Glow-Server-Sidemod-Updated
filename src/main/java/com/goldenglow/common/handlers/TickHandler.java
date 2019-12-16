@@ -1,8 +1,8 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.IPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;

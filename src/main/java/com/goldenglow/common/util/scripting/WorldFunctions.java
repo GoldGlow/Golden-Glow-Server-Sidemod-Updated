@@ -1,14 +1,12 @@
 package com.goldenglow.common.util.scripting;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.IPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.routes.Route;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;

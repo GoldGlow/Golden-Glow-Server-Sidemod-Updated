@@ -1,13 +1,10 @@
 package com.goldenglow.common.util.scripting;
 
-import com.goldenglow.common.data.OOPlayerProvider;
-import com.goldenglow.common.music.Song;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import noppes.npcs.Server;
 import noppes.npcs.api.wrapper.NPCWrapper;
-import noppes.npcs.constants.EnumPacketClient;
 
 public class MusicSoundFunctions {
     //Used to play random short sounds, not really used yet, kept from leftovers from the early day music scripts

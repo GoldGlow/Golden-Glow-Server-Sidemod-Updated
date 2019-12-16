@@ -1,4 +1,4 @@
-package com.goldenglow.common.data;
+package com.goldenglow.common.data.player;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;

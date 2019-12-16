@@ -1,8 +1,8 @@
 package com.goldenglow.common.gyms;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.IPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.util.FullPos;
 import com.goldenglow.common.util.PermissionUtils;
@@ -12,7 +12,6 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
-import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.api.Sponge;

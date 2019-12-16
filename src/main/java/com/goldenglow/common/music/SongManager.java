@@ -1,17 +1,9 @@
 package com.goldenglow.common.music;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.IPlayerData;
-import com.goldenglow.common.data.OOPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
-import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.routes.RouteManager;
-import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.util.Reference;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonWriter;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,7 +13,6 @@ import noppes.npcs.Server;
 import noppes.npcs.constants.EnumPacketClient;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 

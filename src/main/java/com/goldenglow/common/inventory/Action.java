@@ -1,17 +1,13 @@
 package com.goldenglow.common.inventory;
 
-import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.OOPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
-import com.goldenglow.common.gyms.Gym;
+import com.goldenglow.common.data.player.OOPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.gyms.GymLeaderUtils;
 import com.goldenglow.common.teams.DepositoryPokemon;
-import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.goldenglow.common.util.Scoreboards;
-import com.goldenglow.common.util.scripting.InventoryFunctions;
 import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -20,10 +16,6 @@ import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenReplaceMoveScreen;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.User;
-import me.lucko.luckperms.common.node.factory.NodeFactory;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -32,8 +24,6 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-
-import java.util.List;
 
 /**
  * Created by JeanMarc on 6/19/2019.

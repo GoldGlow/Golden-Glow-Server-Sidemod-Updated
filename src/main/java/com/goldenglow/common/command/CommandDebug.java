@@ -1,31 +1,16 @@
 package com.goldenglow.common.command;
 
-import com.goldenglow.common.data.OOPlayerProvider;
-import com.goldenglow.common.inventory.CustomInventory;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.routes.Route;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
-import com.pixelmonmod.pixelmon.client.gui.custom.overlays.ScoreboardLocation;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardDisplayPacket;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardUpdatePacket;
-import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
-import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.selector.Polygonal2DRegionSelector;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
-
-import java.util.ArrayList;
 
 public class CommandDebug extends CommandBase {
     @Override

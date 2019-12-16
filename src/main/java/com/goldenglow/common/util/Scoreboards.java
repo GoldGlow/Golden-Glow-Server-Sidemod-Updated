@@ -1,8 +1,8 @@
 package com.goldenglow.common.util;
 
-import com.goldenglow.common.data.IPlayerData;
-import com.goldenglow.common.data.OOPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.ScoreboardLocation;

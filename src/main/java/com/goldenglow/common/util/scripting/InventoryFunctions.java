@@ -1,8 +1,8 @@
 package com.goldenglow.common.util.scripting;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.IPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.InstancedContainer;
 import com.goldenglow.common.util.GGLogger;

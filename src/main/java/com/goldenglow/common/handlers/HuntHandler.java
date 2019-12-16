@@ -1,8 +1,8 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.OOPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
+import com.goldenglow.common.data.player.OOPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.ReflectionHelper;
 import com.goldenglow.common.util.PixelmonBattleUtils;

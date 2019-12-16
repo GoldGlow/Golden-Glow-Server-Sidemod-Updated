@@ -1,36 +1,22 @@
 package com.goldenglow.common.inventory;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.OOPlayerData;
-import com.goldenglow.common.data.OOPlayerProvider;
 import com.goldenglow.common.gyms.GymInventories;
 import com.goldenglow.common.inventory.BetterTrading.OfferMakingInventory;
 import com.goldenglow.common.inventory.BetterTrading.Trade;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.config.PixelmonItemsPokeballs;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import noppes.npcs.api.item.IItemStack;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by JeanMarc on 6/18/2019.
