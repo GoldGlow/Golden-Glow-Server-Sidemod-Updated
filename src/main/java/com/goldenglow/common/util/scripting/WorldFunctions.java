@@ -75,6 +75,7 @@ public class WorldFunctions {
         return (int)(world.getTime() / 24000L % 2147483647L);
     }
 
+    @Deprecated //Replaced by DailyFunctions.getLastEarthDay
     public static boolean newRLDay(WorldWrapper world) {
         IData worldData = world.getStoreddata();
         if(lastDailyRefresh==0) {
