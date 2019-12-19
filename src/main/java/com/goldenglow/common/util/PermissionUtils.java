@@ -25,11 +25,13 @@ public class PermissionUtils {
         Node.Builder node= NodeFactory.buildPrefixNode(3, prefix);
         node.clearExpiry();
         user.setPermission(node.build());
+        LuckPerms.getApi().getUserManager().saveUser(user);
     }
 
     public static void addPermissionNode(EntityPlayerMP player, String node){
         User user= LuckPerms.getApi().getUser(player.getName());
         user.setPermission(NodeFactory.make(node));
+        LuckPerms.getApi().getUserManager().saveUser(user);
     }
 
     public static boolean checkPermission(EntityPlayerMP player, String node){

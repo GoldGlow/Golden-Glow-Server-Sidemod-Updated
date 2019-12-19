@@ -129,6 +129,8 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(tag.hasKey("theme_pvp"))
             instance.setPVPTheme(tag.getString("theme_pvp"));
+        else
+            instance.setPVPTheme(GoldenGlow.songManager.trainerDefault);
 
         if(tag.hasKey("pvpOption")){
             instance.setPvpThemeOption(tag.getInteger("pvpOption"));
