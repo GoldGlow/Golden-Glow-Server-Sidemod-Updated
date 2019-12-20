@@ -6,6 +6,7 @@ import com.goldenglow.common.battles.npc.DoubleNPCBattle;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.events.CNPCBattleEvent;
+import com.goldenglow.common.events.OOPokedexEvent;
 import com.goldenglow.common.gyms.Gym;
 import com.goldenglow.common.gyms.GymBattleRules;
 import com.goldenglow.common.gyms.GymLeaderUtils;
@@ -75,6 +76,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.Server;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.event.BlockEvent;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
@@ -84,7 +86,9 @@ import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import noppes.npcs.constants.EnumScriptType;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.controllers.data.PlayerData;
+import noppes.npcs.controllers.data.PlayerScriptData;
 import noppes.npcs.items.ItemScripted;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
@@ -135,31 +139,6 @@ public class GGEventHandler {
             playerData.removePokemonWaiting(0);
             TradeManager.evolutionTest(event.player);
         }
-    }
-
-    @SubscribeEvent
-    public void pokedexRegisteredEvent(PokedexEvent event){
-        Map<Integer, EnumPokedexRegisterStatus> seen=Pixelmon.storageManager.getParty(event.uuid).pokedex.getSeenMap();
-        GGLogger.info(seen.size());
-        ArrayList<Integer> caught=new ArrayList<Integer>();
-        int bugTypes=0;
-        for(Map.Entry<Integer, EnumPokedexRegisterStatus> entry:seen.entrySet()){
-            if(entry.getValue()==EnumPokedexRegisterStatus.caught){
-                caught.add(entry.getKey());
-            }
-        }
-        for(int species:caught) {
-            for (EnumType type : EnumSpecies.getFromDex(species).getBaseStats().types) {
-                if (type == EnumType.Bug) {
-                    bugTypes++;
-                    if(bugTypes>=5){
-                        OtherFunctions.unlockBugCatcher(Pixelmon.storageManager.getParty(event.uuid).getPlayer());
-                        return;
-                    }
-                }
-            }
-        }
-        GGLogger.info("Bug types: "+bugTypes);
     }
 
     @SubscribeEvent
@@ -370,22 +349,6 @@ public class GGEventHandler {
                 }
             }
         }
-        /*else if(event.battleController instanceof FactoryBattle && CustomBattleHandler.factoryBattles.contains(event.battleController)){
-            EntityPlayerMP mcPlayer= event.player;
-            Pixelmon.instance.network.sendTo(new PlayerDeath(), mcPlayer);
-            FactoryBattle battle = (FactoryBattle)event.battleController;
-            BattleRegistry.deRegisterBattle(battle);
-            CustomBattleHandler.factoryBattles.remove(battle);
-            PlayerWrapper player = new PlayerWrapper(mcPlayer);
-            if(event.result==BattleResults.VICTORY){
-                player.addFactionPoints(11, 1);
-                NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
-            }
-            else if(event.result==BattleResults.DEFEAT){
-                player.addFactionPoints(11, -player.getFactionPoints(11));
-                NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
-            }
-        }*/
     }
 
     @SubscribeEvent
@@ -568,6 +531,24 @@ public class GGEventHandler {
             for(ScriptContainer s : ((CustomNPCBattle)event.bcb.rules).getNpc().script.getScripts()) {
                 s.run("turnEnd", npcEvent);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void pokedexRegisteredEvent(PokedexEvent event){
+        Map<Integer, EnumPokedexRegisterStatus> seen=Pixelmon.storageManager.getParty(event.uuid).pokedex.getSeenMap();
+        ArrayList<Integer> caught=new ArrayList<Integer>();
+        int bugTypes=0;
+        for(Map.Entry<Integer, EnumPokedexRegisterStatus> entry:seen.entrySet()){
+            if(entry.getValue()==EnumPokedexRegisterStatus.caught){
+                caught.add(entry.getKey());
+            }
+        }
+        PlayerScriptData scriptData=PlayerData.get((EntityPlayerMP) Sponge.getServer().getPlayer(event.uuid).get().getBaseVehicle()).scriptData;
+        OOPokedexEvent dexEvent=new OOPokedexEvent(new PlayerWrapper((EntityPlayerMP) Sponge.getServer().getPlayer(event.uuid).get().getBaseVehicle()), caught);
+        TitleMethods.unlockBugCatcher(dexEvent);
+        for(ScriptContainer s : scriptData.getScripts()){
+            s.run("pokedexEvent", dexEvent);
         }
     }
 }
