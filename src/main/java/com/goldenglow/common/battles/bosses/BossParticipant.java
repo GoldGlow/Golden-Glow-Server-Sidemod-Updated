@@ -29,4 +29,12 @@ public class BossParticipant extends WildPixelmonParticipant {
         bossBase.phaseCheck(bc, this);
     }
 
+    public Phase getCurrentPhase() {
+        return this.currentPhase;
+    }
+
+    public void setCurrentPhase(Phase phase) {
+        this.currentPhase = phase;
+    }
+
 }
