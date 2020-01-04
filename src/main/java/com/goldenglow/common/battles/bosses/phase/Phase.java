@@ -54,10 +54,12 @@ public class Phase {
     }
 
     public boolean checkTriggers(BossParticipant participant, PixelmonWrapper activePokemon) {
-        for(Trigger t : this.triggers) {
-            if(t.conditionsMet(participant, activePokemon)) {
-                this.onPhaseChange(participant, activePokemon);
-                return true;
+        if(participant.getCurrentPhase()!=this) {
+            for (Trigger t : this.triggers) {
+                if (t.conditionsMet(participant, activePokemon)) {
+                    this.onPhaseChange(participant, activePokemon);
+                    return true;
+                }
             }
         }
         return false;
