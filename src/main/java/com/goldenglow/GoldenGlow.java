@@ -20,9 +20,11 @@ import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.tiles.*;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.ShopPacketHandler;
 import com.goldenglow.http.OOStatsServer;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.npc.ShopKeeperPacket;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,6 +34,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import org.spongepowered.api.Sponge;
@@ -105,6 +108,7 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         CustomNpcs.Channel.register(eventHandler);
+        Pixelmon.network.registerMessage(ShopPacketHandler.class, ShopKeeperPacket.class, 118, Side.SERVER);
     }
 
     @Mod.EventHandler

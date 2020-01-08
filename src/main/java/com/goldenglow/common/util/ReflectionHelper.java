@@ -6,6 +6,13 @@ import java.lang.reflect.Field;
 
 public class ReflectionHelper {
 
+    public static String getPrivateString(Object o, String field) throws NoSuchFieldException, IllegalAccessException {
+        Field privateField = o.getClass().getDeclaredField(field);
+        privateField.setAccessible(true);
+        String s = (String)privateField.get(o);
+        return s;
+    }
+
     public static ItemStack getPrivateStack(Object o, String field) throws NoSuchFieldException, IllegalAccessException {
         Field privateField = o.getClass().getDeclaredField(field);
         privateField.setAccessible(true);
