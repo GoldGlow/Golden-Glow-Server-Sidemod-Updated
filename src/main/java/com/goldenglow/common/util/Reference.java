@@ -38,4 +38,5 @@ public class Reference {
     public static String sealsDir=configDir+"/seals";
     public static String gymsDir=configDir+"/gyms";
     public static String statsDir=configDir+"/stats";
+    public static String bossDir=configDir+"/bosses";
 }

@@ -1,6 +1,7 @@
 package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
+import com.goldenglow.common.battles.bosses.BossManager;
 import com.goldenglow.common.battles.raids.CommandRaidDebug;
 import com.goldenglow.common.battles.raids.RaidEventHandler;
 import com.goldenglow.common.command.*;
@@ -98,11 +99,13 @@ public class GoldenGlow {
         Pixelmon.EVENT_BUS.register(eventHandler);
         Pixelmon.EVENT_BUS.register(raidEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
+        Pixelmon.EVENT_BUS.register(BossManager.class);
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         CustomNpcs.Channel.register(eventHandler);
+        BossManager.init();
     }
 
     @Mod.EventHandler
@@ -127,6 +130,7 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandScriptable());
 
         event.registerServerCommand(new CommandRoutes());
+        event.registerServerCommand(new CommandBoss());
         CommandRoutes.register(commandDispatcher);
     }
 
