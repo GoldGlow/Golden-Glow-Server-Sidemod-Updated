@@ -111,7 +111,6 @@ public class GoldenGlow {
     public void postInit(FMLPostInitializationEvent event) {
         CustomNpcs.Channel.register(eventHandler);
         Pixelmon.network.registerMessage(ShopPacketHandler.class, ShopKeeperPacket.class, 118, Side.SERVER);
-        BossRegistry.init();
     }
 
     @Mod.EventHandler
