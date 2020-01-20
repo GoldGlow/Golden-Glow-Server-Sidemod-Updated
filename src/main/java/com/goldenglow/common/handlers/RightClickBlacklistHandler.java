@@ -6,7 +6,8 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class RightClickBlacklistHandler {
-    ArrayList<String> blacklistedItems=new ArrayList<String>();
+
+    public ArrayList<String> blacklistedItems=new ArrayList<String>();
     File dir;
 
     public void init(){

@@ -10,6 +10,7 @@ import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerStorage;
 import com.goldenglow.common.gyms.GymManager;
 import com.goldenglow.common.handlers.*;
+import com.goldenglow.common.handlers.events.*;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomInventoryHandler;
@@ -53,7 +54,7 @@ public class GoldenGlow {
 
     public GGEventHandler eventHandler = new GGEventHandler();
     public RaidEventHandler raidEventHandler = new RaidEventHandler();
-    public TickHandler tickHandler = new TickHandler();
+    public TickEventHandler tickEventHandler = new TickEventHandler();
 
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
@@ -101,21 +102,21 @@ public class GoldenGlow {
         GGLogger.info("Initialising..");
         //Minecraft
         MinecraftForge.EVENT_BUS.register(eventHandler);
-        MinecraftForge.EVENT_BUS.register(proxy);
-        MinecraftForge.EVENT_BUS.register(TickHandler.class);
+        MinecraftForge.EVENT_BUS.register(TickEventHandler.class);
+        MinecraftForge.EVENT_BUS.register(PlayerEventHandler.class);
         //Pixelmon
-        Pixelmon.EVENT_BUS.register(eventHandler);
+        Pixelmon.EVENT_BUS.register(PixelmonEventHandler.class);
         Pixelmon.EVENT_BUS.register(raidEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
         Pixelmon.EVENT_BUS.register(BossManager.class);
+        Pixelmon.EVENT_BUS.register(BattleEventHandler.class);
         //CNPCs
-        WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
+        WrapperNpcAPI.EVENT_BUS.register(TickEventHandler.class);
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         GGLogger.info("Post-Initialization...");
-        CustomNpcs.Channel.register(eventHandler);
         Pixelmon.network.registerMessage(ShopPacketHandler.class, ShopKeeperPacket.class, 118, Side.SERVER);
     }
 

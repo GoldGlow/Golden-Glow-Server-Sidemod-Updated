@@ -1,4 +1,4 @@
-package com.goldenglow.common.handlers;
+package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.raids.RaidBattleRules;

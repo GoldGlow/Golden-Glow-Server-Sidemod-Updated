@@ -1,4 +1,4 @@
-package com.goldenglow.common.handlers;
+package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
@@ -21,7 +21,7 @@ import noppes.npcs.entity.EntityNPCInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TickHandler {
+public class TickEventHandler {
 
     public static Map<NPCWrapper, Integer> battleNPCs = new HashMap();
 
