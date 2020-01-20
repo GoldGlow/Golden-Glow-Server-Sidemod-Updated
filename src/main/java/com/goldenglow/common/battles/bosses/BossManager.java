@@ -9,9 +9,7 @@ import com.pixelmonmod.pixelmon.api.events.battles.TurnEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
-import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
-import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,6 +28,7 @@ public class BossManager {
     }
 
     public static void init() {
+        GGLogger.info("Loading Bosses...");
         //Load and Register json Boss files
         File dir = new File(Reference.bossDir);
         if(!dir.exists())

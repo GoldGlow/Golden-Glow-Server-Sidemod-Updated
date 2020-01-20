@@ -1,6 +1,5 @@
 package com.goldenglow.common.routes;
 
-import com.goldenglow.common.util.GGLogger;
 import com.pixelmonmod.pixelmon.RandomHelper;
 
 import java.util.ArrayList;

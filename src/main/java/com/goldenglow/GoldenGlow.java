@@ -53,20 +53,20 @@ public class GoldenGlow {
 
     public GGEventHandler eventHandler = new GGEventHandler();
     public RaidEventHandler raidEventHandler = new RaidEventHandler();
-    public TickHandler tickHandler=new TickHandler();
+    public TickHandler tickHandler = new TickHandler();
 
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
     public static RightClickBlacklistHandler rightClickBlacklistHandler=new RightClickBlacklistHandler();
 
-    public static SongManager songManager= new SongManager();
+    public static SongManager songManager = new SongManager();
     public static TeamManager teamManager = new TeamManager();
-    public static GymManager gymManager=new GymManager();
+    public static GymManager gymManager = new GymManager();
     public static RouteManager routeManager = new RouteManager();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
-    public static TradeManager tradeManager=new TradeManager();
-    public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
-    public static CustomShopHandler customShopHandler=new CustomShopHandler();
+    public static TradeManager tradeManager = new TradeManager();
+    public static CustomInventoryHandler customInventoryHandler = new CustomInventoryHandler();
+    public static CustomShopHandler customShopHandler = new CustomShopHandler();
 
     public static CommandDispatcher<ICommandSender> commandDispatcher = new CommandDispatcher<>();
 
@@ -79,7 +79,8 @@ public class GoldenGlow {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
+        GGLogger.info("Obscure Obsidian v"+VERSION);
+        GGLogger.info("Pre-Initialization...");
         configHandler.init();
         rightClickBlacklistHandler.init();
 
@@ -92,23 +93,28 @@ public class GoldenGlow {
         CapabilityManager.INSTANCE.register(IPlayerData.class, new OOPlayerStorage(), OOPlayerData::new);
 
         SealManager.init();
+        BossManager.init();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        logger.info("Init section test");
+        GGLogger.info("Initialising..");
+        //Minecraft
         MinecraftForge.EVENT_BUS.register(eventHandler);
         MinecraftForge.EVENT_BUS.register(proxy);
         MinecraftForge.EVENT_BUS.register(TickHandler.class);
+        //Pixelmon
         Pixelmon.EVENT_BUS.register(eventHandler);
         Pixelmon.EVENT_BUS.register(raidEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
-        WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
         Pixelmon.EVENT_BUS.register(BossManager.class);
+        //CNPCs
+        WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        GGLogger.info("Post-Initialization...");
         CustomNpcs.Channel.register(eventHandler);
         Pixelmon.network.registerMessage(ShopPacketHandler.class, ShopKeeperPacket.class, 118, Side.SERVER);
     }

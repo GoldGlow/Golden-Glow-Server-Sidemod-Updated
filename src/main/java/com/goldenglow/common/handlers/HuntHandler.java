@@ -1,11 +1,12 @@
 package com.goldenglow.common.handlers;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.battles.raids.RaidBattleRules;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.util.ReflectionHelper;
 import com.goldenglow.common.util.PixelmonBattleUtils;
+import com.goldenglow.common.util.ReflectionHelper;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.RandomHelper;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
@@ -169,7 +170,6 @@ public class HuntHandler {
         if(!(event.bc.rules instanceof RaidBattleRules) && PixelmonBattleUtils.isWildBattle(event.bc.participants.toArray(new BattleParticipant[0])) && event.cause == EnumBattleEndCause.FLEE) {
             OOPlayerData data = (OOPlayerData) event.getPlayers().get(0).getCapability(OOPlayerProvider.OO_DATA, null);
             if (event.bc.participants.get(1).getEntity() instanceof EntityPixelmon) {
-                OOPlayerData data = (OOPlayerData) event.getPlayers().get(0).getCapability(OOPlayerProvider.OO_DATA, null);
                 EntityPixelmon e = (EntityPixelmon)event.bc.participants.get(1).getEntity();
                 if(e.getSpecies()==data.getLastKOPokemon()) {
                     data.setLastKOPokemon(null);

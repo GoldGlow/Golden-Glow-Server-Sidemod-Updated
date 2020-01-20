@@ -11,7 +11,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClause;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClauseRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -2,7 +2,6 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.Action;
 import com.goldenglow.common.inventory.CustomInventory;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;

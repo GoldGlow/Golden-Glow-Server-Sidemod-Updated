@@ -20,7 +20,6 @@ import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.util.*;
-import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.google.gson.stream.JsonWriter;
 import com.mrcrayfish.furniture.tileentity.TileEntityTV;
@@ -41,8 +40,6 @@ import com.pixelmonmod.pixelmon.blocks.enums.EnumMultiPos;
 import com.pixelmonmod.pixelmon.blocks.multiBlocks.BlockFridge;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
@@ -76,7 +73,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.Server;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.event.BlockEvent;
 import noppes.npcs.api.wrapper.ItemScriptedWrapper;
@@ -144,7 +140,7 @@ public class GGEventHandler {
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         event.player.getCapability(OOPlayerProvider.OO_DATA, null).setLoginTime(Instant.now());
-        if(!event.player.getEntityData().hasKey("playtime")) {
+        if (!event.player.getEntityData().hasKey("playtime")) {
             event.player.getEntityData().setLong("playtime", 0);
             DataManager.getDataFor(event.player.getUniqueID()).addBackpack(Backpack.of(Text.of("Pocket1"), event.player.getUniqueID(), 6));
         }

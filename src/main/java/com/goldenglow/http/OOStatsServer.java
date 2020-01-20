@@ -1,6 +1,6 @@
 package com.goldenglow.http;
 
-import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,7 +20,7 @@ public class OOStatsServer implements Runnable {
     Javalin server;
 
     public void run() {
-        GoldenGlow.logger.info("[RV97] Starting stats server...");
+        GGLogger.info("Starting stats server...");
 
         server = Javalin.create();
 
@@ -34,7 +34,7 @@ public class OOStatsServer implements Runnable {
 
         server.get("/time/:name", ctx -> sendStat("time", ctx.pathParam("name"), ctx));
 
-        GoldenGlow.logger.info("[RV97] Stats server started...");
+        GGLogger.info("Stats server started...");
         server.start(8023);
     }
 

@@ -1,8 +1,5 @@
 package com.goldenglow.common.command;
 
-import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.inventory.shops.CustomShop;
-import com.goldenglow.common.inventory.shops.CustomShopData;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.PixelmonTradeEvent;
 import net.minecraft.command.CommandBase;

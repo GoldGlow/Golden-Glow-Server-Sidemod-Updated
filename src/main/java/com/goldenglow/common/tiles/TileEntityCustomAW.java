@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import noppes.npcs.blocks.tiles.TileScripted;
 
 public class TileEntityCustomAW extends TileEntitySkinnable implements ICustomScript, ITickable {
 

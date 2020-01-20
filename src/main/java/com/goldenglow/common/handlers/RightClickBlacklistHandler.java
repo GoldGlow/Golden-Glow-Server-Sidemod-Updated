@@ -1,6 +1,5 @@
 package com.goldenglow.common.handlers;
 
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 
 import java.io.*;

@@ -3,7 +3,6 @@ package com.goldenglow.common.util;
 import com.goldenglow.common.events.OOPokedexEvent;
 import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.goldenglow.common.util.scripting.QuestConditionFunctions;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class TitleMethods {
