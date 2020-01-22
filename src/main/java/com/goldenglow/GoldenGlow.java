@@ -9,7 +9,9 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerStorage;
 import com.goldenglow.common.gyms.GymManager;
-import com.goldenglow.common.handlers.*;
+import com.goldenglow.common.handlers.ConfigHandler;
+import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
+import com.goldenglow.common.handlers.RightClickBlacklistHandler;
 import com.goldenglow.common.handlers.events.*;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventoryData;
@@ -35,11 +37,18 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.IEventListener;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import noppes.npcs.CNPCPacketHandler;
 import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import org.spongepowered.api.Sponge;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm", acceptableRemoteVersions = "*")
 public class GoldenGlow {
@@ -112,6 +121,15 @@ public class GoldenGlow {
         Pixelmon.EVENT_BUS.register(BattleEventHandler.class);
         //CNPCs
         WrapperNpcAPI.EVENT_BUS.register(TickEventHandler.class);
+
+        try {
+            Field eventbus = CustomNpcs.Channel.getClass().getDeclaredField("eventBus");
+            eventbus.setAccessible(true);
+            eventbus.set(CustomNpcs.Channel, new EventBus());
+            CustomNpcs.Channel.register(new CNPCPacketHandler());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Mod.EventHandler

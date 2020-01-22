@@ -19,6 +19,7 @@ import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
+import com.goldenglow.common.tiles.TileEntityCustomFridge;
 import com.goldenglow.common.util.*;
 import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.google.gson.stream.JsonWriter;
@@ -55,11 +56,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
@@ -71,6 +75,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import noppes.npcs.CustomItems;
 import noppes.npcs.EventHooks;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.NpcAPI;
@@ -79,12 +85,21 @@ import noppes.npcs.api.wrapper.ItemScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
+import noppes.npcs.blocks.BlockScripted;
+import noppes.npcs.constants.EnumGuiType;
 import noppes.npcs.constants.EnumScriptType;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerScriptData;
+import noppes.npcs.items.ItemNpcScripter;
+import noppes.npcs.items.ItemNpcWand;
 import noppes.npcs.items.ItemScripted;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
@@ -147,16 +162,19 @@ public class GGEventHandler {
         }*/
         if(event.getHand()==EnumHand.MAIN_HAND && event.getUseBlock()!=Event.Result.DENY ) {
             TileEntity tile = null;
+            BlockPos blockPos = event.getPos();
             if(blockState.getBlock() instanceof BlockApricornTree || blockState.getBlock() instanceof BlockBerryTree) {
                 if(blockState.getValue(BlockApricornTree.BLOCKPOS) == EnumBlockPos.TOP) {
-                    tile = event.getWorld().getTileEntity(event.getPos().down());
+                    blockPos = event.getPos().down();
+                    tile = event.getWorld().getTileEntity(blockPos);
                 } else {
                     tile = event.getWorld().getTileEntity(event.getPos());
                 }
             }
             else if(blockState.getBlock() instanceof BlockFridge){
                 if(blockState.getValue(MultiBlock.MULTIPOS)== EnumMultiPos.TOP){
-                    tile = event.getWorld().getTileEntity(event.getPos().down());
+                    blockPos = event.getPos().down();
+                    tile = event.getWorld().getTileEntity(blockPos);
                 }
                 else{
                     tile = event.getWorld().getTileEntity(event.getPos());
@@ -167,6 +185,14 @@ public class GGEventHandler {
             }
             if(tile instanceof ICustomScript) {
                 ICustomScript customTile = (ICustomScript) tile;
+                if (event.getItemStack().getItem() instanceof ItemNpcScripter && !event.getEntityPlayer().isSneaking()) {
+                    GGLogger.info("Scriptable - "+blockPos.toString());
+                    event.getEntityPlayer().closeScreen();
+                    SPacketBlockChange packet = new SPacketBlockChange(event.getWorld(), blockPos);
+                    packet.blockState = CustomItems.scripted.getDefaultState();
+                    ((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(packet);
+                    NoppesUtilServer.sendOpenGui(event.getEntityPlayer(), EnumGuiType.ScriptBlock, null, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                }
                 if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
                     ItemScriptedWrapper item = (ItemScriptedWrapper) NpcAPI.Instance().getIItemStack(event.getEntityPlayer().getHeldItemMainhand());
                     customTile.getScriptedTile().setNBT(item.getScriptNBT(new NBTTagCompound()));
@@ -229,7 +255,6 @@ public class GGEventHandler {
     @SubscribeEvent
     public void onMessage(ServerChatEvent event) {
         /*
-
         List<String> matches = new ArrayList<>();
         Matcher m = Pattern.compile("<\\w*:\\d>").matcher(event.getMessage());
         while(m.find()) {
