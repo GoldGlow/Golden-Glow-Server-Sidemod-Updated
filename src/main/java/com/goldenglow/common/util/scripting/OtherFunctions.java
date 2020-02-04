@@ -8,7 +8,10 @@ import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenScreen;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.npc.SetNPCData;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCShopkeeper;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.*;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.BaseShopItem;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItem;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItemWithVariation;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopkeeperChat;
 import com.pixelmonmod.pixelmon.enums.EnumGuiScreen;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -20,13 +23,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSpawnMob;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import noppes.npcs.CustomNpcs;
 import noppes.npcs.NoppesUtilServer;
+import noppes.npcs.Server;
 import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.PlayerDataController;
 import noppes.npcs.controllers.data.Dialog;
@@ -40,9 +43,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public class OtherFunctions {
-    //Probably needs to be updated to use the MC notification system instead of CNPCs
-    public static void showAchievement(PlayerWrapper playerWrapper, String firstLine, String secondLine){
-        playerWrapper.sendNotification(firstLine, secondLine, Integer.valueOf(playerWrapper.getMCEntity().getEntityData().getInteger("RouteNotification")));
+
+    public static void sendNotification(PlayerWrapper playerWrapper, String firstLine, String secondLine) {
+        sendNotification(playerWrapper, firstLine, secondLine, Integer.valueOf(playerWrapper.getMCEntity().getEntityData().getInteger("RouteNotification")));
+    }
+
+    public static void sendNotification(PlayerWrapper playerWrapper, String firstLine, String secondLine, int id) {
+        if(id < 0 || id > 7)
+            id = 0;
+        Server.sendData((EntityPlayerMP)playerWrapper.getMCEntity(), EnumPacketClient.MESSAGE, firstLine, secondLine, id);
     }
 
     //Debug?
@@ -52,7 +61,7 @@ public class OtherFunctions {
 
     public static void unlockBugCatcher(EntityPlayerMP player){
         if(!PermissionUtils.checkPermission(player, "titles.bug_catcher")) {
-            showAchievement(new PlayerWrapper(player), "Titles", "Unlocked title: Bug Catcher");
+            sendNotification(new PlayerWrapper(player), "Titles", "Unlocked title: Bug Catcher");
             PermissionUtils.addPermissionNode(player, "titles.bug_catcher");
             GGLogger.info("unlocked Bug Catcher");
         }
