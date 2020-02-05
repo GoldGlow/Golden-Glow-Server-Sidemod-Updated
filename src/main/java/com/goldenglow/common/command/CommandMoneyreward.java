@@ -1,6 +1,7 @@
 package com.goldenglow.common.command;
 
 import com.goldenglow.common.util.scripting.OtherFunctions;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

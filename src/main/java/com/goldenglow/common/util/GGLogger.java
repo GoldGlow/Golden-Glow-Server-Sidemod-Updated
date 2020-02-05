@@ -29,7 +29,7 @@ public class GGLogger
 
     public static void info(Object msg)
     {
-        logger.log(Level.FINE, "[OO] "+msg.toString());
+        logger.log(Level.FINE, msg.toString());
         handler.flush();
     }
 

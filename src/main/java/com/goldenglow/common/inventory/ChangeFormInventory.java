@@ -1,6 +1,7 @@
 package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.util.Reference;
+import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.util.text.TextComponentString;
 
 public class ChangeFormInventory extends CustomInventory {
     String species;

@@ -24,9 +24,16 @@ import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.data.Dialog;
+import noppes.npcs.controllers.data.MarkData;
 import noppes.npcs.entity.EntityNPCInterface;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.effect.sound.SoundTypes;
+import org.spongepowered.api.entity.Entity;
 
 import java.util.ArrayList;
+
+import java.util.UUID;
 
 public class OtherFunctions {
     //Probably needs to be updated to use the MC notification system instead of CNPCs
@@ -92,5 +99,22 @@ public class OtherFunctions {
     public static ArrayList<ShopItemWithVariation> getSellList(PlayerWrapper player) {
         ArrayList<ShopItemWithVariation> sellList = new ArrayList<>();
         return sellList;
+    }
+
+    public static void addPlayerMark(PlayerWrapper player, int color){
+        MarkData data=player.getMCEntity().getCapability(MarkData.MARKDATA_CAPABILITY, null);
+        data.addMark(1, color);
+    }
+
+    public static void clearPlayerMarks(PlayerWrapper player){
+        MarkData data=player.getMCEntity().getCapability(MarkData.MARKDATA_CAPABILITY, null);
+        data.marks.clear();
+        data.syncClients();
+    }
+
+    public static void vanishedNPC(NPCWrapper npc){
+        Entity npcEntity=Sponge.getServer().getWorld(npc.getWorld().getName()).get().getEntity(UUID.fromString(npc.getUUID())).get();
+        boolean visible=npcEntity.get(Keys.VANISH).orElse(false);
+        npcEntity.offer(Keys.VANISH, !visible);
     }
 }

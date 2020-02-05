@@ -9,6 +9,8 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.Iterator;
 import java.util.List;

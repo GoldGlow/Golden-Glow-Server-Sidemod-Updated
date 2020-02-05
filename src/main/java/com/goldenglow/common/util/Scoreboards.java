@@ -1,5 +1,6 @@
 package com.goldenglow.common.util;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
@@ -9,6 +10,7 @@ import com.pixelmonmod.pixelmon.client.gui.custom.overlays.ScoreboardLocation;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardDisplayPacket;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomScoreboardUpdatePacket;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import noppes.npcs.api.handler.data.IQuest;
 import noppes.npcs.api.handler.data.IQuestCategory;
 import noppes.npcs.api.handler.data.IQuestObjective;
@@ -16,13 +18,16 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.WorldWrapper;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Scoreboards {
     public enum EnumScoreboardType{
         NONE,
         DEBUG,
         QUEST_LOG,
-        CHAIN_INFO
+        CHAIN_INFO,
+        ONLINE_FRIENDS
     }
 
     public static void buildScoreboard(EntityPlayerMP player){
@@ -40,6 +45,9 @@ public class Scoreboards {
         }
         else if(type==EnumScoreboardType.CHAIN_INFO){
             Scoreboards.buildChainsScoreboard(player);
+        }
+        else if(type==EnumScoreboardType.ONLINE_FRIENDS){
+            Scoreboards.buildOnlineFriendsScoreboard(player);
         }
     }
 
@@ -142,5 +150,20 @@ public class Scoreboards {
         lines.add(chainName+" chain"); scores.add("");
         lines.add(chainSpecies); scores.add(chainCount+"");
         lines.add("=================="); scores.add("");
+    }
+
+    public static void buildOnlineFriendsScoreboard(EntityPlayerMP player){
+        List<UUID> friendList=player.getCapability(OOPlayerProvider.OO_DATA, null).getFriendList();
+        ArrayList<String> lines=new ArrayList<String>();
+        ArrayList<String> scores=new ArrayList<String>();
+        for(UUID friend:friendList){
+            EntityPlayerMP friendEntity=FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(friend);
+            if(friendEntity!=null){
+                lines.add(Reference.darkGreen+friendEntity.getName());
+                scores.add(GoldenGlow.routeManager.getRoute(friendEntity).displayName);
+            }
+        }
+        Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Online Friends", lines, scores), player);
+        Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
     }
 }

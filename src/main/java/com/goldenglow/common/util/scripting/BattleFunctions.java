@@ -4,7 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.npc.CustomBattleHandler;
 import com.goldenglow.common.battles.npc.CustomNPCBattle;
 import com.goldenglow.common.data.player.OOPlayerProvider;
-import com.goldenglow.common.handlers.events.TickEventHandler;
+import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.SpawnPokemon;
 import com.goldenglow.common.util.PermissionUtils;
@@ -49,7 +49,7 @@ public class BattleFunctions {
 
     // Line of sight code, used for sneaking portions and trainers
     public static void registerLOSBattle(NPCWrapper npc, int initDialogID) {
-        TickEventHandler.battleNPCs.put(npc, initDialogID);
+        TickHandler.battleNPCs.put(npc, initDialogID);
     }
 
     //code to start wild battles, currently used for apricorns
