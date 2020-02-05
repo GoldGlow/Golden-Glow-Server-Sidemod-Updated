@@ -4,6 +4,8 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.gyms.GymInventories;
 import com.goldenglow.common.inventory.BetterTrading.OfferMakingInventory;
 import com.goldenglow.common.inventory.BetterTrading.Trade;
+import com.goldenglow.common.inventory.social.FriendList;
+import com.goldenglow.common.inventory.social.FriendRequests;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -49,11 +51,17 @@ public class CustomInventory extends ContainerChest {
             CustomInventory.openPartyInventoryTest(player);
             return;
         }
+        else if(inventoryName.equalsIgnoreCase("FriendRequests")){
+            FriendRequests.openInventory(player);
+        }
         else if(inventoryName.startsWith("GYM:")){
             GymInventories.openInventory(inventoryName.split(":")[1], player);
         }
         else if(inventoryName.startsWith("QUEUE:")){
             GymInventories.openQueue(inventoryName.split(":")[1], player);
+        }
+        else if(inventoryName.equalsIgnoreCase("FriendList")){
+            FriendList.openInventory(player);
         }
         else if(inventoryName.equalsIgnoreCase("tt")) {
             Trade playerTrade=null;

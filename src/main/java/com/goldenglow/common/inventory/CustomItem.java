@@ -1,16 +1,19 @@
 package com.goldenglow.common.inventory;
 
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JeanMarc on 6/18/2019.
@@ -81,6 +84,34 @@ public class CustomItem  {
         itemStack.setItemDamage(3);
         itemStack.setTagInfo("SkullOwner", new NBTTagString(player.getName()));
         return itemStack;
+    }
+
+    public static ItemStack getPlayerHead(String player){
+        ItemStack itemStack=new ItemStack(Item.getByNameOrId("minecraft:skull"));
+        itemStack.setStackDisplayName(Reference.resetText+player);
+        itemStack.setItemDamage(3);
+        itemStack.setTagInfo("SkullOwner", new NBTTagString(player));
+        return itemStack;
+    }
+
+    public static ItemStack getDiamondDagger(int damage){
+        ItemStack itemStack=new ItemStack(Item.getByNameOrId("variedcommodities:diamond_dagger"));
+        itemStack.setItemDamage(damage);
+        itemStack.setTagInfo("Unbreakable", new NBTTagInt(1));
+        return itemStack;
+    }
+
+    public static ItemStack addLore(ItemStack item, ArrayList<String> lore){
+        NBTTagCompound itemNbt=new NBTTagCompound();
+        NBTTagCompound itemDisplay=item.getOrCreateSubCompound("display");
+        NBTTagList loreTag=new NBTTagList();
+        for(String loreLine: lore) {
+            loreTag.appendTag(new NBTTagString(loreLine));
+        }
+        itemDisplay.setTag("Lore", loreTag);
+        itemNbt.setTag("display", itemDisplay);
+        item.setTagCompound(itemNbt);
+        return item;
     }
 
     public static CustomItem getPokemonItem(Pokemon pokemon){

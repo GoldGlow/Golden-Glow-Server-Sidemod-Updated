@@ -1,14 +1,17 @@
 package com.goldenglow.common.data.player;
 
-import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.util.FullPos;
-import com.goldenglow.common.util.Scoreboards;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import net.minecraft.item.ItemStack;
+        import com.goldenglow.common.routes.Route;
+        import com.goldenglow.common.seals.Seal;
+        import com.goldenglow.common.util.FullPos;
+        import com.goldenglow.common.util.Scoreboards;
+        import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+        import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+        import net.minecraft.item.Item;
+        import net.minecraft.item.ItemStack;
 
-import java.time.Instant;
-import java.util.List;
+        import java.time.Instant;
+        import java.util.List;
+        import java.util.UUID;
 
 public interface IPlayerData {
 
@@ -66,6 +69,14 @@ public interface IPlayerData {
     int increaseKOChain(int i);
     void setKOChain(int i);
     void setLastKOPokemon(EnumSpecies species);
+
+     List<UUID> getFriendRequests();
+     List<UUID> getFriendList();
+    void addFriendRequest(UUID player);
+    void acceptFriendRequest(UUID player);
+    void denyFriendRequest(UUID player);
+    void addFriend(UUID player);
+    void removeFriend(UUID player);
 
     List<Pokemon> getWaitToEvolve();
     Pokemon getPokemonWaiting(int index);

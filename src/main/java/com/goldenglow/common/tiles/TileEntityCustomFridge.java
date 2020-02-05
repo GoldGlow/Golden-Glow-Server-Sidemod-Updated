@@ -1,10 +1,14 @@
 package com.goldenglow.common.tiles;
 
+import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityBerryTree;
 import com.pixelmonmod.pixelmon.blocks.tileEntities.TileEntityFridge;
+import com.pixelmonmod.pixelmon.client.models.animations.AnimateTask;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import noppes.npcs.EventHooks;
+import noppes.npcs.blocks.tiles.TileScripted;
 
 public class TileEntityCustomFridge extends TileEntityFridge implements ICustomScript {
 

@@ -7,7 +7,6 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.EnumType;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-
 import java.util.List;
 
 public class QuestConditionFunctions {

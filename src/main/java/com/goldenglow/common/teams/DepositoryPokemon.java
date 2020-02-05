@@ -6,7 +6,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
-
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import java.util.ArrayList;
 
 public class DepositoryPokemon {
