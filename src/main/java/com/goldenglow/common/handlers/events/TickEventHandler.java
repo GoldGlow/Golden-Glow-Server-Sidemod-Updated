@@ -28,11 +28,15 @@ public class TickEventHandler {
     @SubscribeEvent
     public static void onPlayerTick(PlayerEvent.UpdateEvent event) {
         IPlayerData data = event.player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
-        int ticks = data.getDialogTicks();
-        if(ticks>0)
-            data.setDialogTicks(ticks-1);
-        else
-            Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(false), event.player.getMCEntity());
+        if (data.getDialogTicks() != -1) {
+            int ticks = data.getDialogTicks();
+            if (ticks > 0)
+                data.setDialogTicks(ticks - 1);
+            else {
+                Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(false), event.player.getMCEntity());
+                data.setDialogTicks(-1);
+            }
+        }
     }
 
     @SubscribeEvent
