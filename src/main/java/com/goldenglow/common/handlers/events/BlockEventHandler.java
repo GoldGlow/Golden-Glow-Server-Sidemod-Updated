@@ -36,7 +36,7 @@ import noppes.npcs.constants.EnumScriptType;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.items.ItemScripted;
 
-public class BlockEvents {
+public class BlockEventHandler {
     @SubscribeEvent
     public void onPickApricorn(ApricornEvent.PickApricorn event) {
         if(event.tree instanceof TileEntityCustomApricornTree) {

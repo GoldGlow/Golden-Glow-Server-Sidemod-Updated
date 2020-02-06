@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
-public class LoginLogoutEvents {
+public class LoginLogoutEventHandler {
     @SubscribeEvent
     public void playerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         event.player.getCapability(OOPlayerProvider.OO_DATA, null).setLoginTime(Instant.now());

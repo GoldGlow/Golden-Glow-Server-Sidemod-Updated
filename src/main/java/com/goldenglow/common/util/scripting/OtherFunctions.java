@@ -4,16 +4,11 @@ import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenScreen;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.npc.SetNPCData;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCShopkeeper;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.BaseShopItem;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItem;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItemWithVariation;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopkeeperChat;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.*;
 import com.pixelmonmod.pixelmon.enums.EnumGuiScreen;
-import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -21,44 +16,29 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSpawnMob;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.WorldServer;
+import noppes.npcs.CustomNpcs;
 import noppes.npcs.NoppesUtilServer;
-import noppes.npcs.Server;
 import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
-import noppes.npcs.controllers.PlayerDataController;
 import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.controllers.data.MarkData;
-import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.entity.EntityNPCInterface;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.Entity;
 
-import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
 
 import java.util.UUID;
 
 public class OtherFunctions {
-
-    public static void sendNotification(PlayerWrapper playerWrapper, String firstLine, String secondLine) {
-        sendNotification(playerWrapper, firstLine, secondLine, Integer.valueOf(playerWrapper.getMCEntity().getEntityData().getInteger("RouteNotification")));
-    }
-
-    public static void sendNotification(PlayerWrapper playerWrapper, String firstLine, String secondLine, int id) {
-        if(id < 0 || id > 7)
-            id = 0;
-        Server.sendData((EntityPlayerMP)playerWrapper.getMCEntity(), EnumPacketClient.MESSAGE, firstLine, secondLine, id);
+    //Probably needs to be updated to use the MC notification system instead of CNPCs
+    public static void showAchievement(PlayerWrapper playerWrapper, String firstLine, String secondLine){
+        playerWrapper.sendNotification(firstLine, secondLine, Integer.valueOf(playerWrapper.getMCEntity().getEntityData().getInteger("RouteNotification")));
     }
 
     //Debug?
@@ -68,7 +48,7 @@ public class OtherFunctions {
 
     public static void unlockBugCatcher(EntityPlayerMP player){
         if(!PermissionUtils.checkPermission(player, "titles.bug_catcher")) {
-            sendNotification(new PlayerWrapper(player), "Titles", "Unlocked title: Bug Catcher");
+            showAchievement(new PlayerWrapper(player), "Titles", "Unlocked title: Bug Catcher");
             PermissionUtils.addPermissionNode(player, "titles.bug_catcher");
             GGLogger.info("unlocked Bug Catcher");
         }
@@ -119,42 +99,6 @@ public class OtherFunctions {
     public static ArrayList<ShopItemWithVariation> getSellList(PlayerWrapper player) {
         ArrayList<ShopItemWithVariation> sellList = new ArrayList<>();
         return sellList;
-    }
-
-    public static void resetPlayerData(EntityPlayerMP player) {
-        try {
-            MinecraftServer server = player.server;
-            //CNPCs - Works
-            PlayerData cnpcData = PlayerDataController.instance.getDataFromUsername(server, player.getName());
-            cnpcData.setNBT(new NBTTagCompound());
-            cnpcData.save(true);
-            //Minecraft - Works but player spawns in void (pos 0,0,0) not in the lobby dimension
-            File tmpDat = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata/" + player.getUniqueID() + ".dat.tmp");
-            File dat = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata/" + player.getUniqueID() + ".dat");
-            //Pixelmon - Works. (Weird double starter choice menu? Shouldn't matter.)
-            PlayerPartyStorage party = Pixelmon.storageManager.getParty(player);
-            PCStorage pc = Pixelmon.storageManager.getPCForPlayer(player);
-            Field loadedParties = Pixelmon.storageManager.getClass().getDeclaredField("parties");
-            Field loadedPCs = Pixelmon.storageManager.getClass().getDeclaredField("pcs");
-            loadedParties.setAccessible(true);
-            loadedPCs.setAccessible(true);
-            ((Map<UUID, PlayerPartyStorage>)loadedParties.get(Pixelmon.storageManager)).remove(player.getUniqueID());
-            ((Map<UUID, PCStorage>)loadedPCs.get(Pixelmon.storageManager)).remove(player.getUniqueID());
-            //Post-Kick
-            player.connection.disconnect(new TextComponentString("Resetting your data! Bare with us..."));
-            server.addScheduledTask( () -> {
-                player.readEntityFromNBT(new NBTTagCompound());
-                player.readFromNBT(new NBTTagCompound());
-                if(tmpDat.exists())
-                    tmpDat.delete();
-                dat.delete();
-                party.getFile().delete();
-                pc.getFile().delete();
-            });
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void addPlayerMark(PlayerWrapper player, int color){

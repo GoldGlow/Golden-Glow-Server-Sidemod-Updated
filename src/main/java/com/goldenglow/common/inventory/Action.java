@@ -180,6 +180,14 @@ public class Action {
         else if(this.actionType==ActionType.EQUIP_ARMOR){
             OtherFunctions.equipArmor(player, Integer.parseInt(this.value.split("@")[0]), this.value.split("@")[1]);
         }
+        else if(this.actionType==ActionType.SET_FRIEND_VIEW){
+            if(this.value.equalsIgnoreCase("true")){
+                ((OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null)).setPlayerVisibility(true);
+            }
+            else{
+                ((OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null)).setPlayerVisibility(false);
+            }
+        }
     }
 
     public enum ActionType{
@@ -199,6 +207,7 @@ public class Action {
         NEXT_CHALLENGER,
         START_BATTLE,
         DEPOSITORY_POKEMON,
-        EQUIP_ARMOR
+        EQUIP_ARMOR,
+        SET_FRIEND_VIEW
     }
 }

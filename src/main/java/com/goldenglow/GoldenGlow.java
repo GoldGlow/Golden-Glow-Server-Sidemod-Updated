@@ -51,12 +51,12 @@ public class GoldenGlow {
     @SidedProxy(serverSide = "com.goldenglow.common.CommonProxy")
     public static CommonProxy proxy;
 
-    public BattleEvents battleEventHandler=new BattleEvents();
-    public BlockEvents blockEventHandler=new BlockEvents();
-    public ItemEvents itemEventHandler=new ItemEvents();
-    public LoginLogoutEvents loginLogoutEventHandler=new LoginLogoutEvents();
-    public OtherEvents otherEventHandler=new OtherEvents();
-    public SoundRelatedEvents soundEventHandler=new SoundRelatedEvents();
+    public BattleEventHandler battleEventHandler=new BattleEventHandler();
+    public BlockEventHandler blockEventHandler=new BlockEventHandler();
+    public ItemEventHandler itemEventHandler=new ItemEventHandler();
+    public LoginLogoutEventHandler loginLogoutEventHandler=new LoginLogoutEventHandler();
+    public OtherEventHandler otherEventHandler=new OtherEventHandler();
+    public SoundRelatedEventHandler soundEventHandler=new SoundRelatedEventHandler();
 
     public RaidEventHandler raidEventHandler = new RaidEventHandler();
     public TickHandler tickHandler=new TickHandler();
@@ -163,7 +163,7 @@ public class GoldenGlow {
         GGLogger.info(inventories);
         customShopHandler.init();
         if(Loader.isModLoaded("spongeforge")) {
-            Sponge.getEventManager().registerListeners(this, new ItemEvents());
+            Sponge.getEventManager().registerListeners(this, new ItemEventHandler());
         }
         String routes="Routes: ";
         for(Route route:routeManager.getRoutes()) {

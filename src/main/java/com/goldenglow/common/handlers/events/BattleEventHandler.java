@@ -30,9 +30,8 @@ import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.ScriptContainer;
 
 public class BattleEventHandler {
-
     @SubscribeEvent
-    public static void onBattleStart(BattleStartedEvent event){
+    public void onBattleStart(BattleStartedEvent event){
         BattleParticipant[] participants=event.participant1;
         BattleParticipant[] opponents=event.participant2;
         if(event.bc.rules instanceof GymBattleRules){
@@ -92,7 +91,19 @@ public class BattleEventHandler {
     }
 
     @SubscribeEvent
-    public static void onBattleEnd(BattleEndEvent event) {
+    public void onTurnEnd(TurnEndEvent event) {
+        if(event.bcb.rules instanceof CustomNPCBattle) {
+            CustomNPCBattle rules = (CustomNPCBattle)event.bcb.rules;
+            CNPCBattleEvent.TurnEnd npcEvent = new CNPCBattleEvent.TurnEnd(new NPCWrapper(rules.getNpc()), new PlayerWrapper(event.bcb.getPlayers().get(0).player), event.bcb);
+            for(ScriptContainer s : ((CustomNPCBattle)event.bcb.rules).getNpc().script.getScripts()) {
+                s.run("turnEnd", npcEvent);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onBattleEnd(BattleEndEvent event)
+    {
         if(event.bc.rules instanceof GymBattleRules){
             BattleResults results=event.results.get(event.bc.participants.get(0));
             if (results == BattleResults.VICTORY && event.cause!= EnumBattleEndCause.FORCE) {
@@ -137,24 +148,13 @@ public class BattleEventHandler {
         else {
             for(BattleParticipant participant:event.bc.participants){
                 if(participant instanceof PlayerParticipant){
-                    if(event.results.get(participant)==BattleResults.DEFEAT || (event.cause== EnumBattleEndCause.FORCE&&!(event.results.get(participant)==BattleResults.VICTORY))){
+                    if(event.results.get(participant)==BattleResults.DEFEAT || (!PixelmonBattleUtils.isWildBattle(event.bc.participants)&&event.results.get(participant)!=BattleResults.VICTORY)){
                         WorldFunctions.warpToSafeZone(new PlayerWrapper(((PlayerParticipant) participant).player));
                     }
                     else {
                         SongManager.setRouteSong(((PlayerParticipant) participant).player);
                     }
                 }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onTurnEnd(TurnEndEvent event) {
-        if(event.bcb.rules instanceof CustomNPCBattle) {
-            CustomNPCBattle rules = (CustomNPCBattle)event.bcb.rules;
-            CNPCBattleEvent.TurnEnd npcEvent = new CNPCBattleEvent.TurnEnd(new NPCWrapper(rules.getNpc()), new PlayerWrapper(event.bcb.getPlayers().get(0).player), event.bcb);
-            for(ScriptContainer s : ((CustomNPCBattle)event.bcb.rules).getNpc().script.getScripts()) {
-                s.run("turnEnd", npcEvent);
             }
         }
     }

@@ -77,6 +77,8 @@ public interface IPlayerData {
     void denyFriendRequest(UUID player);
     void addFriend(UUID player);
     void removeFriend(UUID player);
+    boolean getPlayerVisibility();
+    void setPlayerVisibility(boolean onlySeesFriends);
 
     List<Pokemon> getWaitToEvolve();
     Pokemon getPokemonWaiting(int index);

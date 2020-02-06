@@ -9,7 +9,7 @@ import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
 import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class SoundRelatedEvents {
+public class SoundRelatedEventHandler {
     @SubscribeEvent
     public void onEvolutionStart(EvolveEvent.PreEvolve event){
         IPlayerData playerData= event.player.getCapability(OOPlayerProvider.OO_DATA, null);

@@ -30,7 +30,7 @@ public class CommandMoneyreward extends CommandBase {
         else{
             EntityPlayerMP player = getPlayer(server, sender, args[1]);
             NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+args[0], (EntityPlayerMP)null);
-            OtherFunctions.sendNotification(new PlayerWrapper(player), "Reward", "Obtained $"+args[0]);
+            OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+args[0]);
         }
     }
 }

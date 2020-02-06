@@ -15,7 +15,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
-public class ItemEvents {
+public class ItemEventHandler {
     @SubscribeEvent
     public void itemDroppedEvent(ItemTossEvent event){
         if ((event.getEntityItem().getItem().getItem().getRegistryName() + "").equals("variedcommodities:diamond_dagger")) {

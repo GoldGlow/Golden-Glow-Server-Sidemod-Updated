@@ -1,6 +1,7 @@
 package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.events.OOPokedexEvent;
 import com.goldenglow.common.inventory.CustomItem;
@@ -25,6 +26,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import noppes.npcs.api.wrapper.PlayerWrapper;
@@ -39,7 +41,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OtherEvents {
+public class OtherEventHandler {
     @SubscribeEvent
     public void pokedexRegisteredEvent(PokedexEvent event){
         Map<Integer, EnumPokedexRegisterStatus> seen= Pixelmon.storageManager.getParty(event.uuid).pokedex.getSeenMap();
@@ -55,6 +57,16 @@ public class OtherEvents {
         TitleMethods.unlockBugCatcher(dexEvent);
         for(ScriptContainer s : scriptData.getScripts()){
             s.run("pokedexEvent", dexEvent);
+        }
+    }
+
+    @SubscribeEvent
+    public void onVanish(PlayerEvent.StartTracking event){
+        IPlayerData playerData=event.getEntityPlayer().getCapability(OOPlayerProvider.OO_DATA, null);
+        if(event.getTarget() instanceof EntityPlayerMP){
+            if(playerData.getPlayerVisibility()&&!playerData.getFriendList().contains(event.getTarget().getUniqueID())){
+                ((EntityPlayerMP)event.getEntityPlayer()).removeEntity(event.getTarget());
+            }
         }
     }
 
