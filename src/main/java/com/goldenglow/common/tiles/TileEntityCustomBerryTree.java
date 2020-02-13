@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import noppes.npcs.blocks.tiles.TileScripted;
 
 public class TileEntityCustomBerryTree extends TileEntityBerryTree implements ICustomScript {
 

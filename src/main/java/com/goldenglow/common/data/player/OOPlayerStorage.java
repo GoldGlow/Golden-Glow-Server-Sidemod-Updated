@@ -24,6 +24,14 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
     public NBTBase writeNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side) {
         final NBTTagCompound tag = new NBTTagCompound();
 
+        if(instance.getFriendList().size()>0){
+            NBTTagList friendList=new NBTTagList();
+            for(UUID player:instance.getFriendList()){
+                friendList.appendTag(new NBTTagString(player.toString()));
+            }
+            tag.setTag("friendList", friendList);
+        }
+
         if(instance.getWildTheme()!=null)
             tag.setString("theme_wild", instance.getWildTheme());
 
@@ -134,6 +142,14 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(tag.hasKey("pvpOption")){
             instance.setPvpThemeOption(tag.getInteger("pvpOption"));
+        }
+
+        if(tag.hasKey("friendList")){
+            NBTTagList friends=tag.getTagList("friendList", Constants.NBT.TAG_STRING);
+            for(NBTBase friend: friends){
+                NBTTagString uuid=(NBTTagString) friend;
+                instance.addFriend(UUID.fromString(uuid.getString()));
+            }
         }
 
         instance.setNotificationScheme(tag.getInteger("notification_style"));

@@ -1,5 +1,6 @@
 package com.goldenglow.common.util;
 
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -9,6 +10,8 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +83,12 @@ public class Requirement {
                 e.printStackTrace();
             }
         }
+        else if(requirement.type==RequirementType.FRIEND_ONLY){
+            if(requirement.value.equalsIgnoreCase("true"))
+                return playerEntity.getCapability(OOPlayerProvider.OO_DATA, null).getPlayerVisibility();
+            else
+                return !playerEntity.getCapability(OOPlayerProvider.OO_DATA, null).getPlayerVisibility();
+        }
         return false;
     }
 
@@ -137,6 +146,7 @@ public class Requirement {
         TIME,
         MONEY,
         ITEM,
-        HAS_SPACE
+        HAS_SPACE,
+        FRIEND_ONLY
     }
 }

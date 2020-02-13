@@ -13,7 +13,7 @@ public class ParseJson {
     public static Requirement parseRequirement(JsonObject o){
         Requirement r = new Requirement();
         r.type = Requirement.RequirementType.valueOf(o.getAsJsonObject().get("type").getAsString());
-        if (r.type == Requirement.RequirementType.TIME || r.type == Requirement.RequirementType.PERMISSION) {
+        if (r.type == Requirement.RequirementType.TIME || r.type == Requirement.RequirementType.PERMISSION || r.type== Requirement.RequirementType.FRIEND_ONLY) {
             r.value = o.getAsJsonObject().get("value").getAsString();
         } else {
             r.id = o.getAsJsonObject().get("id").getAsInt();

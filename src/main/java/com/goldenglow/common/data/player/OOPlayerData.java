@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class OOPlayerData implements IPlayerData {
 
@@ -44,6 +45,10 @@ public class OOPlayerData implements IPlayerData {
     private Instant loginTime;
 
     private int dialogTicks;
+
+    private List<UUID> friendRequests=new ArrayList<>();
+    private List<UUID> friendList=new ArrayList<>();
+    private boolean onlySeesFriends=false;
 
     //Getters
     public Route getRoute() {
@@ -89,6 +94,26 @@ public class OOPlayerData implements IPlayerData {
         return this.captureChain;
     }
     public int getKOChain() { return this.KOChain; }
+    public List<UUID> getFriendRequests(){return this.friendRequests;}
+    public List<UUID> getFriendList(){return this.friendList;}
+    public void addFriendRequest(UUID player){
+        this.friendRequests.add(player);
+    }
+    public void acceptFriendRequest(UUID player){
+        this.friendRequests.remove(player);
+        this.friendList.add(player);
+    }
+    public void addFriend(UUID player){
+        this.friendList.add(player);
+    }
+    public void denyFriendRequest(UUID player){
+        this.friendRequests.remove(player);
+    }
+    public void removeFriend(UUID player){
+        this.friendList.remove(player);
+    }
+    public boolean getPlayerVisibility(){return this.onlySeesFriends;}
+    public void setPlayerVisibility(boolean onlySeesFriends){this.onlySeesFriends=onlySeesFriends;}
 
     //Setters
     public void setRoute(Route route) {

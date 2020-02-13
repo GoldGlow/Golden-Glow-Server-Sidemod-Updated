@@ -2,7 +2,11 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.Action;
 import com.goldenglow.common.inventory.CustomItem;
+import com.goldenglow.common.teams.DepositoryPokemon;
 import com.goldenglow.common.util.Requirement;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import net.minecraft.item.ItemStack;
 
 public class CustomShopItem extends CustomItem {

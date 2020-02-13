@@ -2,6 +2,7 @@ package com.goldenglow.common.command;
 
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.scripting.OtherFunctions;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -10,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+
+import java.security.Permission;
 
 /**
  * Created by JeanMarc on 7/1/2019.
@@ -35,7 +38,7 @@ public class CommandBattleReward extends CommandBase {
                 amount*=1.25;
             }
             NoppesUtilServer.runCommand(sender, sender.getName(), "givemoney "+args[1]+" "+amount, (EntityPlayerMP)null);
-            OtherFunctions.sendNotification(new PlayerWrapper(player), "Reward", "Obtained $"+amount);
+            OtherFunctions.showAchievement(new PlayerWrapper(player), "Reward", "Obtained $"+amount);
         }
     }
 }

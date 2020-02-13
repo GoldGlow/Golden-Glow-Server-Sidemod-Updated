@@ -1,6 +1,7 @@
 package com.goldenglow.common.inventory.BetterTrading;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.inventory.Action;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomItem;

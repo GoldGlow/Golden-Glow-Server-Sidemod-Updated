@@ -2,12 +2,14 @@ package com.goldenglow.common.gyms;
 
 import com.goldenglow.common.teams.Team;
 import com.goldenglow.common.util.Reference;
+import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.World;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;

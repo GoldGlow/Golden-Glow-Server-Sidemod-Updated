@@ -2,6 +2,7 @@ package com.goldenglow.common.util;
 
 import com.flowpowered.math.vector.Vector3d;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.World;

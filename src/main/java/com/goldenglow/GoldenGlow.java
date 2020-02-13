@@ -1,7 +1,6 @@
 package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
-import com.goldenglow.common.battles.bosses.BossManager;
 import com.goldenglow.common.battles.raids.CommandRaidDebug;
 import com.goldenglow.common.battles.raids.RaidEventHandler;
 import com.goldenglow.common.command.*;
@@ -9,9 +8,7 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerStorage;
 import com.goldenglow.common.gyms.GymManager;
-import com.goldenglow.common.handlers.ConfigHandler;
-import com.goldenglow.common.handlers.PixelmonSpawnerHandler;
-import com.goldenglow.common.handlers.RightClickBlacklistHandler;
+import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.handlers.events.*;
 import com.goldenglow.common.inventory.BetterTrading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventoryData;
@@ -37,18 +34,11 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
-import net.minecraftforge.fml.common.eventhandler.IEventListener;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import noppes.npcs.CNPCPacketHandler;
 import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import org.spongepowered.api.Sponge;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm", acceptableRemoteVersions = "*")
 public class GoldenGlow {
@@ -61,22 +51,28 @@ public class GoldenGlow {
     @SidedProxy(serverSide = "com.goldenglow.common.CommonProxy")
     public static CommonProxy proxy;
 
-    public GGEventHandler eventHandler = new GGEventHandler();
+    public BattleEventHandler battleEventHandler=new BattleEventHandler();
+    public BlockEventHandler blockEventHandler=new BlockEventHandler();
+    public ItemEventHandler itemEventHandler=new ItemEventHandler();
+    public LoginLogoutEventHandler loginLogoutEventHandler=new LoginLogoutEventHandler();
+    public OtherEventHandler otherEventHandler=new OtherEventHandler();
+    public SoundRelatedEventHandler soundEventHandler=new SoundRelatedEventHandler();
+
     public RaidEventHandler raidEventHandler = new RaidEventHandler();
-    public TickEventHandler tickEventHandler = new TickEventHandler();
+    public TickHandler tickHandler=new TickHandler();
 
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
     public static RightClickBlacklistHandler rightClickBlacklistHandler=new RightClickBlacklistHandler();
 
-    public static SongManager songManager = new SongManager();
+    public static SongManager songManager= new SongManager();
     public static TeamManager teamManager = new TeamManager();
-    public static GymManager gymManager = new GymManager();
+    public static GymManager gymManager=new GymManager();
     public static RouteManager routeManager = new RouteManager();
     public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
-    public static TradeManager tradeManager = new TradeManager();
-    public static CustomInventoryHandler customInventoryHandler = new CustomInventoryHandler();
-    public static CustomShopHandler customShopHandler = new CustomShopHandler();
+    public static TradeManager tradeManager=new TradeManager();
+    public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
+    public static CustomShopHandler customShopHandler=new CustomShopHandler();
 
     public static CommandDispatcher<ICommandSender> commandDispatcher = new CommandDispatcher<>();
 
@@ -89,8 +85,7 @@ public class GoldenGlow {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        GGLogger.info("Obscure Obsidian v"+VERSION);
-        GGLogger.info("Pre-Initialization...");
+        logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
         configHandler.init();
         rightClickBlacklistHandler.init();
 
@@ -103,38 +98,31 @@ public class GoldenGlow {
         CapabilityManager.INSTANCE.register(IPlayerData.class, new OOPlayerStorage(), OOPlayerData::new);
 
         SealManager.init();
-        BossManager.init();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        GGLogger.info("Initialising..");
-        //Minecraft
-        MinecraftForge.EVENT_BUS.register(eventHandler);
-        MinecraftForge.EVENT_BUS.register(TickEventHandler.class);
-        MinecraftForge.EVENT_BUS.register(PlayerEventHandler.class);
-        //Pixelmon
-        Pixelmon.EVENT_BUS.register(PixelmonEventHandler.class);
+        logger.info("Init section test");
+        MinecraftForge.EVENT_BUS.register(blockEventHandler);
+        MinecraftForge.EVENT_BUS.register(otherEventHandler);
+        MinecraftForge.EVENT_BUS.register(itemEventHandler);
+        MinecraftForge.EVENT_BUS.register(loginLogoutEventHandler);
+        MinecraftForge.EVENT_BUS.register(proxy);
+        MinecraftForge.EVENT_BUS.register(TickHandler.class);
+        Pixelmon.EVENT_BUS.register(battleEventHandler);
+        Pixelmon.EVENT_BUS.register(blockEventHandler);
+        Pixelmon.EVENT_BUS.register(otherEventHandler);
         Pixelmon.EVENT_BUS.register(raidEventHandler);
+        Pixelmon.EVENT_BUS.register(soundEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
-        Pixelmon.EVENT_BUS.register(BossManager.class);
-        Pixelmon.EVENT_BUS.register(BattleEventHandler.class);
-        //CNPCs
-        WrapperNpcAPI.EVENT_BUS.register(TickEventHandler.class);
-
-        try {
-            Field eventbus = CustomNpcs.Channel.getClass().getDeclaredField("eventBus");
-            eventbus.setAccessible(true);
-            eventbus.set(CustomNpcs.Channel, new EventBus());
-            CustomNpcs.Channel.register(new CNPCPacketHandler());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        GGLogger.info("Post-Initialization...");
+        CustomNpcs.Channel.register(battleEventHandler);
+        CustomNpcs.Channel.register(blockEventHandler);
+        CustomNpcs.Channel.register(otherEventHandler);
         Pixelmon.network.registerMessage(ShopPacketHandler.class, ShopKeeperPacket.class, 118, Side.SERVER);
     }
 
@@ -160,7 +148,6 @@ public class GoldenGlow {
         event.registerServerCommand(new CommandScriptable());
 
         event.registerServerCommand(new CommandRoutes());
-        event.registerServerCommand(new CommandBoss());
         CommandRoutes.register(commandDispatcher);
     }
 
@@ -175,8 +162,9 @@ public class GoldenGlow {
         }
         GGLogger.info(inventories);
         customShopHandler.init();
-        if(Loader.isModLoaded("spongeforge"))
-            Sponge.getEventManager().registerListeners(this, eventHandler);
+        if(Loader.isModLoaded("spongeforge")) {
+            Sponge.getEventManager().registerListeners(this, new ItemEventHandler());
+        }
         String routes="Routes: ";
         for(Route route:routeManager.getRoutes()) {
             routes+=route.unlocalizedName+" ";
