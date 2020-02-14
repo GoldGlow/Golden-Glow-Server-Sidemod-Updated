@@ -130,28 +130,28 @@ public class HuntHandler {
                         int i;
                         int id = 0;
                         ItemStack stack;
-                        if (ReflectionHelper.getPrivateStack(info, "mainDrop") != null) {
-                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "mainDropMin"), ReflectionHelper.getPrivateInt(info, "mainDropMax"));
-                            stack = ReflectionHelper.getPrivateStack(info, "mainDrop").copy();
+                        if (ReflectionHelper.getPrivateValue(info, "mainDrop") != null) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateValue(info, "mainDropMin"), ReflectionHelper.getPrivateValue(info, "mainDropMax"));
+                            stack = ((ItemStack)ReflectionHelper.getPrivateValue(info, "mainDrop")).copy();
                             stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
                             drops.add(new DroppedItem(stack, id++));
                         }
-                        if (ReflectionHelper.getPrivateStack(info, "optDrop1") != null) {
-                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "optDrop1Min"), ReflectionHelper.getPrivateInt(info, "optDrop1Max"));
-                            stack = ReflectionHelper.getPrivateStack(info, "optDrop1").copy();
+                        if (ReflectionHelper.getPrivateValue(info, "optDrop1") != null) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateValue(info, "optDrop1Min"), ReflectionHelper.getPrivateValue(info, "optDrop1Max"));
+                            stack = ((ItemStack)ReflectionHelper.getPrivateValue(info, "optDrop1")).copy();
                             stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
                             drops.add(new DroppedItem(stack, id++));
                         }
-                        if (ReflectionHelper.getPrivateStack(info, "optDrop2") != null) {
-                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "optDrop2Min"), ReflectionHelper.getPrivateInt(info, "optDrop2Max"));
-                            stack = ReflectionHelper.getPrivateStack(info, "optDrop2").copy();
+                        if (ReflectionHelper.getPrivateValue(info, "optDrop2") != null) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateValue(info, "optDrop2Min"), ReflectionHelper.getPrivateValue(info, "optDrop2Max"));
+                            stack = ((ItemStack)ReflectionHelper.getPrivateValue(info, "optDrop2")).copy();
                             stack.setCount(numDrops * Math.min((total / 10) + 1, 3));
                             drops.add(new DroppedItem(stack, id++));
                         }
-                        if (ReflectionHelper.getPrivateStack(info, "rareDrop") != null && RandomHelper.getRandomChance(0.1F + (Math.min(total / 5, 5) * 0.05F))) {
-                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateInt(info, "rareDropMin"), ReflectionHelper.getPrivateInt(info, "rareDropMax"));
+                        if (ReflectionHelper.getPrivateValue(info, "rareDrop") != null && RandomHelper.getRandomChance(0.1F + (Math.min(total / 5, 5) * 0.05F))) {
+                            numDrops = RandomHelper.getRandomNumberBetween(ReflectionHelper.getPrivateValue(info, "rareDropMin"), ReflectionHelper.getPrivateValue(info, "rareDropMax"));
                             for (i = 0; i < numDrops; ++i) {
-                                drops.add(new DroppedItem(ReflectionHelper.getPrivateStack(info, "rareDrop").copy(), id++));
+                                drops.add(new DroppedItem(((ItemStack)ReflectionHelper.getPrivateValue(info, "rareDrop")).copy(), id++));
                             }
                         }
                         DropItemQuery diq = new DropItemQuery(new Vec3d(event.entity.posX, event.entity.posY, event.entity.posZ), event.player.getUniqueID(), drops);

@@ -102,10 +102,10 @@ public class BlockEvents {
                 TileEntityTV tileEntityTV= (TileEntityTV) event.getWorld().getTileEntity(event.getPos());
                 try {
                     if (PermissionUtils.checkPermission(((EntityPlayerMP) event.getEntityPlayer()), "group.builder")) {
-                        ReflectionHelper.setPrivateBoolean(tileEntityTV, "disabled", false);
+                        ReflectionHelper.setPrivateValue(tileEntityTV, "disabled", false);
                         GGLogger.info("builder");
                     } else {
-                        ReflectionHelper.setPrivateBoolean(tileEntityTV, "disabled", true);
+                        ReflectionHelper.setPrivateValue(tileEntityTV, "disabled", true);
                         GGLogger.info("out");
                     }
                 } catch (Exception e) {

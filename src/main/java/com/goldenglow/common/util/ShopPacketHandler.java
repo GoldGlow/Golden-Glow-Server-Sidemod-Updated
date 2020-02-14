@@ -31,14 +31,14 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
     public void onSyncMessage(ShopKeeperPacket message, MessageContext ctx) {
         try {
             EntityPlayerMP p = ctx.getServerHandler().player;
-            int amount = ReflectionHelper.getPrivateInt(message, "amount");
-            int shopkeeperID = ReflectionHelper.getPrivateInt(message, "shopKeeperID");
+            int amount = ReflectionHelper.getPrivateValue(message, "amount");
+            int shopkeeperID = ReflectionHelper.getPrivateValue(message, "shopKeeperID");
             Optional<NPCShopkeeper> npcOptional = EntityNPC.locateNPCServer(p.world, shopkeeperID, NPCShopkeeper.class);
             if ((shopkeeperID == 999 || npcOptional.isPresent()) && amount > 0) {
                 Optional<? extends IPixelmonBankAccount> acc = Pixelmon.moneyManager.getBankAccount(p);
                 if (acc.isPresent()) {
                     IPixelmonBankAccount account = acc.get();
-                    String itemID = ReflectionHelper.getPrivateString(message, "itemID");
+                    String itemID = ReflectionHelper.getPrivateValue(message, "itemID");
                     ArrayList itemList;
                     Iterator var8;
                     ShopItemWithVariation s;
