@@ -3,6 +3,7 @@ package com.goldenglow.common.command;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.shops.CustomShop;
 import com.goldenglow.common.inventory.shops.CustomShopData;
+import com.goldenglow.common.util.GGLogger;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -25,6 +26,7 @@ public class CommandShop extends CommandBase {
         }
         else{
             EntityPlayerMP player = getPlayer(server, sender, args[0]);
+            GGLogger.info(GoldenGlow.customShopHandler.shops.size());
             for(CustomShopData inventoryData: GoldenGlow.customShopHandler.shops) {
                 if (inventoryData.getName().equals(args[1])) {
                     CustomShop.openCustomShop(player, inventoryData);

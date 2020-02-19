@@ -10,8 +10,8 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import net.minecraft.item.ItemStack;
 
 public class CustomShopItem extends CustomItem {
-    public int sellPrice;
-    public int buyPrice;
+    public int sellPrice=0;
+    public int buyPrice=0;
 
     public CustomShopItem(ItemStack item, Requirement[] requirements){
         super(item, requirements);

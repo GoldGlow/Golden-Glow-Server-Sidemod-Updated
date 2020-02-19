@@ -7,6 +7,14 @@ import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenScreen;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.npc.SetNPCData;
+import com.pixelmonmod.pixelmon.entities.npcs.NPCShopkeeper;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.BaseShopItem;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItem;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItemWithVariation;
+import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopkeeperChat;
+import com.pixelmonmod.pixelmon.enums.EnumGuiScreen;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -20,11 +28,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketSpawnMob;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.PlayerWrapper;
+
+import java.util.ArrayList;
 
 public class CustomShop extends CustomInventory {
     CustomShopData data;
@@ -123,33 +134,63 @@ public class CustomShop extends CustomInventory {
     }
 
     public static void openCustomShop(EntityPlayerMP playerMP, CustomShopData data){
-        InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
-        if(Requirement.checkRequirements(data.getRequirements(), playerMP)) {
-            for(int i=0;i<data.getRows()*9-1;i++){
-                if(i<data.getItems().length){
-                    CustomShopItem item= CustomShop.getItem(data.getItems()[i], playerMP);
-                    if(item!=null){
-                        if(item.getItem()!=null) {
-                            chestInventory.setInventorySlotContents(i, item.getItem());
+        if(data.pixelmonGui){
+            if (Requirement.checkRequirements(data.getRequirements(), playerMP)) {
+                ArrayList<ShopItemWithVariation> buyList=new ArrayList<ShopItemWithVariation>();
+                ArrayList<ShopItemWithVariation> sellList=new ArrayList<ShopItemWithVariation>();
+                GGLogger.info("in");
+                for (int i = 0; i < data.getRows() * 9 - 1; i++) {
+                    if (i < data.getItems().length) {
+                        CustomShopItem item = CustomShop.getItem(data.getItems()[i], playerMP);
+                        if(item!=null) {
+                            ShopItemWithVariation shopItemWithVariation = new ShopItemWithVariation(new ShopItem(new BaseShopItem(item.getItem().getDisplayName(), item.getItem(), item.buyPrice, item.sellPrice), 1, 0, false));
+                            if (item.sellPrice > 0) {
+                                sellList.add(shopItemWithVariation);
+                            }
+                            if (item.buyPrice > 0) {
+                                buyList.add(shopItemWithVariation);
+                            }
                         }
                     }
                 }
+                Pixelmon.network.sendTo(new SetNPCData("Shopkeeper", new ShopkeeperChat("",""), buyList, sellList), playerMP);
+                NPCShopkeeper shopkeeper = new NPCShopkeeper(playerMP.world);
+                shopkeeper.setId(999);
+                shopkeeper.setPosition(playerMP.getPosition().getX(), playerMP.getPosition().getY(), playerMP.getPosition().getZ());
+                playerMP.connection.sendPacket(new SPacketSpawnMob(shopkeeper));
+                OpenScreen.open(playerMP, EnumGuiScreen.Shopkeeper, 999);
+                playerMP.removeEntity(shopkeeper);
             }
-            ItemStack balance=new ItemStack(Item.getByNameOrId("variedcommodities:coin_bronze"));
-            IPixelmonBankAccount bankAccount=(IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount(playerMP).orElse(null);
-            int amount=0;
-            if(bankAccount!=null){
-                amount=bankAccount.getMoney();
+        }
+        else {
+            InventoryBasic chestInventory = new InventoryBasic(data.getName(), true, data.getRows() * 9);
+            if (Requirement.checkRequirements(data.getRequirements(), playerMP)) {
+                for (int i = 0; i < data.getRows() * 9 - 1; i++) {
+                    if (i < data.getItems().length) {
+                        CustomShopItem item = CustomShop.getItem(data.getItems()[i], playerMP);
+                        if (item != null) {
+                            if (item.getItem() != null) {
+                                chestInventory.setInventorySlotContents(i, item.getItem());
+                            }
+                        }
+                    }
+                }
+                ItemStack balance = new ItemStack(Item.getByNameOrId("variedcommodities:coin_bronze"));
+                IPixelmonBankAccount bankAccount = (IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount(playerMP).orElse(null);
+                int amount = 0;
+                if (bankAccount != null) {
+                    amount = bankAccount.getMoney();
+                }
+                balance.setStackDisplayName(Reference.resetText + "Current Balance: " + amount);
+                chestInventory.setInventorySlotContents(data.getRows() * 9 - 1, balance);
+                playerMP.getNextWindowId();
+                playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
+                playerMP.openContainer = new CustomShop(playerMP.inventory, chestInventory, playerMP);
+                ((CustomShop) playerMP.openContainer).setData(data);
+                playerMP.openContainer.windowId = playerMP.currentWindowId;
+                playerMP.openContainer.addListener(playerMP);
+                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(playerMP, playerMP.openContainer));
             }
-            balance.setStackDisplayName(Reference.resetText+"Current Balance: "+amount);
-            chestInventory.setInventorySlotContents(data.getRows()*9-1, balance);
-            playerMP.getNextWindowId();
-            playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", new TextComponentString(data.getDisplayName()), data.getRows() * 9));
-            playerMP.openContainer = new CustomShop(playerMP.inventory, chestInventory, playerMP);
-            ((CustomShop)playerMP.openContainer).setData(data);
-            playerMP.openContainer.windowId = playerMP.currentWindowId;
-            playerMP.openContainer.addListener(playerMP);
-            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(playerMP, playerMP.openContainer));
         }
     }
 }

@@ -233,6 +233,10 @@ public class CustomShopHandler {
                 requirements[i++]=ParseJson.parseRequirement(requirement.getAsJsonObject());
             }
         }
-        this.shops.add(new CustomShopData(rows, inventoryName, displayName, customItems, requirements));
+        CustomShopData data=new CustomShopData(rows, inventoryName, displayName, customItems, requirements);
+        if(json.has("pixelmonGUI")){
+            data.setPixelmonGui(json.get("pixelmonGUI").getAsBoolean());
+        }
+        this.shops.add(data);
     }
 }
