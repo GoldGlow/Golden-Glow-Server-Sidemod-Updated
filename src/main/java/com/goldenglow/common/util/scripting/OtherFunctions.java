@@ -78,6 +78,19 @@ public class OtherFunctions {
         return item.getMCItemStack();
     }
 
+    public static void openShopMenu(EntityPlayerMP player, ArrayList<ShopItemWithVariation> buyList, ArrayList<ShopItemWithVariation> sellList){
+        PlayerWrapper playerWrapper=new PlayerWrapper(player);
+        ArrayList<ShopItemWithVariation> buy=getBuyList(playerWrapper, buyList);
+        ArrayList<ShopItemWithVariation> sell=getBuyList(playerWrapper, sellList);
+        Pixelmon.network.sendTo(new SetNPCData("", new ShopkeeperChat("",""), buyList, sellList), player);
+        NPCShopkeeper shopkeeper = new NPCShopkeeper(player.world);
+        shopkeeper.setId(999);
+        shopkeeper.setPosition(player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
+        player.connection.sendPacket(new SPacketSpawnMob(shopkeeper));
+        OpenScreen.open(player, EnumGuiScreen.Shopkeeper, 999);
+        player.removeEntity(shopkeeper);
+    }
+
     public static void openShopMenu(PlayerWrapper player, String name, String openMsg, String closeMsg) {
         ArrayList<ShopItemWithVariation> buyList = getBuyList(player);
         ArrayList<ShopItemWithVariation> sellList = getSellList(player);
@@ -96,8 +109,22 @@ public class OtherFunctions {
         return buyList;
     }
 
+    public static ArrayList<ShopItemWithVariation> getBuyList(PlayerWrapper player, ArrayList<ShopItemWithVariation> list) {
+        ArrayList<ShopItemWithVariation> buyList = new ArrayList<>();
+        for(ShopItemWithVariation item: list)
+            buyList.add(item);
+        return buyList;
+    }
+
     public static ArrayList<ShopItemWithVariation> getSellList(PlayerWrapper player) {
         ArrayList<ShopItemWithVariation> sellList = new ArrayList<>();
+        return sellList;
+    }
+
+    public static ArrayList<ShopItemWithVariation> getSellList(PlayerWrapper player, ArrayList<ShopItemWithVariation> list) {
+        ArrayList<ShopItemWithVariation> sellList = new ArrayList<>();
+        for(ShopItemWithVariation item: list)
+            sellList.add(item);
         return sellList;
     }
 

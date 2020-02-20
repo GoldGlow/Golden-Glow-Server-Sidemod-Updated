@@ -5,6 +5,7 @@ import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenScreen;
@@ -153,13 +154,7 @@ public class CustomShop extends CustomInventory {
                         }
                     }
                 }
-                Pixelmon.network.sendTo(new SetNPCData("Shopkeeper", new ShopkeeperChat("",""), buyList, sellList), playerMP);
-                NPCShopkeeper shopkeeper = new NPCShopkeeper(playerMP.world);
-                shopkeeper.setId(999);
-                shopkeeper.setPosition(playerMP.getPosition().getX(), playerMP.getPosition().getY(), playerMP.getPosition().getZ());
-                playerMP.connection.sendPacket(new SPacketSpawnMob(shopkeeper));
-                OpenScreen.open(playerMP, EnumGuiScreen.Shopkeeper, 999);
-                playerMP.removeEntity(shopkeeper);
+                OtherFunctions.openShopMenu(playerMP, buyList, sellList);
             }
         }
         else {
