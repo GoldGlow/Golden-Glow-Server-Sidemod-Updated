@@ -23,6 +23,7 @@ public class OOPlayerData implements IPlayerData {
     private String current_song = "";
     private String theme_wild,theme_trainer,theme_pvp = "";
     private int pvpThemeOption=0;
+    private String shopName="";
 
     private List<ItemStack> keyItems=new ArrayList<>();
     private List<ItemStack> tms=new ArrayList<>();
@@ -96,24 +97,7 @@ public class OOPlayerData implements IPlayerData {
     public int getKOChain() { return this.KOChain; }
     public List<UUID> getFriendRequests(){return this.friendRequests;}
     public List<UUID> getFriendList(){return this.friendList;}
-    public void addFriendRequest(UUID player){
-        this.friendRequests.add(player);
-    }
-    public void acceptFriendRequest(UUID player){
-        this.friendRequests.remove(player);
-        this.friendList.add(player);
-    }
-    public void addFriend(UUID player){
-        this.friendList.add(player);
-    }
-    public void denyFriendRequest(UUID player){
-        this.friendRequests.remove(player);
-    }
-    public void removeFriend(UUID player){
-        this.friendList.remove(player);
-    }
-    public boolean getPlayerVisibility(){return this.onlySeesFriends;}
-    public void setPlayerVisibility(boolean onlySeesFriends){this.onlySeesFriends=onlySeesFriends;}
+    public String getShopName(){return this.shopName;}
 
     //Setters
     public void setRoute(Route route) {
@@ -157,6 +141,8 @@ public class OOPlayerData implements IPlayerData {
     public void setLastKOPokemon(EnumSpecies species) {
         this.lastKOSpecies = species;
     }
+    public void setPlayerVisibility(boolean onlySeesFriends){this.onlySeesFriends=onlySeesFriends;}
+    public void setShopName(String name){this.shopName=name;}
 
     //Others
     public boolean hasRoute() {
@@ -219,6 +205,23 @@ public class OOPlayerData implements IPlayerData {
     public int increaseKOChain(int i) {
         return this.KOChain += i;
     }
+    public void addFriendRequest(UUID player){
+        this.friendRequests.add(player);
+    }
+    public void acceptFriendRequest(UUID player){
+        this.friendRequests.remove(player);
+        this.friendList.add(player);
+    }
+    public void addFriend(UUID player){
+        this.friendList.add(player);
+    }
+    public void denyFriendRequest(UUID player){
+        this.friendRequests.remove(player);
+    }
+    public void removeFriend(UUID player){
+        this.friendList.remove(player);
+    }
+    public boolean getPlayerVisibility(){return this.onlySeesFriends;}
 
     public List<Pokemon> getWaitToEvolve(){return this.waitToEvolve;}
     public Pokemon getPokemonWaiting(int index){return this.waitToEvolve.get(index);}

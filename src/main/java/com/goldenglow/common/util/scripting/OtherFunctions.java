@@ -1,5 +1,11 @@
 package com.goldenglow.common.util.scripting;
 
+import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
+import com.goldenglow.common.inventory.shops.CustomShop;
+import com.goldenglow.common.inventory.shops.CustomShopData;
+import com.goldenglow.common.inventory.shops.CustomShopItem;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Scoreboards;
@@ -78,17 +84,28 @@ public class OtherFunctions {
         return item.getMCItemStack();
     }
 
-    public static void openShopMenu(EntityPlayerMP player, ArrayList<ShopItemWithVariation> buyList, ArrayList<ShopItemWithVariation> sellList){
-        PlayerWrapper playerWrapper=new PlayerWrapper(player);
-        ArrayList<ShopItemWithVariation> buy=getBuyList(playerWrapper, buyList);
-        ArrayList<ShopItemWithVariation> sell=getBuyList(playerWrapper, sellList);
-        Pixelmon.network.sendTo(new SetNPCData("", new ShopkeeperChat("",""), buyList, sellList), player);
-        NPCShopkeeper shopkeeper = new NPCShopkeeper(player.world);
-        shopkeeper.setId(999);
-        shopkeeper.setPosition(player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
-        player.connection.sendPacket(new SPacketSpawnMob(shopkeeper));
-        OpenScreen.open(player, EnumGuiScreen.Shopkeeper, 999);
-        player.removeEntity(shopkeeper);
+    public static void openShopMenu(PlayerWrapper player, String name){
+        for(CustomShopData inventoryData: GoldenGlow.customShopHandler.shops) {
+            if (inventoryData.getName().equals(name)) {
+                openShopMenu(player, inventoryData);
+                return;
+            }
+        }
+    }
+
+    public static void openShopMenu(PlayerWrapper player, CustomShopData data){
+        EntityPlayerMP playerMP=(EntityPlayerMP)player.getMCEntity();
+        ArrayList<ShopItemWithVariation> buyList=getBuyList(player, data);
+        ArrayList<ShopItemWithVariation> sellList=getSellList(player, data);
+        IPlayerData playerData=playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.setShopName(data.getName());
+        Pixelmon.network.sendTo(new SetNPCData("", new ShopkeeperChat("",""), buyList, sellList), (EntityPlayerMP)player.getMCEntity());
+        NPCShopkeeper shopkeeper = new NPCShopkeeper(player.getWorld().getMCWorld());
+        shopkeeper.setId(998);
+        shopkeeper.setPosition(player.getX(), player.getY(), player.getZ());
+        ((EntityPlayerMP)player.getMCEntity()).connection.sendPacket(new SPacketSpawnMob(shopkeeper));
+        OpenScreen.open((EntityPlayerMP)player.getMCEntity(), EnumGuiScreen.Shopkeeper, 998);
+        ((EntityPlayerMP)player.getMCEntity()).removeEntity(shopkeeper);
     }
 
     public static void openShopMenu(PlayerWrapper player, String name, String openMsg, String closeMsg) {
@@ -109,10 +126,30 @@ public class OtherFunctions {
         return buyList;
     }
 
-    public static ArrayList<ShopItemWithVariation> getBuyList(PlayerWrapper player, ArrayList<ShopItemWithVariation> list) {
+    public static ArrayList<ShopItemWithVariation> getBuyList(PlayerWrapper player, String name) {
+        for(CustomShopData inventoryData: GoldenGlow.customShopHandler.shops) {
+            if (inventoryData.getName().equals(name)) {
+                return getBuyList(player, inventoryData);
+            }
+        }
+        return new ArrayList<ShopItemWithVariation>();
+    }
+
+    public static ArrayList<ShopItemWithVariation> getBuyList(PlayerWrapper player, CustomShopData data) {
         ArrayList<ShopItemWithVariation> buyList = new ArrayList<>();
-        for(ShopItemWithVariation item: list)
-            buyList.add(item);
+        for (int i = 0; i < data.getRows() * 9 - 1; i++) {
+            if (i < data.getItems().length) {
+                if(data.getItems()[i]!=null) {
+                    CustomShopItem item = CustomShop.getItem(data.getItems()[i], (EntityPlayerMP) player.getMCEntity());
+                    if (item != null) {
+                        ShopItemWithVariation shopItemWithVariation = new ShopItemWithVariation(new ShopItem(new BaseShopItem(item.getItem().getDisplayName(), item.getItem(), item.buyPrice, item.sellPrice), 1, 0, false));
+                        if (item.buyPrice > 0) {
+                            buyList.add(shopItemWithVariation);
+                        }
+                    }
+                }
+            }
+        }
         return buyList;
     }
 
@@ -121,10 +158,28 @@ public class OtherFunctions {
         return sellList;
     }
 
-    public static ArrayList<ShopItemWithVariation> getSellList(PlayerWrapper player, ArrayList<ShopItemWithVariation> list) {
+    public static ArrayList<ShopItemWithVariation> getSellList(PlayerWrapper player, String name){
+        for(CustomShopData inventoryData: GoldenGlow.customShopHandler.shops) {
+            if (inventoryData.getName().equals(name)) {
+                return getSellList(player, inventoryData);
+            }
+        }
+        return new ArrayList<ShopItemWithVariation>();
+    }
+
+    public static ArrayList<ShopItemWithVariation> getSellList(PlayerWrapper player, CustomShopData data) {
         ArrayList<ShopItemWithVariation> sellList = new ArrayList<>();
-        for(ShopItemWithVariation item: list)
-            sellList.add(item);
+        for (int i = 0; i < data.getRows() * 9 - 1; i++) {
+            if (i < data.getItems().length) {
+                CustomShopItem item = CustomShop.getItem(data.getItems()[i], (EntityPlayerMP)player.getMCEntity());
+                if(item!=null) {
+                    ShopItemWithVariation shopItemWithVariation = new ShopItemWithVariation(new ShopItem(new BaseShopItem(item.getItem().getDisplayName(), item.getItem(), item.buyPrice, item.sellPrice), 1, 0, false));
+                    if (item.sellPrice>0) {
+                        sellList.add(shopItemWithVariation);
+                    }
+                }
+            }
+        }
         return sellList;
     }
 

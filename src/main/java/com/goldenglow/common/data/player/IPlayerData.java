@@ -93,4 +93,7 @@ public interface IPlayerData {
 
     void setDialogTicks(int ticks);
     int getDialogTicks();
+
+    String getShopName();
+    void setShopName(String name);
 }

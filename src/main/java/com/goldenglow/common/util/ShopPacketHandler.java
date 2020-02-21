@@ -1,5 +1,7 @@
 package com.goldenglow.common.util;
 
+import com.goldenglow.common.data.player.IPlayerData;
+import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.comm.ISyncHandler;
@@ -31,10 +33,11 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
     public void onSyncMessage(ShopKeeperPacket message, MessageContext ctx) {
         try {
             EntityPlayerMP p = ctx.getServerHandler().player;
+            IPlayerData playerData=p.getCapability(OOPlayerProvider.OO_DATA, null);
             int amount = ReflectionHelper.getPrivateValue(message, "amount");
             int shopkeeperID = ReflectionHelper.getPrivateValue(message, "shopKeeperID");
             Optional<NPCShopkeeper> npcOptional = EntityNPC.locateNPCServer(p.world, shopkeeperID, NPCShopkeeper.class);
-            if ((shopkeeperID == 999 || npcOptional.isPresent()) && amount > 0) {
+            if ((shopkeeperID == 999 || shopkeeperID==998 || npcOptional.isPresent()) && amount > 0) {
                 Optional<? extends IPixelmonBankAccount> acc = Pixelmon.moneyManager.getBankAccount(p);
                 if (acc.isPresent()) {
                     IPixelmonBankAccount account = acc.get();
@@ -52,6 +55,9 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
                     if (buySell == EnumBuySell.Buy) {
                         if (shopkeeperID == 999)
                             itemList = OtherFunctions.getBuyList(new PlayerWrapper(p));
+                        else if(shopkeeperID==998){
+                            itemList=OtherFunctions.getBuyList(new PlayerWrapper(p), playerData.getShopName());
+                        }
                         else
                             itemList = npcOptional.get().getItemList();
                         var8 = itemList.iterator();
@@ -90,6 +96,9 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
                     } else {
                         if (shopkeeperID == 999)
                             itemList = OtherFunctions.getSellList(new PlayerWrapper(p));
+                        else if(shopkeeperID==998){
+                            itemList=OtherFunctions.getSellList(new PlayerWrapper(p), playerData.getShopName());
+                        }
                         else
                             itemList = npcOptional.get().getSellList(p);
                         var8 = itemList.iterator();
@@ -117,8 +126,13 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
 
                                 ItemStack copy = sStack.copy();
                                 copy.setCount(amount);
-                                if (Pixelmon.EVENT_BUS.post(new ShopkeeperEvent.Sell(p, EnumBuySell.Sell, copy))) {
-                                    return;
+                                if(count>0) {
+                                    if (Pixelmon.EVENT_BUS.post(new ShopkeeperEvent.Sell(p, EnumBuySell.Sell, copy))) {
+                                        return;
+                                    }
+                                }
+                                else {
+                                    itemList.remove(s);
                                 }
                             } while (count < amount);
 

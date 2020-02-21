@@ -26,7 +26,6 @@ public class CommandShop extends CommandBase {
         }
         else{
             EntityPlayerMP player = getPlayer(server, sender, args[0]);
-            GGLogger.info(GoldenGlow.customShopHandler.shops.size());
             for(CustomShopData inventoryData: GoldenGlow.customShopHandler.shops) {
                 if (inventoryData.getName().equals(args[1])) {
                     CustomShop.openCustomShop(player, inventoryData);

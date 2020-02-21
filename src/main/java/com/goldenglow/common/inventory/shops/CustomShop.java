@@ -136,25 +136,9 @@ public class CustomShop extends CustomInventory {
 
     public static void openCustomShop(EntityPlayerMP playerMP, CustomShopData data){
         if(data.pixelmonGui){
+            GGLogger.info("test");
             if (Requirement.checkRequirements(data.getRequirements(), playerMP)) {
-                ArrayList<ShopItemWithVariation> buyList=new ArrayList<ShopItemWithVariation>();
-                ArrayList<ShopItemWithVariation> sellList=new ArrayList<ShopItemWithVariation>();
-                GGLogger.info("in");
-                for (int i = 0; i < data.getRows() * 9 - 1; i++) {
-                    if (i < data.getItems().length) {
-                        CustomShopItem item = CustomShop.getItem(data.getItems()[i], playerMP);
-                        if(item!=null) {
-                            ShopItemWithVariation shopItemWithVariation = new ShopItemWithVariation(new ShopItem(new BaseShopItem(item.getItem().getDisplayName(), item.getItem(), item.buyPrice, item.sellPrice), 1, 0, false));
-                            if (item.sellPrice > 0) {
-                                sellList.add(shopItemWithVariation);
-                            }
-                            if (item.buyPrice > 0) {
-                                buyList.add(shopItemWithVariation);
-                            }
-                        }
-                    }
-                }
-                OtherFunctions.openShopMenu(playerMP, buyList, sellList);
+                OtherFunctions.openShopMenu(new PlayerWrapper(playerMP), data);
             }
         }
         else {
