@@ -17,6 +17,7 @@ import com.pixelmonmod.pixelmon.entities.npcs.registry.*;
 import com.pixelmonmod.pixelmon.enums.EnumGuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -174,13 +175,26 @@ public class OtherFunctions {
                 CustomShopItem item = CustomShop.getItem(data.getItems()[i], (EntityPlayerMP)player.getMCEntity());
                 if(item!=null) {
                     ShopItemWithVariation shopItemWithVariation = new ShopItemWithVariation(new ShopItem(new BaseShopItem(item.getItem().getDisplayName(), item.getItem(), item.buyPrice, item.sellPrice), 1, 0, false));
-                    if (item.sellPrice>0) {
+                    if (item.sellPrice>0&&doesPlayerHaveItem(shopItemWithVariation, player)) {
                         sellList.add(shopItemWithVariation);
                     }
                 }
             }
         }
         return sellList;
+    }
+
+    public static boolean doesPlayerHaveItem(ShopItemWithVariation shopItemWithVariation, PlayerWrapper playerWrapper){
+        EntityPlayerMP playerMP=(EntityPlayerMP) playerWrapper.getMCEntity();
+        for(int i=0;i<playerMP.inventory.getSizeInventory();i++){
+            ItemStack item=playerMP.inventory.getStackInSlot(i);
+            if(item!=null){
+                if(Item.getIdFromItem(item.getItem())==Item.getIdFromItem(shopItemWithVariation.getItem().getItem())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void addPlayerMark(PlayerWrapper player, int color){
