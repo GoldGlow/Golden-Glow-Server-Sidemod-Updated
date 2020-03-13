@@ -1,6 +1,6 @@
 package com.goldenglow.common.inventory;
 
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.requirements.RequirementData;
 
 /**
  * Created by JeanMarc on 6/25/2019.
@@ -9,10 +9,10 @@ public class CustomInventoryData {
     String name;
     String displayName;
     CustomItem[][] items;
-    Requirement[] requirements;
+    RequirementData[] requirements;
     int rows;
 
-    public CustomInventoryData(int rows, String name, String displayName, CustomItem[][] items, Requirement[] requirements)
+    public CustomInventoryData(int rows, String name, String displayName, CustomItem[][] items, RequirementData[] requirements)
     {
         this.name=name;
         this.displayName=displayName;
@@ -33,7 +33,7 @@ public class CustomInventoryData {
         return this.items;
     }
 
-    public Requirement[] getRequirements(){
+    public RequirementData[] getRequirements(){
         return this.requirements;
     }
 }

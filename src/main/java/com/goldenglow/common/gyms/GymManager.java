@@ -4,21 +4,18 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.teams.Team;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClause;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClauseRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.world.World;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -79,10 +76,10 @@ public class GymManager {
         }
 
         if(json.has("world")){
-            UUID worldUUID=UUID.fromString(json.get("world").getAsString());
-            Optional<World> w = Sponge.getServer().getWorld(worldUUID);
-            if(w.isPresent())
-                gym.world= w.get();
+            int worldUUID=json.get("world").getAsInt();
+            World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(worldUUID);
+            if(w!=null)
+                gym.world= w;
             else {
                 GoldenGlow.logger.error("Gym World not found! - Gym: "+gymName);
                 return;
@@ -176,11 +173,12 @@ public class GymManager {
     }
 
     public List<EntityPlayerMP> hasGymLeaderOnline(Gym gym){
-        Collection<Player> onlinePlayers=Sponge.getServer().getOnlinePlayers();
+        List<EntityPlayerMP> onlinePlayers=FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
         ArrayList<EntityPlayerMP> onlineLeaders=new ArrayList<EntityPlayerMP>();
-        for(Player player:onlinePlayers){
-            if(PermissionUtils.checkPermission((EntityPlayerMP) player.getBaseVehicle(), "staff.gym_leader."+gym.getName().toLowerCase().replace(" ","_")))
-                onlineLeaders.add((EntityPlayerMP) player.getBaseVehicle());
+        for(EntityPlayerMP player:onlinePlayers){
+
+            if(GoldenGlow.permissionUtils.checkPermission(player, "staff.gym_leader."+gym.getName().toLowerCase().replace(" ","_")))
+                onlineLeaders.add(player);
         }
         return onlineLeaders;
     }

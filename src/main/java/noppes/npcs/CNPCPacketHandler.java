@@ -21,8 +21,6 @@ import noppes.npcs.constants.EnumPacketServer;
 import noppes.npcs.controllers.ScriptController;
 import noppes.npcs.entity.EntityNPCInterface;
 import noppes.npcs.util.IPermission;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
 
 import java.lang.reflect.Method;
 
@@ -83,7 +81,7 @@ public class CNPCPacketHandler extends PacketHandlerServer {
             final TileScripted tileScripted6 = tileEntity5 instanceof ICustomScript ? ((ICustomScript)tileEntity5).getScriptedTile() : (TileScripted)tileEntity5;
             tileScripted6.setNBT(Server.readNBT(buffer));
             tileScripted6.lastInited = -1L;
-            Sponge.getServer().getPlayer(player.getUniqueID()).get().resetBlockChange(pos.getX(), pos.getY(), pos.getZ());
+            //Sponge.getServer().getPlayer(player.getUniqueID()).get().resetBlockChange(pos.getX(), pos.getY(), pos.getZ());
         }
         else {
             PacketHandlerServer packetHandlerServer = new PacketHandlerServer();

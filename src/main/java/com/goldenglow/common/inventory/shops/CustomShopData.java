@@ -2,13 +2,13 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomItem;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.requirements.RequirementData;
 
 public class CustomShopData extends CustomInventoryData {
     boolean pixelmonGui=false;
     CustomShopItem[][] shopItems;
 
-    public CustomShopData(int rows, String name, String displayName, CustomShopItem[][] items, Requirement[] requirements){
+    public CustomShopData(int rows, String name, String displayName, CustomShopItem[][] items, RequirementData[] requirements){
         super(rows, name, displayName, (CustomItem[][]) items, requirements);
         this.shopItems=items;
     }

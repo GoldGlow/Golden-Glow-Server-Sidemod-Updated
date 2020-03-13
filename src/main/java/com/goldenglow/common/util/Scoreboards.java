@@ -55,31 +55,31 @@ public class Scoreboards {
         IPlayerData playerData=player.getCapability(OOPlayerProvider.OO_DATA, null);
         ArrayList<String> lines = new ArrayList<>();
         lines.add("Route");
-        if(PermissionUtils.checkPermission(player, "*")) {
+        //if(PermissionUtils.checkPermission(player, "*")) {
             lines.add("Song");
-        }
+        //}
         lines.add("Time");
-        if(PermissionUtils.checkPermission(player, "*")) {
+        //if(PermissionUtils.checkPermission(player, "*")) {
             lines.add("Day");
-        }
+        //}
         ArrayList<String> scores = new ArrayList<>();
         if(playerData.getRoute()!=null)
             scores.add(playerData.getRoute().displayName);
         else
             scores.add("null");
-        if(PermissionUtils.checkPermission(player, "*")) {
+        //if(PermissionUtils.checkPermission(player, "*")) {
             scores.add(playerData.getCurrentSong());
-        }
+        //}
         Long time=player.getServerWorld().getWorldTime()%24000L;
         String extra="";
         if((time%1000)*60/1000<10){
             extra="0";
         }
         scores.add(((time/1000)+6)%24+":"+extra+(time%1000)*60/1000);
-        if(PermissionUtils.checkPermission(player, "*")) {
+        //if(PermissionUtils.checkPermission(player, "*")) {
             PlayerWrapper playerWrapper = new PlayerWrapper(player);
             scores.add(WorldFunctions.getCurrentDay((WorldWrapper) playerWrapper.getWorld()) + "");
-        }
+        //}
         Pixelmon.network.sendTo(new CustomScoreboardUpdatePacket("Debug", lines, scores), player);
         Pixelmon.network.sendTo(new CustomScoreboardDisplayPacket(ScoreboardLocation.RIGHT_MIDDLE, true), player);
     }

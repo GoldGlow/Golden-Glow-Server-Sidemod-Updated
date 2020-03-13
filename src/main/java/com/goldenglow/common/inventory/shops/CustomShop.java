@@ -1,21 +1,14 @@
 package com.goldenglow.common.inventory.shops;
 
-import com.goldenglow.common.inventory.Action;
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.actions.Action;
+import com.goldenglow.common.util.actions.ActionData;
 import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenScreen;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.npc.SetNPCData;
-import com.pixelmonmod.pixelmon.entities.npcs.NPCShopkeeper;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.BaseShopItem;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItem;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopItemWithVariation;
-import com.pixelmonmod.pixelmon.entities.npcs.registry.ShopkeeperChat;
-import com.pixelmonmod.pixelmon.enums.EnumGuiScreen;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -26,17 +19,12 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.network.play.server.SPacketSpawnMob;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.text.TextComponentString;
 import noppes.npcs.api.NpcAPI;
 import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-
-import java.util.ArrayList;
 
 public class CustomShop extends CustomInventory {
     CustomShopData data;
@@ -49,7 +37,7 @@ public class CustomShop extends CustomInventory {
         if (items.length>0){
             for (CustomShopItem item : items) {
                 if (item != null) {
-                    if (Requirement.checkRequirements(item.getRequirements(), player)) {
+                    if (GoldenGlow.requirementHandler.checkRequirements(item.getRequirements(), player)) {
                         return item;
                     }
                 }
@@ -74,34 +62,24 @@ public class CustomShop extends CustomInventory {
             if (item != null) {
                 if (dragType == 0) {
                         boolean didAction=false;
-                        for (Action action : item.getLeftClickActions()) {
-                            if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                        for (ActionData action : item.getLeftClickActions()) {
+                            if (GoldenGlow.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
                                 IPixelmonBankAccount bankAccount = (IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount((EntityPlayerMP) player).orElse(null);
-                                if (action.getValue().startsWith("pokegive")) {
-                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.getValue().split(" ")[2] + "!"));
+                                if (action.value.startsWith("pokegive")) {
+                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.value.split(" ")[2] + "!"));
+                                    Action actionFinal=GoldenGlow.actionHandler.getType(action);
                                     bankAccount.changeMoney(-1 * item.buyPrice);
-                                    action.doAction((EntityPlayerMP)player);
+                                    actionFinal.doAction(action.value, (EntityPlayerMP)player);
                                     didAction=true;
                                     break;
                                 }
-                                else if(action.getActionType()== Action.ActionType.DEPOSITORY_POKEMON){
-                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.getValue().split(" ")[0] + "!"));
+                                else if(action.name.equals("DEPOSITORY_POKEMON")){
+                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.value.split(" ")[0] + "!"));
                                     bankAccount.changeMoney(-1 * item.buyPrice);
-                                    action.doAction((EntityPlayerMP)player);
+                                    Action actionFinal=GoldenGlow.actionHandler.getType(action);
+                                    actionFinal.doAction(action.value, (EntityPlayerMP)player);
                                     didAction=true;
                                     break;
-                                }
-                                else {
-                                    try {
-                                        if(Requirement.checkSpaceRequirement(((EntityPlayerMP)player), new ItemStack(JsonToNBT.getTagFromJson(action.value)))) {
-                                            action.doAction((EntityPlayerMP) player);
-                                            didAction=true;
-                                            bankAccount.changeMoney(-1 * item.buyPrice);
-                                            break;
-                                        }
-                                    } catch (NBTException e) {
-                                        e.printStackTrace();
-                                    }
                                 }
                             }
                         }
@@ -119,12 +97,13 @@ public class CustomShop extends CustomInventory {
                         }
                         return null;
                 } else if (dragType == 1) {
-                    for (Action action : item.getRightClickActions()) {
-                        if (Requirement.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                    for (ActionData action : item.getRightClickActions()) {
+                        if (GoldenGlow.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
                             PlayerWrapper playerWrapper=new PlayerWrapper((EntityPlayerMP) player);
                             IItemStack iItemStack= NpcAPI.Instance().getIItemStack(item.getItem());
                             playerWrapper.removeItem(iItemStack, 1);
-                            action.doAction((EntityPlayerMP) player);
+                            Action actionFinal=GoldenGlow.actionHandler.getType(action);
+                            actionFinal.doAction(action.value, (EntityPlayerMP)player);
                             return null;
                         }
                     }
@@ -137,13 +116,13 @@ public class CustomShop extends CustomInventory {
     public static void openCustomShop(EntityPlayerMP playerMP, CustomShopData data){
         if(data.pixelmonGui){
             GGLogger.info("test");
-            if (Requirement.checkRequirements(data.getRequirements(), playerMP)) {
+            if (GoldenGlow.requirementHandler.checkRequirements(data.getRequirements(), playerMP)) {
                 OtherFunctions.openShopMenu(new PlayerWrapper(playerMP), data);
             }
         }
         else {
             InventoryBasic chestInventory = new InventoryBasic(data.getName(), true, data.getRows() * 9);
-            if (Requirement.checkRequirements(data.getRequirements(), playerMP)) {
+            if (GoldenGlow.requirementHandler.checkRequirements(data.getRequirements(), playerMP)) {
                 for (int i = 0; i < data.getRows() * 9 - 1; i++) {
                     if (i < data.getItems().length) {
                         CustomShopItem item = CustomShop.getItem(data.getItems()[i], playerMP);

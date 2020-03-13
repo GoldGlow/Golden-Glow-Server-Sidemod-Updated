@@ -8,7 +8,6 @@ import com.goldenglow.common.events.CNPCBattleEvent;
 import com.goldenglow.common.gyms.GymBattleRules;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.teams.PlayerParty;
-import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.scripting.WorldFunctions;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -107,7 +106,7 @@ public class BattleEventHandler {
         if(event.bc.rules instanceof GymBattleRules){
             BattleResults results=event.results.get(event.bc.participants.get(0));
             if (results == BattleResults.VICTORY && event.cause!= EnumBattleEndCause.FORCE) {
-                PermissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, "badge."+((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
+                //PermissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, "badge."+((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
                 SongManager.setRouteSong(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player);
             }
             else{

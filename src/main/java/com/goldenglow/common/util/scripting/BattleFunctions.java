@@ -7,7 +7,6 @@ import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.SpawnPokemon;
-import com.goldenglow.common.util.PermissionUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.RandomHelper;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
@@ -41,7 +40,7 @@ public class BattleFunctions {
     public static void createCustomBattle(PlayerWrapper playerWrapper, String teamName, int initDialogID, int winDialogID, int loseDialogID, NPCWrapper npcWrapper) {
         EntityNPCInterface npc=(EntityNPCInterface) npcWrapper.getMCEntity();
         EntityPlayerMP player=(EntityPlayerMP)playerWrapper.getMCEntity();
-        if(PermissionUtils.checkPermission(player,"hard")){
+        if(GoldenGlow.permissionUtils.checkPermission(player,"hard")){
             teamName+="-hard";
         }
         CustomBattleHandler.createCustomBattle(player, teamName, initDialogID, winDialogID, loseDialogID, npc);

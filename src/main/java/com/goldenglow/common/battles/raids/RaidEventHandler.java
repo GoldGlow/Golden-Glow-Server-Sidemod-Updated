@@ -1,6 +1,7 @@
 package com.goldenglow.common.battles.raids;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.ApplyBonusStatsEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvents;
@@ -9,12 +10,9 @@ import com.pixelmonmod.pixelmon.api.events.battles.TurnEndEvent;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
+import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
-import org.spongepowered.api.text.title.Title;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +61,8 @@ public class RaidEventHandler {
             for (BattleParticipant p : event.results.keySet()) {
                 GoldenGlow.logger.info("onBattleEnd - "+p.getType()+": "+p.getDisplayName()+" - "+event.results.get(p));
                 if(p instanceof PlayerParticipant && event.results.get(p).equals(BattleResults.VICTORY)) {
-                    Title victoryTitle = Title.builder().title(Text.builder("Boss Defeated!").color(TextColors.GOLD).style(TextStyles.BOLD).build()).fadeOut(60).stay(100).build();
-                    Sponge.getServer().getPlayer(((PlayerParticipant) p).player.getUniqueID()).get().sendTitle(victoryTitle);
+                    SPacketTitle title=new SPacketTitle(SPacketTitle.Type.TITLE, new TextComponentString(Reference.gold+Reference.bold+"Boss Defeated!"), 60, 100, 60);
+                    ((PlayerParticipant)p).player.connection.sendPacket(title);
                 }
             }
         }

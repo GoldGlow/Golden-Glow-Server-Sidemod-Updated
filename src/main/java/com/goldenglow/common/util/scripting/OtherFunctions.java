@@ -7,7 +7,6 @@ import com.goldenglow.common.inventory.shops.CustomShop;
 import com.goldenglow.common.inventory.shops.CustomShopData;
 import com.goldenglow.common.inventory.shops.CustomShopItem;
 import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.OpenScreen;
@@ -21,10 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSpawnMob;
-import net.minecraft.world.WorldServer;
-import noppes.npcs.CustomNpcs;
 import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.item.IItemStack;
 import noppes.npcs.api.wrapper.NPCWrapper;
@@ -33,14 +29,8 @@ import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.controllers.data.MarkData;
 import noppes.npcs.entity.EntityNPCInterface;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.effect.sound.SoundTypes;
-import org.spongepowered.api.entity.Entity;
 
 import java.util.ArrayList;
-
-import java.util.UUID;
 
 public class OtherFunctions {
     //Probably needs to be updated to use the MC notification system instead of CNPCs
@@ -54,9 +44,9 @@ public class OtherFunctions {
     }
 
     public static void unlockBugCatcher(EntityPlayerMP player){
-        if(!PermissionUtils.checkPermission(player, "titles.bug_catcher")) {
+        if(!GoldenGlow.permissionUtils.checkPermission(player, "titles.bug_catcher")) {
             showAchievement(new PlayerWrapper(player), "Titles", "Unlocked title: Bug Catcher");
-            PermissionUtils.addPermissionNode(player, "titles.bug_catcher");
+            GoldenGlow.permissionUtils.addPermissionNode(player, "titles.bug_catcher");
             GGLogger.info("unlocked Bug Catcher");
         }
     }
@@ -206,11 +196,5 @@ public class OtherFunctions {
         MarkData data=player.getMCEntity().getCapability(MarkData.MARKDATA_CAPABILITY, null);
         data.marks.clear();
         data.syncClients();
-    }
-
-    public static void vanishedNPC(NPCWrapper npc){
-        Entity npcEntity=Sponge.getServer().getWorld(npc.getWorld().getName()).get().getEntity(UUID.fromString(npc.getUUID())).get();
-        boolean visible=npcEntity.get(Keys.VANISH).orElse(false);
-        npcEntity.offer(Keys.VANISH, !visible);
     }
 }

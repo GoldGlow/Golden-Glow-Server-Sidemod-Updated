@@ -1,9 +1,10 @@
 package com.goldenglow.common.util.scripting;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
@@ -74,42 +75,30 @@ public class VisibilityFunctions {
                 ScriptObjectMirror visibilityRequirements=(ScriptObjectMirror)engine.getContext().getAttribute("visibilityRequirements");
                 ScriptObjectMirror invisibilityRequirements=(ScriptObjectMirror)engine.getContext().getAttribute("invisibilityRequirements");
                 if(invisibilityRequirements!=null){
-                    ArrayList<Requirement> requirements=new ArrayList<Requirement>();
+                    ArrayList<RequirementData> requirements=new ArrayList<RequirementData>();
                     for(int i=0;i<invisibilityRequirements.size();i++){
                         ScriptObjectMirror requirementObject=(ScriptObjectMirror) invisibilityRequirements.getSlot(i);
-                        Requirement requirement=new Requirement();
-                        requirement.type= Requirement.RequirementType.valueOf(((String)requirementObject.getMember("type")).toUpperCase());
+                        RequirementData requirement=new RequirementData();
+                        requirement.name= ((String)requirementObject.getMember("type")).toUpperCase();
                         Object value=requirementObject.getMember("value");
-                        if(value instanceof String){
-                            requirement.value=(String) value;
-                        }
-                        else{
-                            requirement.id=(int)value;
-                        }
+                        requirement.value=(String) value;
                         requirements.add(requirement);
-                        GGLogger.info(requirement.getClass());
                     }
-                    if(Requirement.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
+                    if(GoldenGlow.requirementHandler.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
                         return false;
                     }
                 }
                 if(visibilityRequirements!=null){
-                    ArrayList<Requirement> requirements=new ArrayList<Requirement>();
+                    ArrayList<RequirementData> requirements=new ArrayList<RequirementData>();
                     for(int i=0;i<visibilityRequirements.size();i++){
                         ScriptObjectMirror requirementObject=(ScriptObjectMirror) visibilityRequirements.getSlot(i);
-                        Requirement requirement=new Requirement();
-                        requirement.type= Requirement.RequirementType.valueOf(((String)requirementObject.getMember("type")).toUpperCase());
+                        RequirementData requirement=new RequirementData();
+                        requirement.name= ((String)requirementObject.getMember("type")).toUpperCase();
                         Object value=requirementObject.getMember("value");
-                        if(value instanceof String){
-                            requirement.value=(String) value;
-                        }
-                        else{
-                            requirement.id=(int)value;
-                        }
+                        requirement.value=(String) value;
                         requirements.add(requirement);
-                        GGLogger.info(requirement.getClass());
                     }
-                    if(!Requirement.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
+                    if(!GoldenGlow.requirementHandler.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
                         return false;
                     }
                 }

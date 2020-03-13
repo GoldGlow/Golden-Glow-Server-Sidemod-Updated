@@ -1,7 +1,6 @@
 package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.Requirement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import net.minecraft.entity.player.EntityPlayer;

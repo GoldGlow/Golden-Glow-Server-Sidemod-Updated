@@ -4,7 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.ParseJson;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,11 +15,10 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -86,15 +85,15 @@ public class RouteManager {
         }
         World world;
         if(json.has("world")) {
-            Optional<World> w = Sponge.getServer().getWorld(UUID.fromString(json.get("world").getAsString()));
-            if(w.isPresent())
-                world = w.get();
+            World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(json.get("world").getAsInt());
+            if(w!=null)
+                world = w;
             else {
                 GoldenGlow.logger.error("Route World not found! - Route: "+routeName);
                 return;
             }
         } else {
-            world = Sponge.getServer().getWorld("world").get();
+            world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
         }
 
         Route route = new Route(name, song, new Polygonal2DRegion(ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(0)), points, minY, maxY), priority, world);
@@ -137,7 +136,7 @@ public class RouteManager {
         if(json.has("requirements")) {
             JsonArray requirementsArray = json.get("requirements").getAsJsonArray();
             for (JsonElement o : requirementsArray) {
-                Requirement r = ParseJson.parseRequirement((JsonObject)o);
+                RequirementData r = ParseJson.parseRequirement((JsonObject)o);
                 route.requirements.add(r);
             }
         }
@@ -207,7 +206,7 @@ public class RouteManager {
         }
         file.endArray();
 
-        file.name("world").value(route.world.getUniqueId().toString());
+        file.name("world").value(route.world.provider.getDimension());
 
         file.name("safeZone").value(route.isSafeZone);
         file.name("warpX").value(route.warpX);
@@ -221,15 +220,10 @@ public class RouteManager {
 
         file.name("requirements");
         file.beginArray();
-        for(Requirement requirement : route.requirements) {
+        for(RequirementData requirement : route.requirements) {
             file.beginObject();
-            file.name("type").value(requirement.type.toString());
-            if(requirement.type == Requirement.RequirementType.TIME || requirement.type == Requirement.RequirementType.PERMISSION) {
-                file.name("value").value(requirement.value);
-            } else {
-                file.name("id").value(requirement.id);
-            }
-            file.name("override").value(requirement.override);
+            file.name("type").value(requirement.name);
+            file.name("value").value(requirement.value);
             file.endObject();
         }
         file.endArray();

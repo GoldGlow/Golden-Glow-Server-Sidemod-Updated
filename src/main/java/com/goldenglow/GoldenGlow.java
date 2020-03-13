@@ -21,7 +21,10 @@ import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.teams.TeamManager;
 import com.goldenglow.common.tiles.*;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.ShopPacketHandler;
+import com.goldenglow.common.util.actions.ActionHandler;
+import com.goldenglow.common.util.requirements.RequirementHandler;
 import com.goldenglow.http.OOStatsServer;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -34,14 +37,14 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
-import org.spongepowered.api.Sponge;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm", acceptableRemoteVersions = "*")
-public class GoldenGlow {
+public class GoldenGlow{
 
     public String VERSION = "1.0.2";
 
@@ -60,6 +63,9 @@ public class GoldenGlow {
 
     public RaidEventHandler raidEventHandler = new RaidEventHandler();
     public TickHandler tickHandler=new TickHandler();
+    public static PermissionUtils permissionUtils=null;
+    public static RequirementHandler requirementHandler=new RequirementHandler();
+    public static ActionHandler actionHandler=new ActionHandler();
 
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
@@ -86,6 +92,8 @@ public class GoldenGlow {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
+        actionHandler.init();
+        requirementHandler.init();
         configHandler.init();
         rightClickBlacklistHandler.init();
 
@@ -162,9 +170,6 @@ public class GoldenGlow {
         }
         GGLogger.info(inventories);
         customShopHandler.init();
-        if(Loader.isModLoaded("spongeforge")) {
-            Sponge.getEventManager().registerListeners(this, new ItemEventHandler());
-        }
         String routes="Routes: ";
         for(Route route:routeManager.getRoutes()) {
             routes+=route.unlocalizedName+" ";

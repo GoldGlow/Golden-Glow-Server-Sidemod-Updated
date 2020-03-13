@@ -5,24 +5,10 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.gyms.Gym;
 import com.goldenglow.common.gyms.GymLeaderUtils;
-import com.goldenglow.common.util.PermissionUtils;
-import com.goldenglow.common.util.Reference;
-import com.google.gson.stream.JsonWriter;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import io.github.eufranio.spongybackpacks.backpack.Backpack;
-import io.github.eufranio.spongybackpacks.data.DataManager;
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.User;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import org.spongepowered.api.text.Text;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.Duration;
 import java.time.Instant;
 
 public class LoginLogoutEventHandler {
@@ -31,7 +17,7 @@ public class LoginLogoutEventHandler {
         event.player.getCapability(OOPlayerProvider.OO_DATA, null).setLoginTime(Instant.now());
         if(!event.player.getEntityData().hasKey("playtime")) {
             event.player.getEntityData().setLong("playtime", 0);
-            DataManager.getDataFor(event.player.getUniqueID()).addBackpack(Backpack.of(Text.of("Pocket1"), event.player.getUniqueID(), 6));
+            //DataManager.getDataFor(event.player.getUniqueID()).addBackpack(Backpack.of(Text.of("Pocket1"), event.player.getUniqueID(), 6));
         }
     }
 
@@ -47,47 +33,12 @@ public class LoginLogoutEventHandler {
             GymLeaderUtils.nextInQueue(GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player), GoldenGlow.gymManager.challengingGym((EntityPlayerMP) event.player).currentLeader);
         }
         for (Gym gym : GoldenGlow.gymManager.getGyms()) {
-            if (PermissionUtils.checkPermission(((EntityPlayerMP) event.player), "staff.gym_leader." + gym.getName().toLowerCase().replace(" ", "_"))) {
+            if (GoldenGlow.permissionUtils.checkPermission(((EntityPlayerMP) event.player), "staff.gym_leader." + gym.getName().toLowerCase().replace(" ", "_"))) {
                 if (GoldenGlow.gymManager.hasGymLeaderOnline(gym).size() == 1) {
                     GymLeaderUtils.closeGym(gym);
                 }
             }
         }
         GoldenGlow.gymManager.removeFromQueues((EntityPlayerMP) event.player);
-
-        try {
-            if (playerData != null) {
-                User user = LuckPerms.getApi().getUser(event.player.getUniqueID());
-                File f = new File(Reference.statsDir, event.player.getUniqueID().toString() + ".json");
-                if (!f.exists()) f.createNewFile();
-                JsonWriter writer = new JsonWriter(new FileWriter(f));
-                writer.setIndent("\t");
-
-                writer.beginObject();
-
-                int badgeCount = 0;
-                for (Node n : user.getPermissions()) {
-                    if (n.getPermission().startsWith("badge.") && n.getPermission().endsWith("npc"))
-                        badgeCount++;
-                }
-
-                if(playerData.getLoginTime()!=null) {
-                    long sessionTime = Math.abs(Duration.between(Instant.now(), playerData.getLoginTime()).getSeconds());
-                    long totalTime = event.player.getEntityData().getLong("playtime") + sessionTime;
-                    event.player.getEntityData().setLong("playtime", totalTime);
-
-                    writer.name("badges").value(Integer.toString(badgeCount));
-                    writer.name("dex").value(Integer.toString(Pixelmon.storageManager.getParty(event.player.getUniqueID()).pokedex.countCaught()));
-                    writer.name("time").value(String.format("%sh:%sm", totalTime / 3600, (totalTime % 3600) / 60));
-
-                    writer.endObject();
-                    writer.close();
-                }
-            }
-        }
-        catch (IOException e) {
-            GoldenGlow.logger.error("Error occurred saving player stats.");
-            e.printStackTrace();
-        }
     }
 }

@@ -1,9 +1,8 @@
 package com.goldenglow.common.inventory.social;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomItem;
-import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,7 +26,7 @@ public class BadgeCase extends CustomInventory {
     public static void openInventory(EntityPlayerMP player, EntityPlayerMP targetPlayer){
         InventoryBasic chestInventory=new InventoryBasic(Reference.resetText+targetPlayer.getName()+"'s Badge Case", true, 9);
         ItemStack sakuraBadge=null;
-        if(PermissionUtils.checkPermission(targetPlayer, "badge.sakura_gym.player")){
+        if(GoldenGlow.permissionUtils.checkPermission(targetPlayer, "badge.sakura_gym.player")){
             sakuraBadge= CustomItem.getDiamondDagger(9);
             sakuraBadge.setStackDisplayName(Reference.resetText+"Magic Badge");
             ArrayList<String> sakuraLore=new ArrayList<String>();
@@ -36,7 +35,7 @@ public class BadgeCase extends CustomInventory {
             CustomItem.addLore(sakuraBadge, sakuraLore);
             sakuraBadge.setTagInfo("Unbreakable", new NBTTagInt(1));
         }
-        else if(PermissionUtils.checkPermission(targetPlayer, "badge.sakura_gym.npc")){
+        else if(GoldenGlow.permissionUtils.checkPermission(targetPlayer, "badge.sakura_gym.npc")){
             sakuraBadge= CustomItem.getDiamondDagger(9);
             sakuraBadge.setStackDisplayName(Reference.resetText+"Magic Badge");
             ArrayList<String> sakuraLore=new ArrayList<String>();

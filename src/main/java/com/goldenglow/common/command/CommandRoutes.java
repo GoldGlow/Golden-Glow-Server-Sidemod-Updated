@@ -2,8 +2,7 @@ package com.goldenglow.common.command;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.util.Requirement;
-import com.goldenglow.common.util.RequirementTypeArgument;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -22,7 +21,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import org.spongepowered.api.Sponge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class CommandRoutes extends OOCommand {
                                                                 Region region = session.getRegionSelector(session.getSelectionWorld()).getRegion();
                                                                 if (region != null && region instanceof Polygonal2DRegion) {
                                                                     Polygonal2DRegion selection = (Polygonal2DRegion) region;
-                                                                    Route route = new Route(c.getArgument("routeName", String.class), selection, Sponge.getServer().getPlayer(c.getSource().getName()).get().getWorld());
+                                                                    Route route = new Route(c.getArgument("routeName", String.class), selection, FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(c.getSource().getName()).world);
                                                                     GoldenGlow.routeManager.addRoute(route);
                                                                     TextComponentString msg = new TextComponentString("New Route '" + route.unlocalizedName + "' created successfully!");
                                                                     msg.getStyle().setColor(TextFormatting.AQUA);
@@ -140,26 +139,14 @@ public class CommandRoutes extends OOCommand {
                                                                         .then(
                                                                                 literal("new")
                                                                                         .then(
-                                                                                                argument("type", new RequirementTypeArgument())
-                                                                                                        .then(
-                                                                                                                argument("value", IntegerArgumentType.integer())
-                                                                                                                        .executes(c -> {
-                                                                                                                            Requirement.RequirementType type = Requirement.RequirementType.valueOf(c.getArgument("type", String.class));
-                                                                                                                            if (type == Requirement.RequirementType.TIME || type == Requirement.RequirementType.PERMISSION) {
-                                                                                                                                c.getSource().sendMessage(new TextComponentString("Requirement Type: " + c.getArgument("type", String.class) + "requires a String, not an Integer"));
-                                                                                                                            } else {
-                                                                                                                                Requirement requirement = new Requirement(type, c.getArgument("value", Integer.class));
-                                                                                                                                GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class)).requirements.add(requirement);
-                                                                                                                            }
-                                                                                                                            return 1;
-                                                                                                                        })
-                                                                                                        )
+                                                                                                argument("type", StringArgumentType.string())
                                                                                                         .then(
                                                                                                                 argument("value", StringArgumentType.string())
                                                                                                                         .executes(c -> {
-                                                                                                                            Requirement.RequirementType type = Requirement.RequirementType.valueOf(c.getArgument("type", String.class));
-                                                                                                                            if (type == Requirement.RequirementType.TIME || type == Requirement.RequirementType.PERMISSION) {
-                                                                                                                                Requirement requirement = new Requirement(type, c.getArgument("value", String.class));
+                                                                                                                            if (GoldenGlow.requirementHandler.getRequirementType(c.getArgument("type", String.class))!=null) {
+                                                                                                                                RequirementData requirement = new RequirementData();
+                                                                                                                                requirement.name=c.getArgument("type", String.class);
+                                                                                                                                requirement.value=c.getArgument("value", String.class);
                                                                                                                                 GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class)).requirements.add(requirement);
                                                                                                                             } else {
                                                                                                                                 c.getSource().sendMessage(new TextComponentString("Requirement Type: " + c.getArgument("type", String.class) + "requires an Integer, not a String"));
@@ -182,11 +169,13 @@ public class CommandRoutes extends OOCommand {
                                                                                         .then(
                                                                                                 literal("type")
                                                                                                         .then(
-                                                                                                                argument("type", new RequirementTypeArgument())
+                                                                                                                argument("type", StringArgumentType.string())
                                                                                                                         .executes(c -> {
-                                                                                                                            Requirement.RequirementType type = Requirement.RequirementType.valueOf(c.getArgument("type", String.class));
-                                                                                                                            GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class)).requirements.get(c.getArgument("id", Integer.class)).type = type;
-                                                                                                                            c.getSource().sendMessage(new TextComponentString("Updated Requirement for " + c.getArgument("routeName", String.class)));
+                                                                                                                            if(GoldenGlow.requirementHandler.getRequirementType(c.getArgument("type", String.class))!=null) {
+                                                                                                                                String type = c.getArgument("type", String.class);
+                                                                                                                                GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class)).requirements.get(c.getArgument("id", Integer.class)).name = type;
+                                                                                                                                c.getSource().sendMessage(new TextComponentString("Updated Requirement for " + c.getArgument("routeName", String.class)));
+                                                                                                                            }
                                                                                                                             return 1;
                                                                                                                         })
                                                                                                         )
@@ -201,13 +190,9 @@ public class CommandRoutes extends OOCommand {
                                                                                                                 argument("value", StringArgumentType.string())
                                                                                                                         .executes(c -> {
                                                                                                                             Route route = GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class));
-                                                                                                                            Requirement requirement = route.requirements.get(c.getArgument("id", Integer.class));
-                                                                                                                            if (requirement.type == Requirement.RequirementType.PERMISSION || requirement.type == Requirement.RequirementType.TIME) {
-                                                                                                                                requirement.value = c.getArgument("value", String.class);
-                                                                                                                                c.getSource().sendMessage(new TextComponentString("Updated Requirement for " + c.getArgument("routeName", String.class)));
-                                                                                                                            } else {
-                                                                                                                                c.getSource().sendMessage(new TextComponentString("Requirement Type: " + c.getArgument("type", String.class) + "requires an Integer, not a String"));
-                                                                                                                            }
+                                                                                                                            RequirementData requirement = route.requirements.get(c.getArgument("id", Integer.class));
+                                                                                                                            requirement.value = c.getArgument("value", String.class);
+                                                                                                                            c.getSource().sendMessage(new TextComponentString("Updated Requirement for " + c.getArgument("routeName", String.class)));
                                                                                                                             return 1;
                                                                                                                         })
                                                                                                         )
@@ -218,20 +203,6 @@ public class CommandRoutes extends OOCommand {
                                                                                         )
                                                                                         .then(
                                                                                                 literal("id")
-                                                                                                        .then(
-                                                                                                                argument("idVal", IntegerArgumentType.integer())
-                                                                                                                        .executes(c -> {
-                                                                                                                            Route route = GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class));
-                                                                                                                            Requirement requirement = route.requirements.get(c.getArgument("idVal", Integer.class));
-                                                                                                                            if (requirement.type == Requirement.RequirementType.PERMISSION || requirement.type == Requirement.RequirementType.TIME) {
-                                                                                                                                c.getSource().sendMessage(new TextComponentString("Requirement Type: " + c.getArgument("type", String.class) + "requires a String, not an Integer"));
-                                                                                                                            } else {
-                                                                                                                                requirement.id = c.getArgument("value", Integer.class);
-                                                                                                                                c.getSource().sendMessage(new TextComponentString("Updated Requirement for " + c.getArgument("routeName", String.class)));
-                                                                                                                            }
-                                                                                                                            return 1;
-                                                                                                                        })
-                                                                                                        )
                                                                                                         .executes(c -> {
                                                                                                             c.getSource().sendMessage(new TextComponentString("/routes edit " + c.getArgument("routeName", String.class) + " requirements " + c.getArgument("id", Integer.class) + " id [newId]"));
                                                                                                             return 1;
@@ -246,7 +217,7 @@ public class CommandRoutes extends OOCommand {
                                                                             Route r = GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class));
                                                                             List<TextComponentString> buttons = new ArrayList<>();
                                                                             int i = 0;
-                                                                            for (Requirement requirement : r.requirements) {
+                                                                            for (RequirementData requirement : r.requirements) {
                                                                                 buttons.add(cuiButton(requirement.toString(), TextFormatting.LIGHT_PURPLE, r.displayName, ClickEvent.Action.RUN_COMMAND, "/routes edit " + r.unlocalizedName + " requirements " + i));
                                                                                 i++;
                                                                             }

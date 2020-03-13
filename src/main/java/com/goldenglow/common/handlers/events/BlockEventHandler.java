@@ -1,11 +1,11 @@
 package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.tiles.ICustomScript;
 import com.goldenglow.common.tiles.TileEntityCustomApricornTree;
 import com.goldenglow.common.tiles.TileEntityCustomBerryTree;
 import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.ReflectionHelper;
 import com.mrcrayfish.furniture.tileentity.TileEntityTV;
 import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
@@ -54,7 +54,6 @@ public class BlockEventHandler {
     @SubscribeEvent
     public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
-        /*
         if(!blockState.getBlock().onBlockActivated(event.getWorld(), event.getPos(), blockState, event.getEntityPlayer(), event.getHand(), event.getFace(), (float)event.getHitVec().x, (float)event.getHitVec().y, (float)event.getHitVec().z)) {
             if ((event.getItemStack().getItem().getRegistryName() + "").equals("variedcommodities:diamond_dagger")) {
                 if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
@@ -62,7 +61,7 @@ public class BlockEventHandler {
                     CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
                 }
             }
-        }*/
+        }
         if(event.getHand()== EnumHand.MAIN_HAND && event.getUseBlock()!= Event.Result.DENY ) {
             TileEntity tile = null;
             if(blockState.getBlock() instanceof BlockApricornTree || blockState.getBlock() instanceof BlockBerryTree) {
@@ -101,10 +100,10 @@ public class BlockEventHandler {
                 GGLogger.info("in");
                 TileEntityTV tileEntityTV= (TileEntityTV) event.getWorld().getTileEntity(event.getPos());
                 try {
-                    if (PermissionUtils.checkPermission(((EntityPlayerMP) event.getEntityPlayer()), "group.builder")) {
+                    if (GoldenGlow.permissionUtils.checkPermission(((EntityPlayerMP) event.getEntityPlayer()), "group.builder")) {
                         ReflectionHelper.setPrivateValue(tileEntityTV, "disabled", false);
                         GGLogger.info("builder");
-                    } else {
+                    }else {
                         ReflectionHelper.setPrivateValue(tileEntityTV, "disabled", true);
                         GGLogger.info("out");
                     }
@@ -116,7 +115,7 @@ public class BlockEventHandler {
                 return;
             }
         }
-        else if((GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString()) || blockState.getBlock() instanceof BlockContainer) && !(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder"))) {
+        else if((GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString()) || blockState.getBlock() instanceof BlockContainer) /*&& !(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder"))*/) {
             event.setCanceled(true);
         }
         else{

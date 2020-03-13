@@ -3,7 +3,8 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.ParseJson;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.actions.ActionData;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -90,18 +91,18 @@ public class CustomInventoryHandler {
                     }
                     if(item.has("requirements")){
                         JsonArray requirementArray=item.getAsJsonArray("requirements");
-                        Requirement[] requirements=new Requirement[requirementArray.size()];
+                        RequirementData[] requirements=new RequirementData[requirementArray.size()];
                         for(int k=0;k<requirementArray.size();k++){
                             requirements[k]=ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
                         }
                         customItem=new CustomItem(itemStack, requirements);
                     }
                     else {
-                        customItem=new CustomItem(itemStack, new Requirement[0]);
+                        customItem=new CustomItem(itemStack, new RequirementData[0]);
                     }
                     if(item.has("leftClickActions")){
                         JsonArray actionArray=item.getAsJsonArray("leftClickActions");
-                        Action[] actions=new Action[actionArray.size()];
+                        ActionData[] actions=new ActionData[actionArray.size()];
                         for(int k=0;k<actionArray.size();k++){
                             actions[k]=ParseJson.parseAction(actionArray.get(k).getAsJsonObject());
                         }
@@ -109,7 +110,7 @@ public class CustomInventoryHandler {
                     }
                     if(item.has("rightClickActions")){
                         JsonArray actionArray=item.getAsJsonArray("rightClickActions");
-                        Action[] actions=new Action[actionArray.size()];
+                        ActionData[] actions=new ActionData[actionArray.size()];
                         for(int k=0;k<actionArray.size();k++){
                             actions[k]=ParseJson.parseAction(actionArray.get(k).getAsJsonObject());
                         }
@@ -124,10 +125,10 @@ public class CustomInventoryHandler {
                 customItems[i][0]=null;
             }
         }
-        Requirement[] requirements = new Requirement[0];
+        RequirementData[] requirements = new RequirementData[0];
         if(json.has("requirements")){
             JsonArray requirementsArray=json.getAsJsonArray("requirements");
-            requirements=new Requirement[requirementsArray.size()];
+            requirements=new RequirementData[requirementsArray.size()];
             int i=0;
             for(JsonElement requirement: requirementsArray){
                 requirements[i++]=ParseJson.parseRequirement(requirement.getAsJsonObject());

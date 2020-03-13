@@ -1,8 +1,10 @@
 package com.goldenglow.common.inventory;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.actions.ActionData;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
@@ -20,11 +22,11 @@ import java.util.List;
  */
 public class CustomItem  {
     ItemStack item;
-    Requirement[] requirements;
-    Action[] leftClickActions;
-    Action[] rightClickActions;
+    RequirementData[] requirements;
+    ActionData[] leftClickActions;
+    ActionData[] rightClickActions;
 
-    public CustomItem(ItemStack item, Requirement[] requirements){
+    public CustomItem(ItemStack item, RequirementData[] requirements){
         this.item=item;
         this.requirements=requirements;
     }
@@ -33,36 +35,36 @@ public class CustomItem  {
         return this.item;
     }
 
-    public Requirement[] getRequirements(){
+    public RequirementData[] getRequirements(){
         return this.requirements;
     }
 
-    public Action[] getLeftClickActions(){
+    public ActionData[] getLeftClickActions(){
         return this.leftClickActions;
     }
 
-    public CustomItem setLeftClickActions(Action[] actions){
+    public CustomItem setLeftClickActions(ActionData[] actions){
         this.leftClickActions=actions;
         return this;
     }
 
-    public CustomItem setBothClickActions(Action[] actions){
+    public CustomItem setBothClickActions(ActionData[] actions){
         this.leftClickActions=actions;
         this.rightClickActions=actions;
         return this;
     }
 
-    public Action[] getRightClickActions(){
+    public ActionData[] getRightClickActions(){
         return this.rightClickActions;
     }
 
-    public void setRightClickActions(Action[] actions){
+    public void setRightClickActions(ActionData[] actions){
         this.rightClickActions=actions;
     }
 
-    public Action getAction(Action[] actions, EntityPlayerMP playerMP){
-        for(Action action:actions){
-            if(Requirement.checkRequirements(action.requirements, playerMP)){
+    public ActionData getAction(ActionData[] actions, EntityPlayerMP playerMP){
+        for(ActionData action:actions){
+            if(GoldenGlow.requirementHandler.checkRequirements(action.requirements, playerMP)){
                 return action;
             }
         }

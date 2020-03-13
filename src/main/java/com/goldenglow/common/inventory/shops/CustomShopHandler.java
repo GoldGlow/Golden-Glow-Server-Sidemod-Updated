@@ -3,7 +3,7 @@ package com.goldenglow.common.inventory.shops;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.ParseJson;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -104,13 +104,13 @@ public class CustomShopHandler {
                             }
                             if (item.has("requirements")) {
                                 JsonArray requirementArray = item.getAsJsonArray("requirements");
-                                Requirement[] requirements = new Requirement[requirementArray.size()];
+                                RequirementData[] requirements = new RequirementData[requirementArray.size()];
                                 for (int k = 0; k < requirementArray.size(); k++) {
                                     requirements[k] = ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
                                 }
                                 customItem = new CustomShopItem(itemStack, requirements);
                             } else {
-                                customItem = new CustomShopItem(itemStack, new Requirement[0]);
+                                customItem = new CustomShopItem(itemStack, new RequirementData[0]);
                             }
                         } else if (item.getAsJsonObject("item").get("id").getAsString().toLowerCase().startsWith("depository:")) {
                             JsonObject jsonItem = item.getAsJsonObject("item");
@@ -144,13 +144,13 @@ public class CustomShopHandler {
                             }
                             if (item.has("requirements")) {
                                 JsonArray requirementArray = item.getAsJsonArray("requirements");
-                                Requirement[] requirements = new Requirement[requirementArray.size()];
+                                RequirementData[] requirements = new RequirementData[requirementArray.size()];
                                 for (int k = 0; k < requirementArray.size(); k++) {
                                     requirements[k] = ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
                                 }
                                 customItem = new CustomShopItem(itemStack, requirements);
                             } else {
-                                customItem = new CustomShopItem(itemStack, new Requirement[0]);
+                                customItem = new CustomShopItem(itemStack, new RequirementData[0]);
                             }
                         } else {
                             String itemNbt = item.getAsJsonObject("item").toString();
@@ -181,13 +181,13 @@ public class CustomShopHandler {
                             }
                             if (item.has("requirements")) {
                                 JsonArray requirementArray = item.getAsJsonArray("requirements");
-                                Requirement[] requirements = new Requirement[requirementArray.size()];
+                                RequirementData[] requirements = new RequirementData[requirementArray.size()];
                                 for (int k = 0; k < requirementArray.size(); k++) {
                                     requirements[k] = ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
                                 }
                                 customItem = new CustomShopItem(itemStack, requirements);
                             } else {
-                                customItem = new CustomShopItem(itemStack, new Requirement[0]);
+                                customItem = new CustomShopItem(itemStack, new RequirementData[0]);
                             }
                             if (price > 0) {
                                 customItem.setLeftClickActions(price, "giveitem " + itemNbt);
@@ -250,13 +250,13 @@ public class CustomShopHandler {
                                 buyCommand += " form:" + form;
                             if (item.has("requirements")) {
                                 JsonArray requirementArray = item.getAsJsonArray("requirements");
-                                Requirement[] requirements = new Requirement[requirementArray.size()];
+                                RequirementData[] requirements = new RequirementData[requirementArray.size()];
                                 for (int k = 0; k < requirementArray.size(); k++) {
                                     requirements[k] = ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
                                 }
                                 customItem = new CustomShopItem(itemStack, requirements);
                             } else {
-                                customItem = new CustomShopItem(itemStack, new Requirement[0]);
+                                customItem = new CustomShopItem(itemStack, new RequirementData[0]);
                             }
                             customItem.setLeftClickActions(price, buyCommand);
                         } else if (item.getAsJsonObject("item").get("id").getAsString().toLowerCase().startsWith("depository:")) {
@@ -294,13 +294,13 @@ public class CustomShopHandler {
                                 buyCommand += " " + form;
                             if (item.has("requirements")) {
                                 JsonArray requirementArray = item.getAsJsonArray("requirements");
-                                Requirement[] requirements = new Requirement[requirementArray.size()];
+                                RequirementData[] requirements = new RequirementData[requirementArray.size()];
                                 for (int k = 0; k < requirementArray.size(); k++) {
                                     requirements[k] = ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
                                 }
                                 customItem = new CustomShopItem(itemStack, requirements);
                             } else {
-                                customItem = new CustomShopItem(itemStack, new Requirement[0]);
+                                customItem = new CustomShopItem(itemStack, new RequirementData[0]);
                             }
                             customItem.setLeftClickActions(price, buyCommand);
                         } else {
@@ -343,13 +343,13 @@ public class CustomShopHandler {
                             }
                             if (item.has("requirements")) {
                                 JsonArray requirementArray = item.getAsJsonArray("requirements");
-                                Requirement[] requirements = new Requirement[requirementArray.size()];
+                                RequirementData[] requirements = new RequirementData[requirementArray.size()];
                                 for (int k = 0; k < requirementArray.size(); k++) {
                                     requirements[k] = ParseJson.parseRequirement(requirementArray.get(k).getAsJsonObject());
                                 }
                                 customItem = new CustomShopItem(itemStack, requirements);
                             } else {
-                                customItem = new CustomShopItem(itemStack, new Requirement[0]);
+                                customItem = new CustomShopItem(itemStack, new RequirementData[0]);
                             }
                             if (price > 0) {
                                 customItem.setLeftClickActions(price, "giveitem " + itemNbt);
@@ -367,10 +367,10 @@ public class CustomShopHandler {
                 }
             }
         }
-        Requirement[] requirements = new Requirement[0];
+        RequirementData[] requirements = new RequirementData[0];
         if(json.has("requirements")){
             JsonArray requirementsArray=json.getAsJsonArray("requirements");
-            requirements=new Requirement[requirementsArray.size()];
+            requirements=new RequirementData[requirementsArray.size()];
             int i=0;
             for(JsonElement requirement: requirementsArray){
                 requirements[i++]=ParseJson.parseRequirement(requirement.getAsJsonObject());

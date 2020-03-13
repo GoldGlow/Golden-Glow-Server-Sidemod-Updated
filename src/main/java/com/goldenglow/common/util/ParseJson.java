@@ -1,7 +1,8 @@
 package com.goldenglow.common.util;
 
-import com.goldenglow.common.inventory.Action;
 import com.goldenglow.common.routes.SpawnPokemon;
+import com.goldenglow.common.util.actions.ActionData;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -10,25 +11,20 @@ import com.google.gson.JsonObject;
  */
 public class ParseJson {
 
-    public static Requirement parseRequirement(JsonObject o){
-        Requirement r = new Requirement();
-        r.type = Requirement.RequirementType.valueOf(o.getAsJsonObject().get("type").getAsString());
-        if (r.type == Requirement.RequirementType.TIME || r.type == Requirement.RequirementType.PERMISSION || r.type== Requirement.RequirementType.FRIEND_ONLY) {
-            r.value = o.getAsJsonObject().get("value").getAsString();
-        } else {
-            r.id = o.getAsJsonObject().get("id").getAsInt();
-        }
-        r.override = o.getAsJsonObject().get("override").getAsString();
+    public static RequirementData parseRequirement(JsonObject o){
+        RequirementData r = new RequirementData();
+        r.name = o.getAsJsonObject().get("type").getAsString().toUpperCase();
+        r.value = o.getAsJsonObject().get("value").getAsString();
         return r;
     }
 
-    public static Action parseAction(JsonObject o){
-        Action a = new Action();
-        a.actionType = Action.ActionType.valueOf(o.getAsJsonObject().get("actionType").getAsString());
+    public static ActionData parseAction(JsonObject o){
+        ActionData a = new ActionData();
+        a.name = o.getAsJsonObject().get("actionType").getAsString();
         a.value = o.get("value").getAsString();
         if(o.has("requirements")){
             JsonArray requirementArray=o.getAsJsonArray("requirements");
-            Requirement[] requirements=new Requirement[requirementArray.size()];
+            RequirementData[] requirements=new RequirementData[requirementArray.size()];
             for(int k=0;k<requirementArray.size();k++){
                 requirements[k]=ParseJson.parseRequirement((JsonObject) requirementArray.get(k));
             }

@@ -2,7 +2,7 @@ package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.CustomInventory;
-import com.goldenglow.common.util.PermissionUtils;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -11,9 +11,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
-import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 public class ItemEventHandler {
     @SubscribeEvent
@@ -23,18 +20,6 @@ public class ItemEventHandler {
             event.setCanceled(true);
             event.getPlayer().inventory.addItemStackToInventory(itemStack);
             event.getPlayer().sendMessage(new TextComponentString(Reference.red + "Cannot drop this item!"));
-        }
-    }
-
-    @Listener
-    public void itemStoredEvent(ClickInventoryEvent event){
-        if(event.getTargetInventory() instanceof CustomInventory){
-            event.setCancelled(true);
-        }
-        else if(event.getTargetInventory().getArchetype()!= InventoryArchetypes.PLAYER){
-            if (event.getTransactions().get(0).getFinal().getType().getName().equals("variedcommodities:diamond_dagger")&&!PermissionUtils.checkPermission(((EntityPlayerMP)event.getSource()), "*")) {
-                event.setCancelled(true);
-            }
         }
     }
 

@@ -1,11 +1,9 @@
 package com.goldenglow.common.util;
 
-import com.flowpowered.math.vector.Vector3d;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.world.World;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class FullPos {
     World world;
@@ -17,12 +15,13 @@ public class FullPos {
     }
 
     public FullPos(EntityPlayerMP player){
-        this.world=Sponge.getServer().getPlayer(player.getUniqueID()).get().getWorld();
+        this.world= FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(player.getUniqueID()).world;
         this.pos=player.getPosition();
     }
 
     public void warpToWorldPos(EntityPlayerMP player){
-        Sponge.getServer().getPlayer(player.getUniqueID()).get().setLocation(new Vector3d(this.pos.getX(), this.pos.getY(), this.pos.getZ()), this.world.getUniqueId());
+        player.setWorld(this.world);
+        player.setPositionAndUpdate(this.pos.getX(), this.pos.getY(), this.pos.getZ());
     }
 
     public World getWorld(){

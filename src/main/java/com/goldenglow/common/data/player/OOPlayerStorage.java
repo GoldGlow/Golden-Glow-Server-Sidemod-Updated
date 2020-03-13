@@ -9,10 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -85,7 +85,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                     equippedSeals.appendTag(sealTag);
                 }
             }
-            if (!equippedSeals.isEmpty())
+            if (equippedSeals.tagCount()!=0)
                 tag.setTag("equippedSeals", equippedSeals);
         }
 
@@ -93,7 +93,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         for(String s : instance.getUnlockedSeals()) {
             unlockedSeals.appendTag(new NBTTagString(s));
         }
-        if(!unlockedSeals.isEmpty())
+        if(unlockedSeals.tagCount()!=0)
             tag.setTag("unlockedSeals", unlockedSeals);
 
         if(instance.getSafezone()!=null){
@@ -102,7 +102,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(instance.getBackupFullpos()!=null){
             NBTTagCompound fullPos=new NBTTagCompound();
-            fullPos.setString("world", instance.getBackupFullpos().getWorld().getUniqueId().toString());
+            fullPos.setInteger("world", instance.getBackupFullpos().getWorld().provider.getDimension());
             fullPos.setInteger("posX", instance.getBackupFullpos().getPos().getX());
             fullPos.setInteger("posY", instance.getBackupFullpos().getPos().getY());
             fullPos.setInteger("posZ", instance.getBackupFullpos().getPos().getZ());
@@ -218,7 +218,7 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(tag.hasKey("backupFullPos")){
             NBTTagCompound fullPos=tag.getCompoundTag("backupFullPos");
-            World world= Sponge.getServer().getWorld(UUID.fromString(fullPos.getString("world"))).get();
+            World world= FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(fullPos.getInteger("world"));
             BlockPos pos=new BlockPos(fullPos.getInteger("posX"), fullPos.getInteger("posY"), fullPos.getInteger("posZ"));
             instance.setBackupFullpos(new FullPos(world, pos));
         }

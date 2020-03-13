@@ -2,14 +2,12 @@ package com.goldenglow.common.gyms;
 
 import com.goldenglow.common.teams.Team;
 import com.goldenglow.common.util.Reference;
-import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.world.World;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -31,7 +29,7 @@ public class Gym {
     public Gym(){
         this.name="Cottonee gym";
         this.warpPos=new BlockPos(6, 6,6 );
-        this.world=Sponge.getServer().getWorld("world").get();
+        this.world= FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
         this.playerTeams=new HashMap<UUID, Team>();
         this.open=false;
         this.theme="obscureobsidian:trainer.blue";

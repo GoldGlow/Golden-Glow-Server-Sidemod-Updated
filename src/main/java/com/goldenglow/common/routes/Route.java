@@ -1,19 +1,20 @@
 package com.goldenglow.common.routes;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.util.Requirement;
+import com.goldenglow.common.util.requirements.RequirementData;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.World;
 import noppes.npcs.Server;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.DialogController;
 import noppes.npcs.controllers.QuestController;
-import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Route {
     public String song;
     public int priority;
     public Polygonal2DRegion region;
-    public List<Requirement> requirements = new ArrayList<>();
+    public List<RequirementData> requirements = new ArrayList<>();
     public boolean isSafeZone = false;
     public boolean kickWarp = false;
     public int warpX=0;
@@ -77,7 +78,7 @@ public class Route {
     }
 
     public boolean canPlayerEnter(EntityPlayerMP playerMP) {
-        return Requirement.checkRequirements(this.requirements, playerMP);
+        return GoldenGlow.requirementHandler.checkRequirements(this.requirements, playerMP);
     }
 
     public TextComponentString getRequirementMessage(EntityPlayerMP player) {
@@ -85,22 +86,22 @@ public class Route {
         msg.getStyle().setBold(true);
 
         StringBuilder s = new StringBuilder();
-        for(Requirement requirement : this.requirements) {
-            if(!Requirement.checkRequirement(requirement, player)) {
+        for(RequirementData requirement : this.requirements) {
+            if(!GoldenGlow.requirementHandler.checkRequirement(requirement, player)) {
                 if(s.length()>0)
                     s.append("\n");
-                switch (requirement.type) {
-                    case QUEST_STARTED:
-                        s.append("Start Quest: ").append(QuestController.instance.get(requirement.id).getName());
+                switch (requirement.name) {
+                    case "QUEST_STARTED":
+                        s.append("Start Quest: ").append(QuestController.instance.get(Integer.parseInt(requirement.value)).getName());
                         break;
-                    case QUEST_FINISHED:
-                        s.append("Finish Quest: ").append(QuestController.instance.get(requirement.id).getName());
+                    case "QUEST_FINISHED":
+                        s.append("Finish Quest: ").append(QuestController.instance.get(Integer.parseInt(requirement.value)).getName());
                         break;
-                    case TIME:
+                    case "TIME":
                         s.append("Time: ").append(requirement.value);
                         break;
-                    case DIALOG:
-                        s.append("Read Dialog: ").append(DialogController.instance.get(requirement.id).getName());
+                    case "DIALOG":
+                        s.append("Read Dialog: ").append(DialogController.instance.get(Integer.parseInt(requirement.value)).getName());
                         break;
                 }
             }
@@ -116,7 +117,7 @@ public class Route {
     public TextComponentString getRequirementHoverText() {
         TextComponentString text = new TextComponentString("");
 
-        for (Requirement r : this.requirements) {
+        for (RequirementData r : this.requirements) {
             if(!text.getText().isEmpty())
                 text.appendText("\n");
             text.appendText(r.toString());

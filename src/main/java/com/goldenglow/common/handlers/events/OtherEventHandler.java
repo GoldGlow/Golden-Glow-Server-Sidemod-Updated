@@ -28,12 +28,12 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerScriptData;
-import org.spongepowered.api.Sponge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +52,8 @@ public class OtherEventHandler {
                 caught.add(entry.getKey());
             }
         }
-        PlayerScriptData scriptData= PlayerData.get((EntityPlayerMP) Sponge.getServer().getPlayer(event.uuid).get().getBaseVehicle()).scriptData;
-        OOPokedexEvent dexEvent=new OOPokedexEvent(new PlayerWrapper((EntityPlayerMP) Sponge.getServer().getPlayer(event.uuid).get().getBaseVehicle()), caught);
+        PlayerScriptData scriptData= PlayerData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(event.uuid)).scriptData;
+        OOPokedexEvent dexEvent=new OOPokedexEvent(new PlayerWrapper(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(event.uuid)), caught);
         TitleMethods.unlockBugCatcher(dexEvent);
         for(ScriptContainer s : scriptData.getScripts()){
             s.run("pokedexEvent", dexEvent);

@@ -5,7 +5,6 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.util.FullPos;
-import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -14,8 +13,7 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.text.Text;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class GymLeaderUtils {
     public static void openGym(String gymName){
@@ -25,7 +23,7 @@ public class GymLeaderUtils {
     public static void openGym(Gym gym){
         if(!gym.open){
             gym.open=true;
-            Sponge.getServer().getBroadcastChannel().send(Text.of(Reference.darkPurple+gym.name+" has just opened!"));
+            FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString(Reference.darkPurple+gym.name+" has just opened!"));
         }
     }
 
@@ -39,7 +37,7 @@ public class GymLeaderUtils {
         if(gym.currentLeader!=null){
             GymLeaderUtils.stopTakingChallengers(gym, gym.currentLeader);
         }
-        Sponge.getServer().getBroadcastChannel().send(Text.of(Reference.darkPurple+gym.name+" is now closed!"));
+        FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString(Reference.darkPurple+gym.name+" is now closed!"));
     }
 
     public static void takeChallengers(String gymName, EntityPlayerMP leader){
@@ -80,7 +78,7 @@ public class GymLeaderUtils {
             gym.challengingPlayer = null;
         }
         playerData.setBackupFullpos(null);
-        PermissionUtils.unsetPermissionsWithStart(leader, "gymleader.active");
+        GoldenGlow.permissionUtils.unsetPermissionsWithStart(leader, "gymleader.active");
     }
 
     public static void nextInQueue(String gymName, EntityPlayerMP leader){

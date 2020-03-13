@@ -4,33 +4,20 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.inventory.CustomItem;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import io.github.nucleuspowered.nucleus.internal.services.PlayerOnlineService;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.UUID;
 
 public class FriendRequests extends CustomInventory {
