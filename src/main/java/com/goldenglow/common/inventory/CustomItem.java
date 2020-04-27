@@ -1,13 +1,11 @@
 package com.goldenglow.common.inventory;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.actions.ActionData;
-import com.goldenglow.common.util.requirements.RequirementData;
+import com.pixelmonessentials.PixelmonEssentials;
+import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.battles.attacks.Attack;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -15,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by JeanMarc on 6/18/2019.
@@ -64,7 +61,7 @@ public class CustomItem  {
 
     public ActionData getAction(ActionData[] actions, EntityPlayerMP playerMP){
         for(ActionData action:actions){
-            if(GoldenGlow.requirementHandler.checkRequirements(action.requirements, playerMP)){
+            if(PixelmonEssentials.requirementHandler.checkRequirements(action.requirements, playerMP)){
                 return action;
             }
         }

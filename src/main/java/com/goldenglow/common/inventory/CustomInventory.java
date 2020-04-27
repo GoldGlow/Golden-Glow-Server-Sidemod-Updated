@@ -6,9 +6,9 @@ import com.goldenglow.common.inventory.BetterTrading.OfferMakingInventory;
 import com.goldenglow.common.inventory.BetterTrading.Trade;
 import com.goldenglow.common.inventory.social.FriendList;
 import com.goldenglow.common.inventory.social.FriendRequests;
-import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.actions.Action;
-import com.goldenglow.common.util.actions.ActionData;
+import com.pixelmonessentials.PixelmonEssentials;
+import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
@@ -93,7 +93,7 @@ public class CustomInventory extends ContainerChest {
         if (items.length>0){
             for (CustomItem item : items) {
                 if (item != null) {
-                    if (GoldenGlow.requirementHandler.checkRequirements(item.requirements, player)) {
+                    if (PixelmonEssentials.requirementHandler.checkRequirements(item.requirements, player)) {
                         return item;
                     }
                 }
@@ -112,16 +112,16 @@ public class CustomInventory extends ContainerChest {
             if (item != null) {
                 if (dragType == 0) {
                     for (ActionData actionData : item.leftClickActions) {
-                        if (GoldenGlow.requirementHandler.checkRequirements(actionData.requirements, (EntityPlayerMP) player)) {
-                            Action action=GoldenGlow.actionHandler.getType(actionData);
+                        if (PixelmonEssentials.requirementHandler.checkRequirements(actionData.requirements, (EntityPlayerMP) player)) {
+                            Action action= PixelmonEssentials.actionHandler.getType(actionData);
                             action.doAction(actionData.value, (EntityPlayerMP) player);
                             return null;
                         }
                     }
                 } else if (dragType == 1) {
                     for (ActionData actionData : item.rightClickActions) {
-                        if (GoldenGlow.requirementHandler.checkRequirements(actionData.requirements, (EntityPlayerMP) player)) {
-                            Action action=GoldenGlow.actionHandler.getType(actionData);
+                        if (PixelmonEssentials.requirementHandler.checkRequirements(actionData.requirements, (EntityPlayerMP) player)) {
+                            Action action=PixelmonEssentials.actionHandler.getType(actionData);
                             action.doAction(actionData.value, (EntityPlayerMP) player);
                             return null;
                         }
@@ -157,7 +157,7 @@ public class CustomInventory extends ContainerChest {
 
     public static void openCustomInventory(EntityPlayerMP playerMP, CustomInventoryData data){
         InventoryBasic chestInventory=new InventoryBasic(data.getName(), true, data.getRows()*9);
-        if(GoldenGlow.requirementHandler.checkRequirements(data.requirements, playerMP)) {
+        if(PixelmonEssentials.requirementHandler.checkRequirements(data.requirements, playerMP)) {
             for(int i=0;i<data.getRows()*9;i++){
                 if(i<data.getItems().length){
                     CustomItem item= CustomInventory.getItem(data.getItems()[i], playerMP);

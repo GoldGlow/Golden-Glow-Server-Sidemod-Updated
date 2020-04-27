@@ -59,6 +59,12 @@ public interface IPlayerData {
     List<ItemStack> getAWItems();
     void addAWItem(ItemStack item);
 
+    List<ItemStack> getBagItems();
+    void addBagItem(ItemStack item);
+    void removeBagItem(String displayName);
+    void removeBagItem(ItemStack item);
+    void consumeBagItem(ItemStack item, int count);
+
     int getCaptureChain();
     int increaseCaptureChain(int i);
     void setCaptureChain(int i);

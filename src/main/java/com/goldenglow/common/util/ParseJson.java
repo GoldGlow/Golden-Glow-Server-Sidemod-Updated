@@ -1,10 +1,10 @@
 package com.goldenglow.common.util;
 
 import com.goldenglow.common.routes.SpawnPokemon;
-import com.goldenglow.common.util.actions.ActionData;
-import com.goldenglow.common.util.requirements.RequirementData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 
 /**
  * Created by JeanMarc on 7/10/2019.

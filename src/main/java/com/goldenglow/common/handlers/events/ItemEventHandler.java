@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
+import com.pixelmonessentials.PixelmonEssentials;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -38,6 +39,9 @@ public class ItemEventHandler {
                 event.getEntityPlayer().setItemStackToSlot(EntityEquipmentSlot.HEAD, event.getItemStack().copy());
                 event.getItemStack().setCount(0);
             }
+        }
+        else if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:phone")){
+            PixelmonEssentials.essentialsGuisHandler.getGui(6000).init((EntityPlayerMP) event.getEntityPlayer(), null);
         }
     }
 }

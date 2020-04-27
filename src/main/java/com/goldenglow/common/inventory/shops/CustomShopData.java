@@ -2,7 +2,7 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomItem;
-import com.goldenglow.common.util.requirements.RequirementData;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 
 public class CustomShopData extends CustomInventoryData {
     boolean pixelmonGui=false;

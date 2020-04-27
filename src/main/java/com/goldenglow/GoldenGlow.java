@@ -7,6 +7,9 @@ import com.goldenglow.common.command.*;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerStorage;
+import com.goldenglow.common.guis.GuiHandler;
+import com.goldenglow.common.guis.data.LocationList;
+import com.goldenglow.common.guis.data.TutorialsManager;
 import com.goldenglow.common.gyms.GymManager;
 import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.handlers.events.*;
@@ -43,7 +46,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
 
-@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm", acceptableRemoteVersions = "*")
+import java.util.ArrayList;
+
+@Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm;required-after:pixelmonessentials;", acceptableRemoteVersions = "*")
 public class GoldenGlow{
 
     public String VERSION = "1.0.2";
@@ -64,8 +69,6 @@ public class GoldenGlow{
     public RaidEventHandler raidEventHandler = new RaidEventHandler();
     public TickHandler tickHandler=new TickHandler();
     public static PermissionUtils permissionUtils=null;
-    public static RequirementHandler requirementHandler=new RequirementHandler();
-    public static ActionHandler actionHandler=new ActionHandler();
 
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
@@ -79,6 +82,8 @@ public class GoldenGlow{
     public static TradeManager tradeManager=new TradeManager();
     public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
     public static CustomShopHandler customShopHandler=new CustomShopHandler();
+    public static LocationList locationList=new LocationList();
+    public static TutorialsManager tutorialsManager=new TutorialsManager();
 
     public static CommandDispatcher<ICommandSender> commandDispatcher = new CommandDispatcher<>();
 
@@ -92,10 +97,13 @@ public class GoldenGlow{
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         logger.info("Initializing GoldenGlow sidemod v"+VERSION+"...");
-        actionHandler.init();
-        requirementHandler.init();
+        ActionHandler.init();
+        RequirementHandler.init();
+        GuiHandler.init();
         configHandler.init();
         rightClickBlacklistHandler.init();
+        locationList.init();
+        tutorialsManager.init();
 
         GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
@@ -124,6 +132,7 @@ public class GoldenGlow{
         Pixelmon.EVENT_BUS.register(soundEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
         WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
+        WrapperNpcAPI.EVENT_BUS.register(otherEventHandler);
     }
 
     @Mod.EventHandler

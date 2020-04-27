@@ -2,7 +2,7 @@ package com.goldenglow.common.inventory;
 
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
-import com.goldenglow.common.util.actions.ActionData;
+import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsPokeballs;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;

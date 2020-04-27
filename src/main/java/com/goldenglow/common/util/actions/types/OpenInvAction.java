@@ -1,7 +1,7 @@
 package com.goldenglow.common.util.actions.types;
 
 import com.goldenglow.common.inventory.CustomInventory;
-import com.goldenglow.common.util.actions.Action;
+import com.pixelmonessentials.common.api.action.Action;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class OpenInvAction implements Action {

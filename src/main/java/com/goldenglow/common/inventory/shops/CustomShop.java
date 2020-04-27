@@ -4,9 +4,10 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.inventory.CustomInventory;
 import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.actions.Action;
-import com.goldenglow.common.util.actions.ActionData;
 import com.goldenglow.common.util.scripting.OtherFunctions;
+import com.pixelmonessentials.PixelmonEssentials;
+import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
 import net.minecraft.command.ICommandManager;
@@ -37,7 +38,7 @@ public class CustomShop extends CustomInventory {
         if (items.length>0){
             for (CustomShopItem item : items) {
                 if (item != null) {
-                    if (GoldenGlow.requirementHandler.checkRequirements(item.getRequirements(), player)) {
+                    if (PixelmonEssentials.requirementHandler.checkRequirements(item.getRequirements(), player)) {
                         return item;
                     }
                 }
@@ -63,11 +64,11 @@ public class CustomShop extends CustomInventory {
                 if (dragType == 0) {
                         boolean didAction=false;
                         for (ActionData action : item.getLeftClickActions()) {
-                            if (GoldenGlow.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                            if (PixelmonEssentials.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
                                 IPixelmonBankAccount bankAccount = (IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount((EntityPlayerMP) player).orElse(null);
                                 if (action.value.startsWith("pokegive")) {
                                     ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.value.split(" ")[2] + "!"));
-                                    Action actionFinal=GoldenGlow.actionHandler.getType(action);
+                                    Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
                                     bankAccount.changeMoney(-1 * item.buyPrice);
                                     actionFinal.doAction(action.value, (EntityPlayerMP)player);
                                     didAction=true;
@@ -76,7 +77,7 @@ public class CustomShop extends CustomInventory {
                                 else if(action.name.equals("DEPOSITORY_POKEMON")){
                                     ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.value.split(" ")[0] + "!"));
                                     bankAccount.changeMoney(-1 * item.buyPrice);
-                                    Action actionFinal=GoldenGlow.actionHandler.getType(action);
+                                    Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
                                     actionFinal.doAction(action.value, (EntityPlayerMP)player);
                                     didAction=true;
                                     break;
@@ -98,11 +99,11 @@ public class CustomShop extends CustomInventory {
                         return null;
                 } else if (dragType == 1) {
                     for (ActionData action : item.getRightClickActions()) {
-                        if (GoldenGlow.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                        if (PixelmonEssentials.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
                             PlayerWrapper playerWrapper=new PlayerWrapper((EntityPlayerMP) player);
                             IItemStack iItemStack= NpcAPI.Instance().getIItemStack(item.getItem());
                             playerWrapper.removeItem(iItemStack, 1);
-                            Action actionFinal=GoldenGlow.actionHandler.getType(action);
+                            Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
                             actionFinal.doAction(action.value, (EntityPlayerMP)player);
                             return null;
                         }
@@ -116,13 +117,13 @@ public class CustomShop extends CustomInventory {
     public static void openCustomShop(EntityPlayerMP playerMP, CustomShopData data){
         if(data.pixelmonGui){
             GGLogger.info("test");
-            if (GoldenGlow.requirementHandler.checkRequirements(data.getRequirements(), playerMP)) {
+            if (PixelmonEssentials.requirementHandler.checkRequirements(data.getRequirements(), playerMP)) {
                 OtherFunctions.openShopMenu(new PlayerWrapper(playerMP), data);
             }
         }
         else {
             InventoryBasic chestInventory = new InventoryBasic(data.getName(), true, data.getRows() * 9);
-            if (GoldenGlow.requirementHandler.checkRequirements(data.getRequirements(), playerMP)) {
+            if (PixelmonEssentials.requirementHandler.checkRequirements(data.getRequirements(), playerMP)) {
                 for (int i = 0; i < data.getRows() * 9 - 1; i++) {
                     if (i < data.getItems().length) {
                         CustomShopItem item = CustomShop.getItem(data.getItems()[i], playerMP);

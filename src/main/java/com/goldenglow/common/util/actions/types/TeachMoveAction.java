@@ -1,8 +1,7 @@
 package com.goldenglow.common.util.actions.types;
 
-import com.goldenglow.common.inventory.BagInventories;
 import com.goldenglow.common.util.Reference;
-import com.goldenglow.common.util.actions.Action;
+import com.pixelmonessentials.common.api.action.Action;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;

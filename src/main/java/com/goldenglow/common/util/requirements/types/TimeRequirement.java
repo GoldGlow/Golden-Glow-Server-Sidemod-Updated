@@ -1,8 +1,7 @@
 package com.goldenglow.common.util.requirements.types;
 
-import com.goldenglow.common.util.requirements.Requirement;
+import com.pixelmonessentials.common.api.requirement.Requirement;
 import net.minecraft.entity.player.EntityPlayerMP;
-import noppes.npcs.api.entity.IPlayer;
 
 public class TimeRequirement implements Requirement {
     private final String name="TIME";

@@ -5,7 +5,7 @@ import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.gyms.GymLeaderUtils;
 import com.goldenglow.common.inventory.BagInventories;
 import com.goldenglow.common.util.Scoreboards;
-import com.goldenglow.common.util.actions.Action;
+import com.pixelmonessentials.common.api.action.Action;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class CloseGymAction implements Action {

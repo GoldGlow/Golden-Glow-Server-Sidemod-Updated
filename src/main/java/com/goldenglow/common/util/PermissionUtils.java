@@ -7,4 +7,7 @@ public interface PermissionUtils {
     void setPrefix(EntityPlayerMP playerMP, String prefix);
     void addPermissionNode(EntityPlayerMP playerMP, String node);
     boolean checkPermission(EntityPlayerMP playerMP, String node);
+    String getPrefix(EntityPlayerMP playerMP);
+    int getUnlockedPrefixTotal(EntityPlayerMP playerMP);
+    int getPrefixTotal();
 }

@@ -4,10 +4,17 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.events.OOPokedexEvent;
+import com.goldenglow.common.guis.BagMenu;
+import com.goldenglow.common.guis.PlayerProfileMenu;
+import com.goldenglow.common.guis.TutorialsMenu;
 import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.inventory.social.PlayerProfile;
+import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.TitleMethods;
+import com.pixelmonessentials.PixelmonEssentials;
+import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.AggressionEvent;
 import com.pixelmonmod.pixelmon.api.events.PokedexEvent;
@@ -30,6 +37,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import noppes.npcs.api.event.CustomGuiEvent;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.controllers.data.PlayerData;
@@ -57,6 +65,28 @@ public class OtherEventHandler {
         TitleMethods.unlockBugCatcher(dexEvent);
         for(ScriptContainer s : scriptData.getScripts()){
             s.run("pokedexEvent", dexEvent);
+        }
+    }
+
+    @SubscribeEvent
+    public void onGuiClose(CustomGuiEvent.CloseEvent event){
+        if(!GoldenGlow.routeManager.getRoute(event.player.getMCEntity()).equals(null)) {
+            if (!GoldenGlow.routeManager.getRoute(event.player.getMCEntity()).song.equals(null)) {
+                SongManager.setCurrentSong(event.player.getMCEntity(), GoldenGlow.routeManager.getRoute(event.player.getMCEntity()).song);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onSlotChange(CustomGuiEvent.ScrollEvent event){
+        EssentialsGuis gui= PixelmonEssentials.essentialsGuisHandler.getGui(event.player.getMCEntity());
+        if(gui instanceof BagMenu){
+            ((BagMenu) gui).setIndex(event.selection[0]);
+            ((BagMenu) gui).updateScroll(event.player.getMCEntity());
+        }
+        else if(gui instanceof TutorialsMenu){
+            ((TutorialsMenu) gui).setIndex(event.selection[0]);
+            ((TutorialsMenu) gui).updateScroll(event.player.getMCEntity());
         }
     }
 
@@ -150,7 +180,8 @@ public class OtherEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract event){
         if(event.getTarget() instanceof EntityPlayerMP){
-            PlayerProfile.openInventory((EntityPlayerMP) event.getEntityPlayer(), (EntityPlayerMP) event.getTarget());
+            PlayerProfileMenu profile=new PlayerProfileMenu((EntityPlayerMP) event.getTarget());
+            profile.init((EntityPlayerMP) event.getEntityPlayer(), null);
         }
     }
 }

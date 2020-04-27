@@ -1,8 +1,8 @@
 package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.CustomItem;
-import com.goldenglow.common.util.actions.ActionData;
-import com.goldenglow.common.util.requirements.RequirementData;
+import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 import net.minecraft.item.ItemStack;
 
 public class CustomShopItem extends CustomItem {

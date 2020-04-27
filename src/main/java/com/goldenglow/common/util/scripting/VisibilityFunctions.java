@@ -3,30 +3,22 @@ package com.goldenglow.common.util.scripting;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
-import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.requirements.RequirementData;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
+import com.pixelmonessentials.PixelmonEssentials;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketSpawnMob;
 import net.minecraft.network.play.server.SPacketSpawnPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import noppes.npcs.api.entity.ICustomNpc;
 import noppes.npcs.api.entity.IEntity;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-import noppes.npcs.blocks.tiles.TileScripted;
 import noppes.npcs.controllers.ScriptContainer;
 import noppes.npcs.entity.EntityCustomNpc;
 
 import javax.script.ScriptEngine;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class VisibilityFunctions {
     public static void refreshPlayerVisibility(PlayerWrapper playerWrapper){
@@ -84,7 +76,7 @@ public class VisibilityFunctions {
                         requirement.value=(String) value;
                         requirements.add(requirement);
                     }
-                    if(GoldenGlow.requirementHandler.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
+                    if(PixelmonEssentials.requirementHandler.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
                         return false;
                     }
                 }
@@ -98,7 +90,7 @@ public class VisibilityFunctions {
                         requirement.value=(String) value;
                         requirements.add(requirement);
                     }
-                    if(!GoldenGlow.requirementHandler.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
+                    if(!PixelmonEssentials.requirementHandler.checkRequirements(requirements, (EntityPlayerMP)player.getMCEntity())){
                         return false;
                     }
                 }

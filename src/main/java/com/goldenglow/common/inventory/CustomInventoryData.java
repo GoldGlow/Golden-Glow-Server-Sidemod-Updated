@@ -1,6 +1,6 @@
 package com.goldenglow.common.inventory;
 
-import com.goldenglow.common.util.requirements.RequirementData;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 
 /**
  * Created by JeanMarc on 6/25/2019.

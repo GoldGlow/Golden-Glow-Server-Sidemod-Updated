@@ -7,6 +7,7 @@ import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.items.ItemTM;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.time.Instant;
@@ -28,6 +29,7 @@ public class OOPlayerData implements IPlayerData {
     private List<ItemStack> keyItems=new ArrayList<>();
     private List<ItemStack> tms=new ArrayList<>();
     private List<ItemStack> awItems=new ArrayList<>();
+    private List<ItemStack> bagItems=new ArrayList<>();
 
     private int notification_scheme = 0;
     private Scoreboards.EnumScoreboardType scoreboardType= Scoreboards.EnumScoreboardType.NONE;
@@ -82,6 +84,7 @@ public class OOPlayerData implements IPlayerData {
         return this.unlocked_seals;
     }
     public List<ItemStack> getAWItems(){return this.awItems;}
+    public List<ItemStack> getBagItems(){return this.bagItems;}
     public List<ItemStack> getKeyItems(){return this.keyItems;}
     public List<ItemStack> getTMs(){return this.tms;}
     public Scoreboards.EnumScoreboardType getScoreboardType(){return this.scoreboardType;}
@@ -167,6 +170,40 @@ public class OOPlayerData implements IPlayerData {
         this.awItems.add(awItem);
     }
     public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
+    public void addBagItem(ItemStack item){
+        for(ItemStack bagItem:this.bagItems){
+            if(bagItem.getItem().getRegistryName().equals(item.getItem().getRegistryName())){
+                bagItem.setCount(bagItem.getCount()+item.getCount());
+                item.setCount(0);
+                return;
+            }
+        }
+        item.setCount(0);
+        this.bagItems.add(item);
+    }
+    public void removeBagItem(String displayName){
+        for(ItemStack bagItem:this.bagItems){
+            if(bagItem.getDisplayName().equals(displayName)){
+                this.bagItems.remove(bagItem);
+                return;
+            }
+        }
+    }
+    public void removeBagItem(ItemStack itemStack){
+        for(ItemStack bagItem:this.bagItems){
+            if(bagItem.equals(itemStack)){
+                this.bagItems.remove(bagItem);
+                return;
+            }
+        }
+    }
+    public void consumeBagItem(ItemStack item, int count){
+        for(ItemStack bagItem: this.bagItems){
+            if(bagItem.equals(item)){
+                bagItem.setCount(bagItem.getCount()-count);
+            }
+        }
+    }
     public boolean unlockTM(ItemStack tm){
         if(tm.getItem() instanceof ItemTM) {
             ItemTM newTM = (ItemTM) tm.getItem();

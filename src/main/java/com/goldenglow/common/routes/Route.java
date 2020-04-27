@@ -3,7 +3,8 @@ package com.goldenglow.common.routes;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.util.requirements.RequirementData;
+import com.pixelmonessentials.PixelmonEssentials;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -78,7 +79,7 @@ public class Route {
     }
 
     public boolean canPlayerEnter(EntityPlayerMP playerMP) {
-        return GoldenGlow.requirementHandler.checkRequirements(this.requirements, playerMP);
+        return PixelmonEssentials.requirementHandler.checkRequirements(this.requirements, playerMP);
     }
 
     public TextComponentString getRequirementMessage(EntityPlayerMP player) {
@@ -87,7 +88,7 @@ public class Route {
 
         StringBuilder s = new StringBuilder();
         for(RequirementData requirement : this.requirements) {
-            if(!GoldenGlow.requirementHandler.checkRequirement(requirement, player)) {
+            if(!PixelmonEssentials.requirementHandler.checkRequirement(requirement, player)) {
                 if(s.length()>0)
                     s.append("\n");
                 switch (requirement.name) {

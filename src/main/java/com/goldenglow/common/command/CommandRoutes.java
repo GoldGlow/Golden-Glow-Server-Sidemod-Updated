@@ -2,11 +2,12 @@ package com.goldenglow.common.command;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
-import com.goldenglow.common.util.requirements.RequirementData;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.pixelmonessentials.PixelmonEssentials;
+import com.pixelmonessentials.common.api.requirement.RequirementData;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -143,7 +144,7 @@ public class CommandRoutes extends OOCommand {
                                                                                                         .then(
                                                                                                                 argument("value", StringArgumentType.string())
                                                                                                                         .executes(c -> {
-                                                                                                                            if (GoldenGlow.requirementHandler.getRequirementType(c.getArgument("type", String.class))!=null) {
+                                                                                                                            if (PixelmonEssentials.requirementHandler.getRequirementType(c.getArgument("type", String.class))!=null) {
                                                                                                                                 RequirementData requirement = new RequirementData();
                                                                                                                                 requirement.name=c.getArgument("type", String.class);
                                                                                                                                 requirement.value=c.getArgument("value", String.class);
@@ -171,7 +172,7 @@ public class CommandRoutes extends OOCommand {
                                                                                                         .then(
                                                                                                                 argument("type", StringArgumentType.string())
                                                                                                                         .executes(c -> {
-                                                                                                                            if(GoldenGlow.requirementHandler.getRequirementType(c.getArgument("type", String.class))!=null) {
+                                                                                                                            if(PixelmonEssentials.requirementHandler.getRequirementType(c.getArgument("type", String.class))!=null) {
                                                                                                                                 String type = c.getArgument("type", String.class);
                                                                                                                                 GoldenGlow.routeManager.getRoute(c.getArgument("routeName", String.class)).requirements.get(c.getArgument("id", Integer.class)).name = type;
                                                                                                                                 c.getSource().sendMessage(new TextComponentString("Updated Requirement for " + c.getArgument("routeName", String.class)));
