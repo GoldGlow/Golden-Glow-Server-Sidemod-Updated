@@ -34,11 +34,7 @@ public class RouteManager {
         if(!dir.exists()) {
             if (!dir.getParentFile().exists())
                 dir.getParentFile().mkdirs();
-            try {
-                dir.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            dir.mkdirs();
         }
         else
             this.loadRoutes();
@@ -141,6 +137,14 @@ public class RouteManager {
             }
         }
 
+        if(json.has("spawns")){
+            JsonArray spawns=json.getAsJsonArray("spawns");
+            for(JsonElement o: spawns){
+                SpawnPokemon pokemon=ParseJson.parseSpawnPokemon((JsonObject) o);
+                route.spawnList.add(pokemon);
+            }
+        }
+
         if(json.has("apricornPokemon")){
             JsonArray apricornPokemonArray=json.getAsJsonArray("apricornPokemon");
             for(JsonElement o:apricornPokemonArray){
@@ -224,6 +228,19 @@ public class RouteManager {
             file.beginObject();
             file.name("type").value(requirement.name);
             file.name("value").value(requirement.value);
+            file.endObject();
+        }
+        file.endArray();
+
+        file.name("spawns");
+        file.beginArray();
+        for(SpawnPokemon pokemon: route.spawnList){
+            file.beginObject();
+            file.name("species").value(pokemon.species);
+            file.name("form").value(pokemon.form);
+            file.name("minLvl").value(pokemon.minLvl);
+            file.name("maxLvl").value(pokemon.maxLvl);
+            file.name("spawnMethod").value(pokemon.spawnMethod);
             file.endObject();
         }
         file.endArray();

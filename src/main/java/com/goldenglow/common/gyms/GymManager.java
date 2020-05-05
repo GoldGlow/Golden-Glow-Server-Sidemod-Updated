@@ -31,11 +31,7 @@ public class GymManager {
         if(!dir.exists()) {
             if (!dir.getParentFile().exists())
                 dir.getParentFile().mkdirs();
-            try {
-                dir.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            dir.mkdirs();
         }
         else
             this.loadGyms();

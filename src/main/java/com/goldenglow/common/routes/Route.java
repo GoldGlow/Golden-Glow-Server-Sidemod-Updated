@@ -37,6 +37,7 @@ public class Route {
     public int kickWarpZ=0;
     public World world;
     public List<SpawnPokemon> apricornPokemon=new ArrayList<>();
+    public List<SpawnPokemon> spawnList=new ArrayList<>();
 
     List<EntityPlayerMP> players = new ArrayList<>();
 
@@ -113,6 +114,10 @@ public class Route {
             msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMsg));
         }
         return msg;
+    }
+
+    public SpawnPokemon[] getSpawnsList(){
+        return (SpawnPokemon[]) this.spawnList.toArray();
     }
 
     public TextComponentString getRequirementHoverText() {

@@ -68,8 +68,7 @@ public class TutorialMenu implements EssentialsGuis {
         gui.addTexturedButton(1, "", 4, 96, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 128, 192);
         gui.addTexturedButton(2, "", 220, 96, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 96, 192);
         gui.addTexturedRect(info.getPicture().getID(), info.getPicture().getTexture(), info.getPicture().getPosX(), info.getPicture().getPosY(), info.getPicture().getWidth(), info.getPicture().getHeight(), info.getPicture().getTextureX(), info.getPicture().getTextureY());
-        gui.addLabel(201, info.getFirstLine(), 6, 192, 32, 32);
-        gui.addLabel(202, info.getSecondLine(), 6, 202, 32, 32);
+        gui.addLabel(201, info.getText(), 6, 176, 244, 64);
         gui.addLabel(203, info.getPage()+"/"+GoldenGlow.tutorialsManager.getTutorial(this.tutorialName).getPageTotal(), 128, 224, 32, 32);
         PixelmonEssentials.essentialsGuisHandler.addOrReplaceGui(player, this);
         playerWrapper.showCustomGui(gui);

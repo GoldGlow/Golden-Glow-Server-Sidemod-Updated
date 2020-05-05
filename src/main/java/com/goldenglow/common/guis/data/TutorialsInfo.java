@@ -4,14 +4,12 @@ import noppes.npcs.api.wrapper.gui.CustomGuiTexturedRectWrapper;
 
 public class TutorialsInfo {
     private CustomGuiTexturedRectWrapper picture;
-    private String firstLine;
-    private String secondLine;
+    private String text;
     private int page;
 
-    public TutorialsInfo(CustomGuiTexturedRectWrapper picture, String firstLine, String secondLine, int page){
+    public TutorialsInfo(CustomGuiTexturedRectWrapper picture, String text, int page){
         this.picture=picture;
-        this.firstLine=firstLine;
-        this.secondLine=secondLine;
+        this.text=text;
         this.page=page;
     }
 
@@ -19,12 +17,8 @@ public class TutorialsInfo {
         return this.picture;
     }
 
-    public String getFirstLine(){
-        return this.firstLine;
-    }
-
-    public String getSecondLine(){
-        return this.secondLine;
+    public String getText(){
+        return this.text;
     }
 
     public int getPage(){

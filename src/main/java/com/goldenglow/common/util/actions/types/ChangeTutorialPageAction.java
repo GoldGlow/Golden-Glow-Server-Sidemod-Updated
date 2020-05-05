@@ -28,12 +28,11 @@ public class ChangeTutorialPageAction implements Action {
                 TutorialsMenu newMenu=new TutorialsMenu();
                 newMenu.init(player, null);
             }
-            CustomGuiComponentWrapper[] components=new CustomGuiComponentWrapper[4];
+            CustomGuiComponentWrapper[] components=new CustomGuiComponentWrapper[3];
             TutorialsInfo page=((TutorialMenu) gui).getTutorial().getTutorialPage(((TutorialMenu) gui).getPage());
             components[0]=page.getPicture();
-            components[1]=new CustomGuiLabelWrapper(201, page.getFirstLine(), 6, 192, 32, 32);
-            components[2]=new CustomGuiLabelWrapper(202, page.getSecondLine(), 6, 202, 32, 32);
-            components[3]=new CustomGuiLabelWrapper(203, page.getPage()+"/"+ GoldenGlow.tutorialsManager.getTutorial(((TutorialMenu) gui).getTutorialName()).getPageTotal(), 128, 224, 32, 32);
+            components[1]=new CustomGuiLabelWrapper(201, page.getText(), 6, 176, 244, 64);
+            components[2]=new CustomGuiLabelWrapper(203, page.getPage()+"/"+ GoldenGlow.tutorialsManager.getTutorial(((TutorialMenu) gui).getTutorialName()).getPageTotal(), 128, 224, 32, 32);
             PlayerWrapper playerWrapper=new PlayerWrapper(player);
             playerWrapper.updateCustomGui(components, new int[0]);
         }

@@ -12,6 +12,7 @@ import java.util.List;
 public class SpawnPokemon {
     public String species;
     public Byte form;
+    public String spawnMethod;
     public int minLvl;
     public int maxLvl;
     public int weight;
@@ -19,6 +20,7 @@ public class SpawnPokemon {
     public SpawnPokemon(){
         this.species="Dunsparce";
         this.form=0;
+        this.spawnMethod="normal";
         this.minLvl=5;
         this.maxLvl=5;
         this.weight=1;

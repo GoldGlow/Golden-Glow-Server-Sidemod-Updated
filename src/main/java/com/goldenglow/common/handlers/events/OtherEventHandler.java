@@ -12,6 +12,8 @@ import com.goldenglow.common.inventory.social.PlayerProfile;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.seals.SealManager;
+import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.TitleMethods;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
@@ -27,8 +29,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -102,6 +106,27 @@ public class OtherEventHandler {
 
     @SubscribeEvent
     public void onMessage(ServerChatEvent event) {
+        /*if(GoldenGlow.permissionUtils.checkPermissionWithStart(event.getPlayer(), "hover.")) {
+            String hoverText=GoldenGlow.permissionUtils.getNodeWithStart(event.getPlayer(), "hover.");
+            hoverText=hoverText.replace("hover.","");
+            String[] message=event.getComponent().getFormattedText().split(">");
+            ITextComponent player=new TextComponentString(message[0]);
+            player.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(hoverText)));
+            if(GoldenGlow.permissionUtils.checkPermissionWithStart(event.getPlayer(), "link.")){
+                String link=GoldenGlow.permissionUtils.getNodeWithStart(event.getPlayer(), "link.");
+                link=link.replace("link.","");
+                player.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
+            }
+            int index=1;
+            while(index<message.length){
+                TextComponentString component=new TextComponentString(">"+message[index]);
+                player.appendSibling(component);
+                index++;
+            }
+            GGLogger.info(player);
+            event.setComponent(player);
+        }*/
+        /*
         List<String> matches = new ArrayList<>();
         Matcher m = Pattern.compile("<\\w*:\\d>").matcher(event.getMessage());
         while(m.find()) {
@@ -133,7 +158,7 @@ public class OtherEventHandler {
         }
         if(inbetweens.length>i)
             pre.appendText(inbetweens[i]);
-        event.setComponent(pre);
+        event.setComponent(pre);*/
     }
 
     @SubscribeEvent
