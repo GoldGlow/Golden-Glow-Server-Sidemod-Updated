@@ -23,11 +23,14 @@ import com.pixelmonmod.pixelmon.api.events.AggressionEvent;
 import com.pixelmonmod.pixelmon.api.events.FishingEvent;
 import com.pixelmonmod.pixelmon.api.events.PokedexEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
+import com.pixelmonmod.pixelmon.api.events.storage.ChangeStorageEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
+import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.items.EnumRodType;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -49,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class OtherEventHandler {
+
     @SubscribeEvent
     public void pokedexRegisteredEvent(PokedexEvent event){
         Map<Integer, EnumPokedexRegisterStatus> seen= Pixelmon.storageManager.getParty(event.uuid).pokedex.getSeenMap();
@@ -173,4 +177,16 @@ public class OtherEventHandler {
             profile.init((EntityPlayerMP) event.getEntityPlayer(), null);
         }
     }
+
+    @SubscribeEvent
+    public void onStorageEvent(ChangeStorageEvent event) {
+        if(event.oldStorage instanceof PlayerPartyStorage && event.newStorage instanceof PCStorage && event.pokemon.getHealth()>0) {
+            if (((PlayerPartyStorage)event.oldStorage).countAblePokemon() < 2) {
+                Pokemon p = event.newStorage.get(event.newPosition);
+                if(p==null || p.getHealth()<=0)
+                    event.setCanceled(true);
+            }
+        }
+    }
+
 }
