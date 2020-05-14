@@ -34,6 +34,10 @@ public class UpdateBagAction implements Action {
                 ((BagMenu) gui).setCategory(BagMenu.EnumCategory.BADGES);
                 ((BagMenu) gui).update(player);
             }
+            else if(value.equals("ARMOURERS_WORKSHOP")){
+                ((BagMenu) gui).setCategory(BagMenu.EnumCategory.ARMOURERS_WORKSHOP);
+                ((BagMenu) gui).update(player);
+            }
         }
     }
 }

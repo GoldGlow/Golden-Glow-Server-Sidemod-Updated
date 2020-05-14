@@ -7,6 +7,13 @@ import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.items.ItemTM;
+import moe.plushie.armourers_workshop.common.library.LibraryFile;
+import moe.plushie.armourers_workshop.common.skin.cache.CommonSkinCache;
+import moe.plushie.armourers_workshop.common.skin.data.Skin;
+import moe.plushie.armourers_workshop.common.skin.data.SkinDescriptor;
+import moe.plushie.armourers_workshop.common.skin.data.SkinIdentifier;
+import moe.plushie.armourers_workshop.utils.SkinIOUtils;
+import moe.plushie.armourers_workshop.utils.SkinNBTHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -166,8 +173,24 @@ public class OOPlayerData implements IPlayerData {
             }
         }
     }
+    public void addAWItem(String awItem){
+        LibraryFile file=new LibraryFile(awItem);
+        Skin skin = SkinIOUtils.loadSkinFromLibraryFile(file);
+        CommonSkinCache.INSTANCE.addEquipmentDataToCache(skin, file);
+        SkinIdentifier identifier = new SkinIdentifier(0, file, 0, skin.getSkinType());
+        ItemStack itemStack = SkinNBTHelper.makeEquipmentSkinStack(new SkinDescriptor(identifier));
+        for(ItemStack item: this.awItems){
+            if(itemStack.getTagCompound().equals(item.getTagCompound())){
+                return;
+            }
+        }
+        this.awItems.add(itemStack);
+    }
     public void addAWItem(ItemStack awItem){
         this.awItems.add(awItem);
+    }
+    public void clearAWItems(){
+        this.awItems.clear();
     }
     public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
     public void addBagItem(ItemStack item){

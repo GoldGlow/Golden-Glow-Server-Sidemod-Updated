@@ -4,13 +4,22 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.actions.types.ChangeClothesAction;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import com.pixelmonmod.pixelmon.items.ItemTM;
+import moe.plushie.armourers_workshop.api.common.skin.type.ISkinType;
+import moe.plushie.armourers_workshop.common.items.ItemSkin;
+import moe.plushie.armourers_workshop.common.skin.type.chest.SkinChest;
+import moe.plushie.armourers_workshop.common.skin.type.feet.SkinFeet;
+import moe.plushie.armourers_workshop.common.skin.type.head.SkinHead;
+import moe.plushie.armourers_workshop.common.skin.type.legs.SkinLegs;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.gui.*;
@@ -29,7 +38,7 @@ public class BagMenu implements EssentialsGuis {
     public BagMenu(){
         this.category=EnumCategory.ITEMS;
         this.index=-1;
-        this.addButton(new EssentialsButton(1, new ActionData("UPDATE_BAG", "BADGES")));
+        this.addButton(new EssentialsButton(1, new ActionData("UPDATE_BAG", "ARMOURERS_WORKSHOP")));
         this.addButton(new EssentialsButton(2, new ActionData("UPDATE_BAG", "ITEMS")));
         this.addButton(new EssentialsButton(3, new ActionData("UPDATE_BAG", "KEY_ITEMS")));
         this.addButton(new EssentialsButton(4, new ActionData("UPDATE_BAG", "TM_HM")));
@@ -106,15 +115,65 @@ public class BagMenu implements EssentialsGuis {
                 IPlayerData data = player.getCapability(OOPlayerProvider.OO_DATA, null);
                 ItemTM tm = (ItemTM) data.getTMs().get(this.index).getItem();
                 this.addButton(new EssentialsButton(5, new ActionData("TM_GUI", tm.attackName)));
-                this.addButton(new EssentialsButton(6, new ActionData("OPEN_GUI", "-1")));
+                this.addButton(new EssentialsButton(6, new ActionData("SCROLL", "-1")));
                 CustomGuiTexturedButtonWrapper teachButton = new CustomGuiTexturedButtonWrapper(5, "Teach", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
                 CustomGuiTexturedButtonWrapper cancelButton = new CustomGuiTexturedButtonWrapper(6, "Cancel", 0, 190, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
                 playerWrapper.updateCustomGui(new CustomGuiComponentWrapper[]{teachButton, cancelButton}, new int[0]);
+            }
+            else if(this.category==EnumCategory.ARMOURERS_WORKSHOP){
+                for (EssentialsButton button : this.buttons) {
+                    if (button.getId() == 5) {
+                        this.buttons.remove(button);
+                        break;
+                    }
+                }
+                this.addButton(new EssentialsButton(5, new ActionData("CHANGE_CLOTHES", "")));
+                this.addButton(new EssentialsButton(6, new ActionData("SCROLL", "-1")));
+                CustomGuiTexturedButtonWrapper changeButton=null;
+                if(this.isWearing(player)){
+                    changeButton = new CustomGuiTexturedButtonWrapper(5, "Remove", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                }
+                else {
+                    changeButton = new CustomGuiTexturedButtonWrapper(5, "Wear", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                }
+                CustomGuiTexturedButtonWrapper cancelButton = new CustomGuiTexturedButtonWrapper(6, "Cancel", 0, 190, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                playerWrapper.updateCustomGui(new CustomGuiComponentWrapper[]{changeButton, cancelButton}, new int[0]);
             }
         }
         else{
             this.update(player);
         }
+    }
+
+    public boolean isWearing(EntityPlayerMP player){
+        IPlayerData data=player.getCapability(OOPlayerProvider.OO_DATA, null);
+        ItemStack item=data.getAWItems().get(this.getIndex());
+        if(item.getItem() instanceof ItemSkin){
+            NBTTagCompound nbt=item.getTagCompound();
+            ISkinType type=((ItemSkin) item.getItem()).getSkinType(item);
+            EntityEquipmentSlot slot=null;
+            if(type instanceof SkinHead){
+                slot=EntityEquipmentSlot.HEAD;
+            }
+            else if(type instanceof SkinChest){
+                slot=EntityEquipmentSlot.CHEST;
+            }
+            else if(type instanceof SkinLegs){
+                slot=EntityEquipmentSlot.LEGS;
+            }
+            else if(type instanceof SkinFeet){
+                slot=EntityEquipmentSlot.FEET;
+            }
+            if(slot!=null) {
+                ItemStack armor = player.getItemStackFromSlot(slot);
+                if(armor!=ItemStack.EMPTY){
+                    if(armor.hasTagCompound()) {
+                        return armor.getTagCompound().equals(nbt);
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public int getIndex(){
@@ -155,6 +214,9 @@ public class BagMenu implements EssentialsGuis {
             case KEY_ITEMS:
                 items=data.getKeyItems();
                 break;
+            case ARMOURERS_WORKSHOP:
+                items=data.getAWItems();
+                break;
             default:
                 items=new ArrayList<ItemStack>();
                 break;
@@ -176,8 +238,10 @@ public class BagMenu implements EssentialsGuis {
                 return "Badges";
             case KEY_ITEMS:
                 return "Key Items";
+            case ARMOURERS_WORKSHOP:
+                return "Clothes";
             default:
-                return  "";
+                return "";
         }
     }
 
@@ -185,6 +249,7 @@ public class BagMenu implements EssentialsGuis {
         KEY_ITEMS,
         TM_HM,
         ITEMS,
-        BADGES
+        BADGES,
+        ARMOURERS_WORKSHOP
     }
 }

@@ -50,6 +50,14 @@ function addKeyItemAndQuestObjective(player, questId, objectiveId, itemstack){
 	}
 }
 
+function addAwFromName(player, name){
+	Packages.com.goldenglow.common.util.scripting.InventoryFunctions.addAwFromName(player, name);
+}
+
+function clearAwItems(player){
+	Packages.com.goldenglow.common.util.scripting.InventoryFunctions.clearAwItems(player);
+}
+
 function setScoreboard(player){
 	Packages.com.goldenglow.common.util.scripting.OtherFunctions.setScoreboard(player);
 }
@@ -73,4 +81,8 @@ function pokemonKOd(bcb){
 
 function getRemainingPokemon(bcb){
 	return com.goldenglow.common.util.scripting.BattleFunctions.getRemainingPokemon(bcb);
+}
+
+function isNpcVisible(player, npc){
+	return com.goldenglow.common.util.scripting.VisibilityFunctions.isNpcVisible(player, npc);
 }

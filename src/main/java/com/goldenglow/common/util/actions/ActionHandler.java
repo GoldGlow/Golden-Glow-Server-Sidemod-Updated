@@ -9,6 +9,7 @@ public class ActionHandler {
 
     public static void init(){
         PixelmonEssentials.actionHandler.addAction(new AcceptFriendAction());
+        PixelmonEssentials.actionHandler.addAction(new ChangeClothesAction());
         PixelmonEssentials.actionHandler.addAction(new ChangeSkinAction());
         PixelmonEssentials.actionHandler.addAction(new ChangeTutorialPageAction());
         PixelmonEssentials.actionHandler.addAction(new CloseGymAction());

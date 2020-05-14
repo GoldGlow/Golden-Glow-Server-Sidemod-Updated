@@ -148,7 +148,6 @@ public class GoldenGlow{
         teamManager.init();
         pixelmonSpawnerHandler.init();
         songManager.init();
-        event.registerServerCommand(new CommandInstanceInv());
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRouteNotificationOption());
         event.registerServerCommand(new CommandSetPvpMusicOption());

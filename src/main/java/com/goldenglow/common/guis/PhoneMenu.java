@@ -1,5 +1,6 @@
 package com.goldenglow.common.guis;
 
+import com.goldenglow.common.guis.helperSkins.Phone;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
@@ -18,6 +19,9 @@ public class PhoneMenu implements EssentialsGuis {
     private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
 
     public PhoneMenu(){
+        ActionData homeButtonAction=new ActionData("OPEN_GUI", "null@"+6000);
+        EssentialsButton homeButton=new EssentialsButton(0, homeButtonAction);
+        this.addButton(homeButton);
         ActionData trainerButtonAction=new ActionData("OPEN_GUI", "null@"+6001);
         EssentialsButton trainerButton=new EssentialsButton(1, trainerButtonAction);
         this.addButton(trainerButton);
@@ -46,16 +50,14 @@ public class PhoneMenu implements EssentialsGuis {
 
     public void init(EntityPlayerMP player, EntityNPCInterface npc){
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
-        CustomGuiWrapper gui=new CustomGuiWrapper(id, 256, 256, false);
-        gui.setBackgroundTexture("obscureobsidian:textures/gui/black_square.png");
-        gui.addTexturedButton(1, "", 50, 48, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 128, 0);
-        gui.addTexturedButton(2, "", 110, 48, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 32, 64);
-        gui.addTexturedButton(3, "", 170, 48, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 192, 128);
-        gui.addTexturedButton(4, "", 50, 112, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 224, 64);
-        gui.addTexturedButton(5, "", 110, 112, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 160, 0);
-        gui.addTexturedButton(6, "", 170, 112, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 0, 192);
-        gui.addTexturedButton(7, "", 110, 176, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 0, 128);
-        gui.addTexturedButton(8, "", 170, 176, 32, 32, "obscureobsidian:textures/gui/oobuttons.png", 32, 128);
+        CustomGuiWrapper gui=Phone.getPhoneGui(player, id);
+        gui=Phone.addButton(gui, 1, "obscureobsidian:textures/gui/phone/collective.png", 150, 0, "Info");
+        gui=Phone.addButton(gui, 2, "obscureobsidian:textures/gui/phone/collective.png", 0, 0, "Bag");
+        gui=Phone.addButton(gui, 3, "obscureobsidian:textures/gui/phone/collective.png", 50, 0);
+        gui=Phone.addButton(gui, 4, "obscureobsidian:textures/gui/phone/collective.png", 25, 0);
+        gui=Phone.addButton(gui, 5, "obscureobsidian:textures/gui/phone/collective.png", 125, 0);
+        gui=Phone.addButton(gui, 6, "obscureobsidian:textures/gui/phone/collective.png", 75, 0);
+        gui=Phone.addButton(gui, 7, "obscureobsidian:textures/gui/phone/collective.png", 175, 0);
         PixelmonEssentials.essentialsGuisHandler.addOrReplaceGui(player, this);
         playerWrapper.showCustomGui(gui);
     }

@@ -5,11 +5,15 @@ import com.goldenglow.common.guis.config.RouteTheme;
 import com.goldenglow.common.guis.config.ScoreboardsMenu;
 import com.goldenglow.common.guis.config.battlemusic.TrainerBattleMusic;
 import com.goldenglow.common.guis.config.battlemusic.WildBattleMusic;
+import com.goldenglow.common.guis.helperSkins.Phone;
 import com.pixelmonessentials.PixelmonEssentials;
+import net.minecraft.entity.player.EntityPlayerMP;
+import noppes.npcs.api.wrapper.gui.CustomGuiWrapper;
 
 public class GuiHandler {
 
     public static void init(){
+        new Phone();
         PixelmonEssentials.essentialsGuisHandler.addGui(new ConfigMenu());
         PixelmonEssentials.essentialsGuisHandler.addGui(new InfoMenu());
         PixelmonEssentials.essentialsGuisHandler.addGui(new MapMenu());

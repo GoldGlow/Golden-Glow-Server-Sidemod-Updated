@@ -63,35 +63,6 @@ public class InventoryFunctions {
         }
     }
 
-    //Needs to be updated
-    public static void createInstancedInv(EntityPlayerMP playerMP, String[] items, String containerName, int questID) {
-        HashMap<Integer, QuestData> data = PlayerData.get(playerMP).questData.activeQuests;
-        if(data.containsKey(questID)) {
-            QuestData qData = data.get(questID);
-            if(!qData.isCompleted) {
-                //Create Inventory with specified items
-                InventoryBasic inv = new InventoryBasic(containerName, false, (9+(9 % items.length)));
-                for (String tag : items) {
-                    try {
-                        ItemStack stack = new ItemStack(JsonToNBT.getTagFromJson(tag));
-                        if(stack!=null) {
-                            inv.addItem(stack);
-                        }
-                    } catch (NBTException e) {
-                        e.printStackTrace();
-                    }
-                }
-                //Show inventory to player
-                playerMP.getNextWindowId();
-                playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", inv.getDisplayName(), inv.getSizeInventory()));
-                playerMP.openContainer = new InstancedContainer(playerMP.inventory, inv, playerMP);
-                playerMP.openContainer.windowId = playerMP.currentWindowId;
-                playerMP.openContainer.addListener(playerMP);
-                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(playerMP, playerMP.openContainer));
-            }
-        }
-    }
-
     public static void addAwItem(PlayerWrapper player, String item){
         IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
         ItemStack itemStack=null;
@@ -102,6 +73,16 @@ public class InventoryFunctions {
         }
         if(itemStack!=null)
             playerData.addAWItem(itemStack);
+    }
+
+    public static void addAwFromName(PlayerWrapper player, String name){
+        IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.addAWItem(name);
+    }
+
+    public static void clearAwItems(PlayerWrapper player){
+        IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+        playerData.clearAWItems();
     }
 
     //Used at a few pokeloots, probably for a quest too

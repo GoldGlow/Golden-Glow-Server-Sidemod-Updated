@@ -106,59 +106,6 @@ public class OtherEventHandler {
 
     @SubscribeEvent
     public void onMessage(ServerChatEvent event) {
-        /*if(GoldenGlow.permissionUtils.checkPermissionWithStart(event.getPlayer(), "hover.")) {
-            String hoverText=GoldenGlow.permissionUtils.getNodeWithStart(event.getPlayer(), "hover.");
-            hoverText=hoverText.replace("hover.","");
-            String[] message=event.getComponent().getFormattedText().split(">");
-            ITextComponent player=new TextComponentString(message[0]);
-            player.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(hoverText)));
-            if(GoldenGlow.permissionUtils.checkPermissionWithStart(event.getPlayer(), "link.")){
-                String link=GoldenGlow.permissionUtils.getNodeWithStart(event.getPlayer(), "link.");
-                link=link.replace("link.","");
-                player.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
-            }
-            int index=1;
-            while(index<message.length){
-                TextComponentString component=new TextComponentString(">"+message[index]);
-                player.appendSibling(component);
-                index++;
-            }
-            GGLogger.info(player);
-            event.setComponent(player);
-        }*/
-        /*
-        List<String> matches = new ArrayList<>();
-        Matcher m = Pattern.compile("<\\w*:\\d>").matcher(event.getMessage());
-        while(m.find()) {
-            matches.add(m.group());
-        }
-
-        TextComponentString pre = new TextComponentString(event.getComponent().getFormattedText().split(event.getMessage())[0]);
-        //pre.appendText(event.getMessage().split(matches.get(0))[0]);
-        String[] inbetweens = event.getMessage().split("<\\w*:\\d>");
-        int i = 0;
-        for(String match : matches) {
-            pre.appendText(inbetweens[i]);
-            try {
-                String split = (match.split("<\\w*:")[1].replace(">", ""));
-                int num = Integer.valueOf(split);
-                if(num>0 && num<7) {
-                    Pokemon p = Pixelmon.storageManager.getParty(event.getPlayer()).get(num - 1);
-                    if(p!=null) {
-                        TextComponentString share = new TextComponentString("["+ (p.getNickname()!=null ? p.getNickname() : p.getSpecies().name) +"]");
-                        share.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new TextComponentString(CustomItem.getPokemonItem(p).getItem().writeToNBT(new NBTTagCompound()).toString()))).setBold(true).setColor(TextFormatting.DARK_AQUA);
-                        pre.appendSibling(share);
-                    }
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            i++;
-        }
-        if(inbetweens.length>i)
-            pre.appendText(inbetweens[i]);
-        event.setComponent(pre);*/
     }
 
     @SubscribeEvent

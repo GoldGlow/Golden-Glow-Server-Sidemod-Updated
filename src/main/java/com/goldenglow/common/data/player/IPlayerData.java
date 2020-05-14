@@ -58,6 +58,8 @@ public interface IPlayerData {
 
     List<ItemStack> getAWItems();
     void addAWItem(ItemStack item);
+    void addAWItem(String itemName);
+    void clearAWItems();
 
     List<ItemStack> getBagItems();
     void addBagItem(ItemStack item);
