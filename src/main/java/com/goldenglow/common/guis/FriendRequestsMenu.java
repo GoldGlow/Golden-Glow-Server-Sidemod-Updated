@@ -16,6 +16,7 @@ import noppes.npcs.api.wrapper.gui.CustomGuiButtonWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiComponentWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiScrollWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiWrapper;
+import noppes.npcs.controllers.CustomGuiController;
 import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
@@ -91,17 +92,39 @@ public class FriendRequestsMenu implements EssentialsGuis {
 
     public void updateScroll(EntityPlayerMP player){
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
+        CustomGuiWrapper gui= CustomGuiController.getOpenGui(player);
         if(this.index==-1){
             CustomGuiScrollWrapper scroll= new CustomGuiScrollWrapper(200, 126, 20, 124, 216, this.requestNames);
-            playerWrapper.updateCustomGui(new CustomGuiComponentWrapper[]{scroll}, new int[]{1, 2, 3});
+            if(gui.getComponent(1)!=null){
+                gui.getComponents().remove(gui.getComponent(1));
+            }
+            if(gui.getComponent(2)!=null){
+                gui.getComponents().remove(gui.getComponent(2));
+            }
+            if(gui.getComponent(3)!=null){
+                gui.getComponents().remove(gui.getComponent(3));
+            }
+            CustomGuiController.updateGui(playerWrapper, gui);
         }
         else{
             CustomGuiComponentWrapper[] components=new CustomGuiComponentWrapper[4];
-            components[0]=(CustomGuiScrollWrapper) new CustomGuiScrollWrapper(200, 126, 20, 124, 216, this.requestNames).setDefaultSelection(this.index);
-            components[1]=new CustomGuiButtonWrapper(1, "Check Profile", 16, 32, 96, 20);
-            components[2]=new CustomGuiButtonWrapper(2, "Accept friend", 16, 64, 96, 20);
-            components[3]=new CustomGuiButtonWrapper(3, "Reject friend", 16, 96, 96, 20);
-            playerWrapper.updateCustomGui(components, null);
+            if(gui.getComponent(1)!=null){
+                gui.getComponents().remove(gui.getComponent(1));
+            }
+            if(gui.getComponent(2)!=null){
+                gui.getComponents().remove(gui.getComponent(2));
+            }
+            if(gui.getComponent(3)!=null){
+                gui.getComponents().remove(gui.getComponent(3));
+            }
+            if(gui.getComponent(200)!=null){
+                gui.getComponents().remove(gui.getComponent(200));
+            }
+            gui.addScroll(200, 126, 20, 124, 216, this.requestNames).setDefaultSelection(this.index);
+            gui.addButton(1, "Check Profile", 16, 32, 96, 20);
+            gui.addButton(2, "Accept friend", 16, 64, 96, 20);
+            gui.addButton(3, "Reject friend", 16, 96, 96, 20);
+            CustomGuiController.updateGui(playerWrapper, gui);
         }
     }
 }

@@ -7,6 +7,7 @@ import com.goldenglow.common.events.OOPokedexEvent;
 import com.goldenglow.common.guis.BagMenu;
 import com.goldenglow.common.guis.PlayerProfileMenu;
 import com.goldenglow.common.guis.TutorialsMenu;
+import com.goldenglow.common.guis.config.OptionListMenu;
 import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.inventory.social.PlayerProfile;
 import com.goldenglow.common.music.SongManager;
@@ -91,6 +92,10 @@ public class OtherEventHandler {
         else if(gui instanceof TutorialsMenu){
             ((TutorialsMenu) gui).setIndex(event.selection[0]);
             ((TutorialsMenu) gui).updateScroll(event.player.getMCEntity());
+        }
+        else if(gui instanceof OptionListMenu){
+            ((OptionListMenu) gui).setIndex(event.selection[0]);
+            ((OptionListMenu) gui).updateScroll(event.player.getMCEntity());
         }
     }
 

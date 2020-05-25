@@ -8,6 +8,7 @@ import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.gui.*;
+import noppes.npcs.controllers.CustomGuiController;
 import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
@@ -68,18 +69,39 @@ public class TutorialsMenu implements EssentialsGuis {
 
     public void updateScroll(EntityPlayerMP player){
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
+        CustomGuiWrapper gui= CustomGuiController.getOpenGui(player);
         if(this.index==-1){
-            CustomGuiScrollWrapper scroll=new CustomGuiScrollWrapper(300, 128, 30, 118, 216, GoldenGlow.tutorialsManager.getTutorialList());
-            CustomGuiComponentWrapper description=new CustomGuiLabelWrapper(200, "", 7, 32, 114, 94);
-            playerWrapper.updateCustomGui(new CustomGuiComponentWrapper[]{scroll, description}, new int[]{1,2});
+            if(gui.getComponent(1)!=null){
+                gui.getComponents().remove(gui.getComponent(1));
+            }
+            if(gui.getComponent(2)!=null){
+                gui.getComponents().remove(gui.getComponent(2));
+            }
+            if(gui.getComponent(300)!=null){
+                gui.getComponents().remove(gui.getComponent(300));
+            }
+            if(gui.getComponent(200)!=null){
+                gui.getComponents().remove(gui.getComponent(200));
+            }
+            gui.addScroll(300, 128, 30, 118, 216, GoldenGlow.tutorialsManager.getTutorialList());
+            gui.addLabel(200, "", 7, 32, 114, 94);
         }
         else{
             String name=GoldenGlow.tutorialsManager.getTutorialList()[this.index];
             CustomGuiComponentWrapper[] components=new CustomGuiComponentWrapper[3];
-            components[0]=new CustomGuiLabelWrapper(200, GoldenGlow.tutorialsManager.getTutorial(name).getDescription(), 7, 32, 114, 94);
-            components[1]=new CustomGuiButtonWrapper(1, "Open", 10, 183, 108, 20);
-            components[2]=new CustomGuiButtonWrapper(2, "Cancel", 10, 213, 108, 20);
-            playerWrapper.updateCustomGui(components, new int[0]);
+            if(gui.getComponent(1)!=null){
+                gui.getComponents().remove(gui.getComponent(1));
+            }
+            if(gui.getComponent(2)!=null){
+                gui.getComponents().remove(gui.getComponent(2));
+            }
+            if(gui.getComponent(200)!=null){
+                gui.getComponents().remove(gui.getComponent(200));
+            }
+            gui.addLabel(200, GoldenGlow.tutorialsManager.getTutorial(name).getDescription(), 7, 32, 114, 94);
+            gui.addButton(1, "Open", 10, 183, 108, 20);
+            gui.addButton(2, "Cancel", 10, 213, 108, 20);
         }
+        CustomGuiController.updateGui(playerWrapper, gui);
     }
 }

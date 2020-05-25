@@ -12,7 +12,7 @@ import noppes.npcs.entity.EntityNPCInterface;
 import java.util.ArrayList;
 
 public class RouteTheme implements EssentialsGuis {
-    private static final int id=6101;
+    private static final int id=6169;
     private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
 
     public RouteTheme(){

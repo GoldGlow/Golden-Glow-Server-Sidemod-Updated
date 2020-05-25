@@ -12,7 +12,7 @@ import noppes.npcs.entity.EntityNPCInterface;
 import java.util.ArrayList;
 
 public class BattleMusic implements EssentialsGuis {
-    private static final int id=6102;
+    private static final int id=6199;
     private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
 
     public BattleMusic(){

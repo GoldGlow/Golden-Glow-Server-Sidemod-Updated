@@ -1,8 +1,6 @@
 package com.goldenglow.common.guis;
 
-import com.goldenglow.common.guis.config.BattleMusic;
-import com.goldenglow.common.guis.config.RouteTheme;
-import com.goldenglow.common.guis.config.ScoreboardsMenu;
+import com.goldenglow.common.guis.config.*;
 import com.goldenglow.common.guis.config.battlemusic.TrainerBattleMusic;
 import com.goldenglow.common.guis.config.battlemusic.WildBattleMusic;
 import com.goldenglow.common.guis.helperSkins.Phone;
@@ -28,5 +26,7 @@ public class GuiHandler {
         PixelmonEssentials.essentialsGuisHandler.addGui(new TeachTMMenu(""));
         PixelmonEssentials.essentialsGuisHandler.addGui(new PlayerProfileMenu(null));
         PixelmonEssentials.essentialsGuisHandler.addGui(new FriendRequestsMenu());
+        PixelmonEssentials.essentialsGuisHandler.addGui(new GeneralConfig());
+        PixelmonEssentials.essentialsGuisHandler.addGui(new OptionListMenu());
     }
 }

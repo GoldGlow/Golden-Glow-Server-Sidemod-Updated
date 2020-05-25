@@ -8,6 +8,8 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerStorage;
 import com.goldenglow.common.guis.GuiHandler;
+import com.goldenglow.common.guis.config.optionsTypes.OptionType;
+import com.goldenglow.common.guis.config.optionsTypes.OptionTypeManager;
 import com.goldenglow.common.guis.data.LocationList;
 import com.goldenglow.common.guis.data.TutorialsManager;
 import com.goldenglow.common.gyms.GymManager;
@@ -73,6 +75,7 @@ public class GoldenGlow{
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
     public static RightClickBlacklistHandler rightClickBlacklistHandler=new RightClickBlacklistHandler();
+    public static OptionTypeManager optionTypeManager=new OptionTypeManager();
 
     public static SongManager songManager= new SongManager();
     public static TeamManager teamManager = new TeamManager();

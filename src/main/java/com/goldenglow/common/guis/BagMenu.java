@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.gui.*;
+import noppes.npcs.controllers.CustomGuiController;
 import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
@@ -93,18 +94,32 @@ public class BagMenu implements EssentialsGuis {
     }
 
     public void update(EntityPlayerMP player){
+        CustomGuiWrapper gui= CustomGuiController.getOpenGui(player);
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
         this.setIndex(-1);
         String category=this.getCategoryName();
         this.items=this.getItemNames(player);
-        CustomGuiLabelWrapper title=new CustomGuiLabelWrapper(200, this.getCategoryName(), 100, 0, 128, 20);
-        CustomGuiScrollWrapper scroll=new CustomGuiScrollWrapper(300, 128, 20, 128, 236, this.items);
-        playerWrapper.updateCustomGui(new CustomGuiComponentWrapper[]{title, scroll}, new int[]{5, 6});
+        if(gui.getComponent(5)!=null){
+            gui.getComponents().remove(gui.getComponent(5));
+        }
+        if(gui.getComponent(6)!=null){
+            gui.getComponents().remove(gui.getComponent(6));
+        }
+        if(gui.getComponent(200)!=null){
+            gui.getComponents().remove(gui.getComponent(200));
+        }
+        gui.addLabel(200, this.getCategoryName(), 100, 0, 128, 20);
+        if(gui.getComponent(300)!=null){
+            gui.getComponents().remove(gui.getComponent(300));
+        }
+        gui.addScroll(300, 128, 20, 128, 236, this.items);
+        CustomGuiController.updateGui(playerWrapper, gui);
     }
 
     public void updateScroll(EntityPlayerMP player){
         if(this.index!=-1) {
             PlayerWrapper playerWrapper = new PlayerWrapper(player);
+            CustomGuiWrapper gui= CustomGuiController.getOpenGui(player);
             if (this.category == EnumCategory.TM_HM) {
                 for (EssentialsButton button : this.buttons) {
                     if (button.getId() == 5) {
@@ -116,9 +131,15 @@ public class BagMenu implements EssentialsGuis {
                 ItemTM tm = (ItemTM) data.getTMs().get(this.index).getItem();
                 this.addButton(new EssentialsButton(5, new ActionData("TM_GUI", tm.attackName)));
                 this.addButton(new EssentialsButton(6, new ActionData("SCROLL", "-1")));
-                CustomGuiTexturedButtonWrapper teachButton = new CustomGuiTexturedButtonWrapper(5, "Teach", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
-                CustomGuiTexturedButtonWrapper cancelButton = new CustomGuiTexturedButtonWrapper(6, "Cancel", 0, 190, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
-                playerWrapper.updateCustomGui(new CustomGuiComponentWrapper[]{teachButton, cancelButton}, new int[0]);
+                if(gui.getComponent(5)!=null){
+                    gui.getComponents().remove(gui.getComponent(5));
+                }
+                if(gui.getComponent(6)!=null){
+                    gui.getComponents().remove(gui.getComponent(6));
+                }
+                gui.addTexturedButton(5, "Teach", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                gui.addTexturedButton(6, "Cancel", 0, 190, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                CustomGuiController.updateGui(playerWrapper, gui);
             }
             else if(this.category==EnumCategory.ARMOURERS_WORKSHOP){
                 for (EssentialsButton button : this.buttons) {
@@ -127,17 +148,22 @@ public class BagMenu implements EssentialsGuis {
                         break;
                     }
                 }
+                if(gui.getComponent(5)!=null){
+                    gui.getComponents().remove(gui.getComponent(5));
+                }
+                if(gui.getComponent(6)!=null){
+                    gui.getComponents().remove(gui.getComponent(6));
+                }
                 this.addButton(new EssentialsButton(5, new ActionData("CHANGE_CLOTHES", "")));
                 this.addButton(new EssentialsButton(6, new ActionData("SCROLL", "-1")));
-                CustomGuiTexturedButtonWrapper changeButton=null;
                 if(this.isWearing(player)){
-                    changeButton = new CustomGuiTexturedButtonWrapper(5, "Remove", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                    gui.addTexturedButton(5, "Remove", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
                 }
                 else {
-                    changeButton = new CustomGuiTexturedButtonWrapper(5, "Wear", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                    gui.addTexturedButton(5, "Wear", 0, 170, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
                 }
-                CustomGuiTexturedButtonWrapper cancelButton = new CustomGuiTexturedButtonWrapper(6, "Cancel", 0, 190, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
-                playerWrapper.updateCustomGui(new CustomGuiComponentWrapper[]{changeButton, cancelButton}, new int[0]);
+                gui.addTexturedButton(6, "Cancel", 0, 190, 128, 20, "obscureobsidian:textures/gui/arrow_select.png", 0, 0);
+                CustomGuiController.updateGui(playerWrapper, gui);
             }
         }
         else{

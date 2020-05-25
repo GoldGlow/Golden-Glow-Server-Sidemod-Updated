@@ -34,5 +34,7 @@ public class ActionHandler {
         PixelmonEssentials.actionHandler.addAction(new UpdateBagAction());
         PixelmonEssentials.actionHandler.addAction(new TMGuiAction());
         PixelmonEssentials.actionHandler.addAction(new SetLocationAction());
+        PixelmonEssentials.actionHandler.addAction(new SaveOptionAction());
+        PixelmonEssentials.actionHandler.addAction(new OpenOptionAction());
     }
 }
