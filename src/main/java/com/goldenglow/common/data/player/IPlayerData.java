@@ -39,6 +39,8 @@ public interface IPlayerData {
 
     int getNotificationScheme();
     void setNotificationScheme(int id);
+    String getHelperOption();
+    void setHelperOption(String option);
 
     Scoreboards.EnumScoreboardType getScoreboardType();
     void setScoreboardType(Scoreboards.EnumScoreboardType scoreboardType);
@@ -85,8 +87,16 @@ public interface IPlayerData {
     void denyFriendRequest(UUID player);
     void addFriend(UUID player);
     void removeFriend(UUID player);
-    boolean getPlayerVisibility();
-    void setPlayerVisibility(boolean onlySeesFriends);
+
+    boolean getSeesAnyone();
+    void setSeesAnyone(boolean seesAnyone);
+    boolean getSeesFriends();
+    void setSeesFriends(boolean seesFriends);
+
+    boolean canFriendsDm();
+    void setCanFriendsDm(boolean canFriendsDm);
+    boolean canAnyoneDm();
+    void setCanAnyoneDm(boolean canAnyoneDm);
 
     List<Pokemon> getWaitToEvolve();
     Pokemon getPokemonWaiting(int index);
@@ -95,6 +105,9 @@ public interface IPlayerData {
     void addPokemonWaiting(Pokemon pokemon);
     boolean isEvolvingPokemon();
     void setEvolvingPokemon(boolean evolvingPokemon);
+
+    boolean seesGlobalChat();
+    void setGlobalChat(boolean canSee);
 
     void setLoginTime(Instant loginTime);
     Instant getLoginTime();

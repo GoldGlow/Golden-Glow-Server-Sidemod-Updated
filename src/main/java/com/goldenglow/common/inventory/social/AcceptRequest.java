@@ -46,7 +46,7 @@ public class AcceptRequest extends CustomInventory {
         if(slotId==3){
             otherPlayerData.addFriend(player.getUniqueID());
             playerData.acceptFriendRequest(this.targetPlayer.getUniqueID());
-            targetPlayer.sendMessage(new TextComponentString(Reference.darkGreen+player.getName()+" accepted your friend request!"));
+            targetPlayer.sendMessage(new TextComponentString(Reference.darkGreen+player.getName()+" accepted your friendList request!"));
             player.sendMessage(new TextComponentString(Reference.darkGreen+"You are now friends with "+targetPlayer.getName()+"!"));
             player.closeScreen();
         }

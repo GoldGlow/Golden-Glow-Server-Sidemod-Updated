@@ -1,9 +1,20 @@
 package com.goldenglow.common.util.actions;
 
-import com.goldenglow.common.util.actions.types.*;
+import com.goldenglow.common.util.actions.types.bag.*;
+import com.goldenglow.common.util.actions.types.friendList.AcceptFriendAction;
+import com.goldenglow.common.util.actions.types.friendList.RejectFriendAction;
+import com.goldenglow.common.util.actions.types.gui.ScrollAction;
+import com.goldenglow.common.util.actions.types.gui.SetLocationAction;
+import com.goldenglow.common.util.actions.types.gyms.*;
+import com.goldenglow.common.util.actions.types.oldActions.OpenInvAction;
+import com.goldenglow.common.util.actions.types.oldActions.ScoreboardAction;
+import com.goldenglow.common.util.actions.types.oldActions.SealSetAction;
+import com.goldenglow.common.util.actions.types.options.*;
+import com.goldenglow.common.util.actions.types.other.DepositoryPokemonAction;
+import com.goldenglow.common.util.actions.types.other.SetSongAction;
+import com.goldenglow.common.util.actions.types.tutorials.ChangeTutorialPageAction;
+import com.goldenglow.common.util.actions.types.tutorials.OpenTutorialAction;
 import com.pixelmonessentials.PixelmonEssentials;
-
-import java.util.ArrayList;
 
 public class ActionHandler {
 
@@ -24,7 +35,6 @@ public class ActionHandler {
         PixelmonEssentials.actionHandler.addAction(new ScoreboardAction());
         PixelmonEssentials.actionHandler.addAction(new ScrollAction());
         PixelmonEssentials.actionHandler.addAction(new SealSetAction());
-        PixelmonEssentials.actionHandler.addAction(new SetFriendViewAction());
         PixelmonEssentials.actionHandler.addAction(new SetSongAction());
         PixelmonEssentials.actionHandler.addAction(new StartBattleAction());
         PixelmonEssentials.actionHandler.addAction(new StopChallengersAction());
@@ -36,5 +46,8 @@ public class ActionHandler {
         PixelmonEssentials.actionHandler.addAction(new SetLocationAction());
         PixelmonEssentials.actionHandler.addAction(new SaveOptionAction());
         PixelmonEssentials.actionHandler.addAction(new OpenOptionAction());
+        PixelmonEssentials.actionHandler.addAction(new ChatVisibilityAction());
+        PixelmonEssentials.actionHandler.addAction(new SetDmAction());
+        PixelmonEssentials.actionHandler.addAction(new SetViewAction());
     }
 }

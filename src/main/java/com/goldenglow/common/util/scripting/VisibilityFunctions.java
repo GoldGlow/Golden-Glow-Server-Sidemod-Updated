@@ -3,6 +3,7 @@ package com.goldenglow.common.util.scripting;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
+import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.requirement.RequirementData;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
@@ -27,17 +28,44 @@ public class VisibilityFunctions {
         IEntity[] players=playerWrapper.getWorld().getNearbyEntities(playerWrapper.getPos(), 512, 1);
         for(IEntity otherPlayer:players){
             EntityPlayerMP otherPlayerMP=(EntityPlayerMP)otherPlayer.getMCEntity();
-            if(playerData.getPlayerVisibility()&&!playerData.getFriendList().contains(otherPlayerMP.getUniqueID())){
+            if(!canPlayerSeeOtherPlayer(player, otherPlayerMP)){
                 if(!player.equals(otherPlayerMP))
                     player.removeEntity(otherPlayerMP);
             }
-            else if(!playerData.getPlayerVisibility()){
-                if(!player.equals(otherPlayerMP)) {
-                    player.removeEntity(otherPlayerMP);
-                    player.connection.sendPacket(new SPacketSpawnPlayer(otherPlayerMP));
-                }
+            else if(!player.equals(otherPlayerMP)) {
+                player.removeEntity(otherPlayerMP);
+                player.connection.sendPacket(new SPacketSpawnPlayer(otherPlayerMP));
             }
         }
+    }
+
+    public static boolean canPlayerSeeOtherPlayer(EntityPlayerMP seeingPlayer, EntityPlayerMP targettedPlayer){
+        IPlayerData playerData=seeingPlayer.getCapability(OOPlayerProvider.OO_DATA, null);
+        if(playerData.getSeesAnyone()){
+            return true;
+        }
+        else if(playerData.getSeesFriends()&&playerData.getFriendList().contains(targettedPlayer.getUniqueID())){
+            return true;
+        }
+        else if(GoldenGlow.permissionUtils.checkPermission(targettedPlayer, "group.staff")){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean canPlayerDmOtherPlayer(EntityPlayerMP sendingPlayer, EntityPlayerMP targettedPlayer){
+        if(GoldenGlow.permissionUtils.checkPermission(sendingPlayer, "group.staff")||GoldenGlow.permissionUtils.checkPermission(targettedPlayer, "group.staff")){
+            return true;
+        }
+        IPlayerData playerData=sendingPlayer.getCapability(OOPlayerProvider.OO_DATA, null);
+        IPlayerData otherPlayerData=targettedPlayer.getCapability(OOPlayerProvider.OO_DATA, null);
+        if(playerData.canAnyoneDm()&&otherPlayerData.canAnyoneDm()){
+            return true;
+        }
+        else if((playerData.canFriendsDm()&&otherPlayerData.canFriendsDm())&&(playerData.getFriendList().contains(targettedPlayer.getUniqueID())&&otherPlayerData.getFriendList().contains(sendingPlayer.getUniqueID()))){
+            return true;
+        }
+        return false;
     }
 
     public static void refreshNPCVisibility(PlayerWrapper playerWrapper){

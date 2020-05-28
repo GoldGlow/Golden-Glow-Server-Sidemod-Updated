@@ -13,8 +13,8 @@ public class FriendOnlyRequirement implements Requirement {
 
     public boolean hasRequirement(String data, EntityPlayerMP player){
         if(data.equalsIgnoreCase("true"))
-            return player.getCapability(OOPlayerProvider.OO_DATA, null).getPlayerVisibility();
+            return player.getCapability(OOPlayerProvider.OO_DATA, null).getSeesFriends();
         else
-            return !player.getCapability(OOPlayerProvider.OO_DATA, null).getPlayerVisibility();
+            return !player.getCapability(OOPlayerProvider.OO_DATA, null).getSeesFriends();
     }
 }

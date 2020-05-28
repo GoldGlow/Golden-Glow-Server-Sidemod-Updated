@@ -4,18 +4,14 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.events.OOPokedexEvent;
-import com.goldenglow.common.guis.BagMenu;
-import com.goldenglow.common.guis.PlayerProfileMenu;
-import com.goldenglow.common.guis.TutorialsMenu;
-import com.goldenglow.common.guis.config.OptionListMenu;
-import com.goldenglow.common.inventory.CustomItem;
-import com.goldenglow.common.inventory.social.PlayerProfile;
+import com.goldenglow.common.guis.pokehelper.bag.BagMenu;
+import com.goldenglow.common.guis.pokehelper.config.OptionListMenu;
+import com.goldenglow.common.guis.pokehelper.social.PlayerProfileMenu;
+import com.goldenglow.common.guis.pokehelper.info.tutorials.TutorialsMenu;
 import com.goldenglow.common.music.SongManager;
-import com.goldenglow.common.routes.RouteManager;
 import com.goldenglow.common.seals.SealManager;
-import com.goldenglow.common.util.GGLogger;
-import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.TitleMethods;
+import com.goldenglow.common.util.scripting.VisibilityFunctions;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -28,13 +24,7 @@ import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -49,10 +39,7 @@ import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerScriptData;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class OtherEventHandler {
     @SubscribeEvent
@@ -101,9 +88,8 @@ public class OtherEventHandler {
 
     @SubscribeEvent
     public void onVanish(PlayerEvent.StartTracking event){
-        IPlayerData playerData=event.getEntityPlayer().getCapability(OOPlayerProvider.OO_DATA, null);
         if(event.getTarget() instanceof EntityPlayerMP){
-            if(playerData.getPlayerVisibility()&&!playerData.getFriendList().contains(event.getTarget().getUniqueID())){
+            if(!VisibilityFunctions.canPlayerSeeOtherPlayer((EntityPlayerMP) event.getEntityPlayer(), (EntityPlayerMP) event.getTarget())){
                 ((EntityPlayerMP)event.getEntityPlayer()).removeEntity(event.getTarget());
             }
         }

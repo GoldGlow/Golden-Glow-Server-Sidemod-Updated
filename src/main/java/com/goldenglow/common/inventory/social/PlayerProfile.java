@@ -108,10 +108,10 @@ public class PlayerProfile extends CustomInventory {
                 if (slot.getStack().getDisplayName().contains("Accept")) {
                     otherPlayerData.addFriend(player.getUniqueID());
                     playerData.acceptFriendRequest(this.targetPlayer.getUniqueID());
-                    targetPlayer.sendMessage(new TextComponentString(Reference.darkGreen+player.getName()+" accepted your friend request!"));
+                    targetPlayer.sendMessage(new TextComponentString(Reference.darkGreen+player.getName()+" accepted your friendList request!"));
                     player.sendMessage(new TextComponentString(Reference.darkGreen+"You are now friends with "+targetPlayer.getName()+"!"));
                 } else if (slot.getStack().getDisplayName().contains("Send")) {
-                    targetPlayer.sendMessage(new TextComponentString(Reference.darkGreen+player.getName()+" sent a friend request! Accept it by checking his social or by checking the social menu on the phone."));
+                    targetPlayer.sendMessage(new TextComponentString(Reference.darkGreen+player.getName()+" sent a friendList request! Accept it by checking his social or by checking the social menu on the phone."));
                     otherPlayerData.addFriendRequest(player.getUniqueID());;
                 } else if (slot.getStack().getDisplayName().contains("Remove")) {
                     playerData.removeFriend(this.targetPlayer.getUniqueID());

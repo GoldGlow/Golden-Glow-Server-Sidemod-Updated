@@ -65,6 +65,8 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             tag.setTag("AWItems", items);
         }
 
+        tag.setBoolean("globalChat", instance.seesGlobalChat());
+
         if(instance.getTMs()!=null){
             NBTTagList items=new NBTTagList();
             for(ItemStack item:instance.getTMs()){
@@ -87,6 +89,10 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
             }
             if (equippedSeals.tagCount()!=0)
                 tag.setTag("equippedSeals", equippedSeals);
+        }
+
+        if(!instance.getHelperOption().equals("phone_blue")){
+            tag.setString("helperOption", instance.getHelperOption());
         }
 
         NBTTagList unlockedSeals = new NBTTagList();
@@ -125,6 +131,11 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
     public void readNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side, NBTBase nbt) {
         final NBTTagCompound tag = (NBTTagCompound)nbt;
 
+        if(tag.hasKey("helperOption"))
+            instance.setHelperOption(tag.getString("helperOption"));
+        else
+            instance.setHelperOption("phone_blue");
+
         if(tag.hasKey("theme_wild"))
             instance.setWildTheme(tag.getString("theme_wild"));
         else
@@ -150,6 +161,10 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
                 NBTTagString uuid=(NBTTagString) friend;
                 instance.addFriend(UUID.fromString(uuid.getString()));
             }
+        }
+
+        if(tag.hasKey("globalChat")){
+            instance.setGlobalChat(tag.getBoolean("globalChat"));
         }
 
         instance.setNotificationScheme(tag.getInteger("notification_style"));

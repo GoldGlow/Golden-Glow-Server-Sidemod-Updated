@@ -8,10 +8,9 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerStorage;
 import com.goldenglow.common.guis.GuiHandler;
-import com.goldenglow.common.guis.config.optionsTypes.OptionType;
-import com.goldenglow.common.guis.config.optionsTypes.OptionTypeManager;
-import com.goldenglow.common.guis.data.LocationList;
-import com.goldenglow.common.guis.data.TutorialsManager;
+import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionTypeManager;
+import com.goldenglow.common.guis.pokehelper.map.data.LocationList;
+import com.goldenglow.common.guis.pokehelper.info.data.TutorialsManager;
 import com.goldenglow.common.gyms.GymManager;
 import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.handlers.events.*;
@@ -38,17 +37,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
-
-import java.util.ArrayList;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm;required-after:pixelmonessentials;", acceptableRemoteVersions = "*")
 public class GoldenGlow{
