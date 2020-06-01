@@ -37,7 +37,9 @@ public class Route {
     public int kickWarpZ=0;
     public World world;
     public List<SpawnPokemon> apricornPokemon=new ArrayList<>();
+    public FishingSpawns fishingPokemon=new FishingSpawns();
     public List<SpawnPokemon> spawnList=new ArrayList<>();
+    public List<SpawnPokemon> specialSpawnList=new ArrayList<>();
 
     List<EntityPlayerMP> players = new ArrayList<>();
 

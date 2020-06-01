@@ -2,6 +2,7 @@ package com.goldenglow.common.guis.pokehelper.config.social;
 
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
+import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
@@ -60,6 +61,8 @@ public class VisibilitySettings implements EssentialsGuis {
             gui.addTexturedButton(502, "", 148, 55, 20, 20, "obscureobsidian:textures/gui/phone/collective.png", 236, 89);
         }
         gui.addButton(500, "Back", 30, 216, 64, 20);
+        GGLogger.info(data.getSeesAnyone());
+        GGLogger.info(data.getSeesFriends());
         PixelmonEssentials.essentialsGuisHandler.addOrReplaceGui(player, this);
         playerWrapper.showCustomGui(gui);
     }

@@ -3,6 +3,7 @@ package com.goldenglow.common.util.actions;
 import com.goldenglow.common.util.actions.types.bag.*;
 import com.goldenglow.common.util.actions.types.friendList.AcceptFriendAction;
 import com.goldenglow.common.util.actions.types.friendList.RejectFriendAction;
+import com.goldenglow.common.util.actions.types.gui.OpenSpawnsAction;
 import com.goldenglow.common.util.actions.types.gui.ScrollAction;
 import com.goldenglow.common.util.actions.types.gui.SetLocationAction;
 import com.goldenglow.common.util.actions.types.gyms.*;
@@ -49,5 +50,6 @@ public class ActionHandler {
         PixelmonEssentials.actionHandler.addAction(new ChatVisibilityAction());
         PixelmonEssentials.actionHandler.addAction(new SetDmAction());
         PixelmonEssentials.actionHandler.addAction(new SetViewAction());
+        PixelmonEssentials.actionHandler.addAction(new OpenSpawnsAction());
     }
 }

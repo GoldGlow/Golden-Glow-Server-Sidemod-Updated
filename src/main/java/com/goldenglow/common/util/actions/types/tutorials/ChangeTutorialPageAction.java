@@ -4,6 +4,7 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.guis.pokehelper.info.tutorials.TutorialMenu;
 import com.goldenglow.common.guis.pokehelper.info.tutorials.TutorialsMenu;
 import com.goldenglow.common.guis.pokehelper.info.data.TutorialsInfo;
+import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.Action;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
@@ -26,8 +27,8 @@ public class ChangeTutorialPageAction implements Action {
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
         if(gui instanceof TutorialMenu){
             ((TutorialMenu) gui).setPage(((TutorialMenu) gui).getPage()+Integer.parseInt(value));
+            GGLogger.info(((TutorialMenu) gui).getPage());
             if(((TutorialMenu) gui).getPage()<1||((TutorialMenu) gui).getPage()>((TutorialMenu) gui).getTutorial().getPageTotal()){
-                player.closeScreen();
                 TutorialsMenu newMenu=new TutorialsMenu();
                 newMenu.init(player, null);
             }

@@ -310,7 +310,7 @@ public class OOPlayerData implements IPlayerData {
     public boolean getSeesFriends(){return this.seesFriends;}
 
     public void setSeesAnyone(boolean seesAnyone){this.seesAnyone=seesAnyone;}
-    public void setSeesFriends(boolean seesFriends){this.seesAnyone=seesFriends;}
+    public void setSeesFriends(boolean seesFriends){this.seesFriends=seesFriends;}
 
     //Chat methods
     public boolean seesGlobalChat(){

@@ -1,29 +1,35 @@
-package com.goldenglow.common.guis.pokehelper.config.optionsTypes.social;
+package com.goldenglow.common.guis.pokehelper.config.optionsTypes.music;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.SingleOptionData;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.UnlockableOptionData;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class TitleType implements UnlockableOptionData {
-    private String unlockedName;
+public class ThemeType implements UnlockableOptionData {
+    private String name;
     private String unlockedDescription;
     private String lockedDescription;
+    private String value;
     private String permissionNode;
 
-    public TitleType(String unlockedName, String unlockedDescription, String lockedDescription, String permissionNode){
-        this.unlockedName=unlockedName;
+    public ThemeType(String name, String unlockedDescription, String value){
+        this.name=name;
         this.unlockedDescription=unlockedDescription;
+        this.value=value;
+        this.lockedDescription="";
+        this.permissionNode="";
+    }
+
+    public ThemeType(String name, String unlockedDescription, String value, String lockedDescription, String permissionNode){
+        this.name=name;
+        this.unlockedDescription=unlockedDescription;
+        this.value=value;
         this.lockedDescription=lockedDescription;
         this.permissionNode=permissionNode;
     }
 
     public String getName(){
-        return "???";
-    }
-
-    public String getUnlockedName(){
-        return this.unlockedName;
+        return this.name;
     }
 
     public String getDescription(){
@@ -31,14 +37,14 @@ public class TitleType implements UnlockableOptionData {
     }
 
     public boolean isUnlocked(EntityPlayerMP playerMP){
+        if(this.permissionNode.equals("")){
+            return true;
+        }
         return GoldenGlow.permissionUtils.checkPermission(playerMP, this.permissionNode);
     }
 
     public String getProperName(EntityPlayerMP playerMP){
-        if(this.isUnlocked(playerMP)){
-            return this.unlockedName;
-        }
-        return this.getName();
+        return this.name;
     }
 
     public String getProperDescription(EntityPlayerMP playerMP){
@@ -46,5 +52,9 @@ public class TitleType implements UnlockableOptionData {
             return this.unlockedDescription;
         }
         return this.lockedDescription;
+    }
+
+    public String getValue(){
+        return this.value;
     }
 }

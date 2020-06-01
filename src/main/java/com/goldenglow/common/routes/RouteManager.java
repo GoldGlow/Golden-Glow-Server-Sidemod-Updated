@@ -145,6 +145,38 @@ public class RouteManager {
             }
         }
 
+        if(json.has("oldRodSpawns")){
+            JsonArray spawns=json.getAsJsonArray("oldRodSpawns");
+            for(JsonElement o: spawns){
+                SpawnPokemon pokemon=ParseJson.parseSpawnPokemon((JsonObject) o);
+                route.fishingPokemon.addOldRodSpawn(pokemon);
+            }
+        }
+
+        if(json.has("goodRodSpawns")){
+            JsonArray spawns=json.getAsJsonArray("goodRodSpawns");
+            for(JsonElement o: spawns){
+                SpawnPokemon pokemon=ParseJson.parseSpawnPokemon((JsonObject) o);
+                route.fishingPokemon.addGoodRodSpawn(pokemon);
+            }
+        }
+
+        if(json.has("superRodSpawns")){
+            JsonArray spawns=json.getAsJsonArray("superRodSpawns");
+            for(JsonElement o: spawns){
+                SpawnPokemon pokemon=ParseJson.parseSpawnPokemon((JsonObject) o);
+                route.fishingPokemon.addSuperRodSpawn(pokemon);
+            }
+        }
+
+        if(json.has("specialSpawns")){
+            JsonArray apricornPokemonArray=json.getAsJsonArray("specialSpawns");
+            for(JsonElement o:apricornPokemonArray){
+                SpawnPokemon pokemon=ParseJson.parseSpawnPokemon((JsonObject) o);
+                route.specialSpawnList.add(pokemon);
+            }
+        }
+
         if(json.has("apricornPokemon")){
             JsonArray apricornPokemonArray=json.getAsJsonArray("apricornPokemon");
             for(JsonElement o:apricornPokemonArray){

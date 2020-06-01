@@ -1,5 +1,7 @@
 package com.goldenglow.common.guis.pokehelper.map;
 
+import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.routes.Route;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class MapMenu implements EssentialsGuis {
     private static final int id = 6008;
     private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
+    private Route route;
 
     public MapMenu() {
         ActionData waterlilButtonAction = new ActionData("SET_LOCATION", "waterlil");
@@ -31,6 +34,10 @@ public class MapMenu implements EssentialsGuis {
         ActionData sakuraButtonAction = new ActionData("SET_LOCATION", "sakura");
         EssentialsButton sakuraButton = new EssentialsButton(504, sakuraButtonAction);
         this.addButton(sakuraButton);
+
+        ActionData foundPokemonAction = new ActionData("OPEN_SPAWNS", "");
+        EssentialsButton foundPokemonButton = new EssentialsButton(512, foundPokemonAction);
+        this.addButton(foundPokemonButton);
     }
 
     public int getId(){
@@ -43,6 +50,28 @@ public class MapMenu implements EssentialsGuis {
 
     public void addButton(EssentialsButton button) {
         this.buttons.add(button);
+    }
+
+    public Route getRoute(){
+        return this.route;
+    }
+
+    public void setRoute(String route){
+        if(route.equalsIgnoreCase("waterlil")){
+            this.route= GoldenGlow.routeManager.getRoute("Waterlil_Lake");
+        }
+        else if(route.equalsIgnoreCase("valleyhill")){
+            this.route=GoldenGlow.routeManager.getRoute("Valleyhill_Trail");
+        }
+        else if(route.equalsIgnoreCase("acanthus")){
+            this.route=GoldenGlow.routeManager.getRoute("Acanthus_Town");
+        }
+        else if(route.equalsIgnoreCase("chateau")){
+            this.route=GoldenGlow.routeManager.getRoute("Haunted_House");
+        }
+        else if(route.equalsIgnoreCase("sakura")){
+            this.route=GoldenGlow.routeManager.getRoute("Sakura_City");
+        }
     }
 
     public void init(EntityPlayerMP player, EntityNPCInterface npc) {

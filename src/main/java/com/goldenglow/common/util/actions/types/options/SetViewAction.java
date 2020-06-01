@@ -15,11 +15,12 @@ public class SetViewAction implements Action {
     }
 
     public void doAction(String value, EntityPlayerMP player){
+        OOPlayerData data=(OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         if(value.equalsIgnoreCase("anyone")){
-            ((OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null)).setSeesAnyone(!((OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null)).getSeesAnyone());
+            data.setSeesAnyone(!data.getSeesAnyone());
         }
         else if(value.equalsIgnoreCase("friends")){
-            ((OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null)).setSeesFriends(!((OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null)).getSeesFriends());
+            data.setSeesFriends(!data.getSeesFriends());
         }
         VisibilityFunctions.refreshPlayerVisibility(new PlayerWrapper(player));
     }

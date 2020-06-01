@@ -24,6 +24,7 @@ public class SetLocationAction implements Action {
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
         if(gui instanceof MapMenu){
             LocationDetails locationDetails= GoldenGlow.locationList.locations.get(value);
+            ((MapMenu) gui).setRoute(value);
 
             guiWrapper.removeComponent(511);
             guiWrapper.removeComponent(512);

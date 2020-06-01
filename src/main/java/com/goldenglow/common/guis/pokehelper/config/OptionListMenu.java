@@ -4,8 +4,12 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionType;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionTypeManager;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.SingleOptionData;
+import com.goldenglow.common.guis.pokehelper.config.optionsTypes.UnlockableOptionData;
+import com.goldenglow.common.guis.pokehelper.config.optionsTypes.music.ThemeType;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.social.OptionTitle;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.social.TitleType;
+import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
@@ -115,11 +119,14 @@ public class OptionListMenu implements EssentialsGuis {
             String optionName=this.getItems()[this.index];
             OptionType optionType=GoldenGlow.optionTypeManager.getOptionFromEnum(this.optionType);
             SingleOptionData type=null;
-            if(optionType instanceof OptionTitle){
+            if(optionType.getOptions().get(0) instanceof UnlockableOptionData){
                 type = optionType.getOptions().get(this.index);
-                gui.addLabel(200, ((TitleType) type).getProperDescription(player), 7, 32, 114, 94);
-                if(!((TitleType)type).getProperName(player).equals("???")){
+                gui.addLabel(200, ((UnlockableOptionData) type).getProperDescription(player), 7, 32, 114, 94);
+                if((((UnlockableOptionData) type).isUnlocked(player))){
                     gui.addButton(501, "Save", 10, 183, 108, 20);
+                }
+                if(type instanceof ThemeType){
+                    SongManager.setCurrentSong(player, ((ThemeType) type).getValue());
                 }
             }
             else {

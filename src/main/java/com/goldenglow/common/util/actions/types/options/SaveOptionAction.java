@@ -7,8 +7,11 @@ import com.goldenglow.common.guis.pokehelper.config.OptionListMenu;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionType;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionTypeManager;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.SingleOptionData;
+import com.goldenglow.common.guis.pokehelper.config.optionsTypes.UnlockableOptionData;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.general.OptionScoreboard;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.general.ScoreboardType;
+import com.goldenglow.common.guis.pokehelper.config.optionsTypes.music.PvpSelectionType;
+import com.goldenglow.common.guis.pokehelper.config.optionsTypes.music.ThemeType;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.social.OptionTitle;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.social.TitleType;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.visual.HelperSkinType;
@@ -51,12 +54,28 @@ public class SaveOptionAction implements Action {
                     data.setNotificationScheme(((RouteNotificationType)singleOptionData).getValue());
                     break;
                 case TITLE:
-                    if(!((TitleType)singleOptionData).getProperName(player).equals("???")){
-                        GGLogger.info("test");
+                    if(((UnlockableOptionData)singleOptionData).isUnlocked(player)){
                         GoldenGlow.permissionUtils.unsetPermissionsWithStart(player, "prefix.3.");
                         GoldenGlow.permissionUtils.setPrefix(player, ((TitleType)singleOptionData).getProperName(player));
                     }
                     break;
+                case WILD_THEME:
+                    if(((UnlockableOptionData)singleOptionData).isUnlocked(player)) {
+                        data.setWildTheme(((ThemeType) singleOptionData).getValue());
+                    }
+                    break;
+                case TRAINER_THEME:
+                    if(((UnlockableOptionData)singleOptionData).isUnlocked(player)) {
+                        data.setTrainerTheme(((ThemeType) singleOptionData).getValue());
+                    }
+                    break;
+                case PVP_THEME:
+                    if(((UnlockableOptionData)singleOptionData).isUnlocked(player)){
+                        data.setPVPTheme(((ThemeType)singleOptionData).getValue());
+                    }
+                    break;
+                case PVP_SELECTION:
+                    data.setPvpThemeOption(((PvpSelectionType)singleOptionData).getValue());
                 default:
                     break;
             }

@@ -1,7 +1,7 @@
 package com.goldenglow.common.util.actions.types.social;
 
 import com.goldenglow.common.guis.pokehelper.social.FriendRequestsMenu;
-import com.goldenglow.common.guis.pokehelper.social.PlayerProfileMenu;
+import com.goldenglow.common.guis.social.PlayerProfileMenu;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.Action;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;

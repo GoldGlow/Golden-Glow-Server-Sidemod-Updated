@@ -1,25 +1,32 @@
 package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.events.OOPokedexEvent;
 import com.goldenglow.common.guis.pokehelper.bag.BagMenu;
 import com.goldenglow.common.guis.pokehelper.config.OptionListMenu;
-import com.goldenglow.common.guis.pokehelper.social.PlayerProfileMenu;
+import com.goldenglow.common.guis.pokehelper.map.AreaDexMenu;
+import com.goldenglow.common.guis.social.PlayerProfileMenu;
 import com.goldenglow.common.guis.pokehelper.info.tutorials.TutorialsMenu;
 import com.goldenglow.common.music.SongManager;
+import com.goldenglow.common.routes.Route;
+import com.goldenglow.common.routes.SpawnPokemon;
 import com.goldenglow.common.seals.SealManager;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.TitleMethods;
 import com.goldenglow.common.util.scripting.VisibilityFunctions;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.RandomHelper;
 import com.pixelmonmod.pixelmon.api.events.AggressionEvent;
+import com.pixelmonmod.pixelmon.api.events.FishingEvent;
 import com.pixelmonmod.pixelmon.api.events.PokedexEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.PixelmonSpawnerEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.items.EnumRodType;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -84,6 +91,10 @@ public class OtherEventHandler {
             ((OptionListMenu) gui).setIndex(event.selection[0]);
             ((OptionListMenu) gui).updateScroll(event.player.getMCEntity());
         }
+        else if(gui instanceof AreaDexMenu){
+            ((AreaDexMenu) gui).setIndex(event.selection[0]);
+            ((AreaDexMenu) gui).updateScroll(event.player.getMCEntity());
+        }
     }
 
     @SubscribeEvent
@@ -113,6 +124,21 @@ public class OtherEventHandler {
                     event.setCanceled(true);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onFishingHook(FishingEvent.Catch event){
+        event.setDisplayedMarks(1);
+        Route route=GoldenGlow.routeManager.getRoute(event.player);
+        EnumRodType fishingRod=event.getRodType();
+        SpawnPokemon spawnPokemon=SpawnPokemon.getWeightedPokemonFromList(route.fishingPokemon.getSpawnsFromRod(fishingRod));
+        PokemonSpec pokemonSpec=PokemonSpec.from(spawnPokemon.species);
+        pokemonSpec.form=spawnPokemon.form;
+        pokemonSpec.level=RandomHelper.getRandomNumberBetween(spawnPokemon.minLvl, spawnPokemon.maxLvl);
+        Pokemon fishingPokemon=pokemonSpec.create();
+        EntityPixelmon pixelmon=new EntityPixelmon(event.player.world);
+        pixelmon.setPokemon(fishingPokemon);
+        //event.plannedSpawn.setEntity(pixelmon);
     }
 
     @SubscribeEvent
