@@ -6,7 +6,9 @@ import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import noppes.npcs.NoppesUtilServer;
@@ -37,6 +39,7 @@ public class TickHandler {
 
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
+        MinecraftServer.getServerInst().profiler.startSection("OO-NPCRaytrace");
         if(!battleNPCs.isEmpty()) {
             for(NPCWrapper npc : battleNPCs.keySet()) {
                 if(npc!=null) {
@@ -44,6 +47,7 @@ public class TickHandler {
                 }
             }
         }
+        MinecraftServer.getServerInst().profiler.endSection();
     }
 
     static void raytraceNPCBattle(NPCWrapper npc, int initDialogID) {

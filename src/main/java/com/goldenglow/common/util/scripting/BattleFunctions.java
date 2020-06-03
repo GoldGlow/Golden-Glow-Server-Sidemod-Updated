@@ -1,6 +1,7 @@
 package com.goldenglow.common.util.scripting;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.battles.bosses.BossManager;
 import com.goldenglow.common.battles.npc.CustomBattleHandler;
 import com.goldenglow.common.battles.npc.CustomNPCBattle;
 import com.goldenglow.common.data.player.OOPlayerProvider;
@@ -44,6 +45,11 @@ public class BattleFunctions {
             teamName+="-hard";
         }
         CustomBattleHandler.createCustomBattle(player, teamName, initDialogID, winDialogID, loseDialogID, npc);
+    }
+
+    //Used to start a Boss Battle for a Player
+    public static void createBossBattle(PlayerWrapper playerWrapper, String bossName) {
+        BossManager.startBossBattle((EntityPlayerMP)playerWrapper.getMCEntity(), bossName);
     }
 
     // Line of sight code, used for sneaking portions and trainers
