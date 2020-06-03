@@ -34,6 +34,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.npc.ShopKeeperPacket;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -44,6 +45,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import noppes.npcs.CustomNpcs;
 import noppes.npcs.api.wrapper.WrapperNpcAPI;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 @Mod(modid="obscureobsidian", name="Obscure Obsidian", dependencies = "required-after:pixelmon;required-after:customnpcs;required-after:worldedit;required-after:armourers_workshop;required-after:cfm;required-after:pixelmonessentials;", acceptableRemoteVersions = "*")
 public class GoldenGlow{
@@ -163,6 +167,18 @@ public class GoldenGlow{
 
         event.registerServerCommand(new CommandRoutes());
         CommandRoutes.register(commandDispatcher);
+
+        try {
+            Field f = Profiler.class.getField("ENABLED");
+            f.setAccessible(true);
+            Field modifier = Field.class.getDeclaredField("modifiers");
+            modifier.setAccessible(true);
+            modifier.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+            f.set(event.getServer().profiler, true);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Mod.EventHandler
