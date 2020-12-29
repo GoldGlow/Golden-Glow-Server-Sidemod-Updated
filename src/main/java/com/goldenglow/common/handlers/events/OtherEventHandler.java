@@ -13,6 +13,7 @@ import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.SpawnPokemon;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.util.ReflectionHelper;
 import com.goldenglow.common.util.TitleMethods;
 import com.goldenglow.common.util.scripting.VisibilityFunctions;
 import com.pixelmonessentials.PixelmonEssentials;
@@ -50,6 +51,7 @@ import noppes.npcs.controllers.data.PlayerScriptData;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 public class OtherEventHandler {
 
@@ -81,27 +83,6 @@ public class OtherEventHandler {
     }
 
     @SubscribeEvent
-    public void onSlotChange(CustomGuiEvent.ScrollEvent event){
-        EssentialsGuis gui= PixelmonEssentials.essentialsGuisHandler.getGui(event.player.getMCEntity());
-        if(gui instanceof BagMenu){
-            ((BagMenu) gui).setIndex(event.selection[0]);
-            ((BagMenu) gui).updateScroll(event.player.getMCEntity());
-        }
-        else if(gui instanceof TutorialsMenu){
-            ((TutorialsMenu) gui).setIndex(event.selection[0]);
-            ((TutorialsMenu) gui).updateScroll(event.player.getMCEntity());
-        }
-        else if(gui instanceof OptionListMenu){
-            ((OptionListMenu) gui).setIndex(event.selection[0]);
-            ((OptionListMenu) gui).updateScroll(event.player.getMCEntity());
-        }
-        else if(gui instanceof AreaDexMenu){
-            ((AreaDexMenu) gui).setIndex(event.selection[0]);
-            ((AreaDexMenu) gui).updateScroll(event.player.getMCEntity());
-        }
-    }
-
-    @SubscribeEvent
     public void onVanish(PlayerEvent.StartTracking event){
         if(event.getTarget() instanceof EntityPlayerMP){
             if(!VisibilityFunctions.canPlayerSeeOtherPlayer((EntityPlayerMP) event.getEntityPlayer(), (EntityPlayerMP) event.getTarget())){
@@ -115,24 +96,13 @@ public class OtherEventHandler {
     }
 
     @SubscribeEvent
-    public void onPixelmonSpawner(PixelmonSpawnerEvent event){
-        if(event.spawner.getWorld().isDaytime()){
-            for(String pokemon: GoldenGlow.pixelmonSpawnerHandler.nightPokemon){
-                if(event.spec.name.equals(pokemon))
-                    event.setCanceled(true);
-            }
-        }
-        else{
-            for(String pokemon:GoldenGlow.pixelmonSpawnerHandler.dayPokemon){
-                if(event.spec.name.equals(pokemon))
-                    event.setCanceled(true);
-            }
-        }
+    public void onFishingHook(FishingEvent.Catch event){
+        event.setDisplayedMarks(1);
+        //event.plannedSpawn.setEntity(pixelmon);
     }
 
     @SubscribeEvent
-    public void onFishingHook(FishingEvent.Catch event){
-        event.setDisplayedMarks(1);
+    public void onFishCaught(FishingEvent.Reel event){
         Route route=GoldenGlow.routeManager.getRoute(event.player);
         EnumRodType fishingRod=event.getRodType();
         SpawnPokemon spawnPokemon=SpawnPokemon.getWeightedPokemonFromList(route.fishingPokemon.getSpawnsFromRod(fishingRod));
@@ -142,7 +112,7 @@ public class OtherEventHandler {
         Pokemon fishingPokemon=pokemonSpec.create();
         EntityPixelmon pixelmon=new EntityPixelmon(event.player.world);
         pixelmon.setPokemon(fishingPokemon);
-        //event.plannedSpawn.setEntity(pixelmon);
+        ReflectionHelper.setPrivateValue(event, "optEntity", Optional.of(pixelmon));
     }
 
     @SubscribeEvent
@@ -174,7 +144,7 @@ public class OtherEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract event){
         if(event.getTarget() instanceof EntityPlayerMP){
             PlayerProfileMenu profile=new PlayerProfileMenu((EntityPlayerMP) event.getTarget());
-            profile.init((EntityPlayerMP) event.getEntityPlayer(), null);
+            profile.init((EntityPlayerMP) event.getEntityPlayer());
         }
     }
 

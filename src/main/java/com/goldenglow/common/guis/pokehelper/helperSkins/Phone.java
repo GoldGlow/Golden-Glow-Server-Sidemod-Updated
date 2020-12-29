@@ -11,6 +11,9 @@ public class Phone {
     private static int[][] coordinates;
 
     public Phone(){
+    }
+
+    public static void init(){
         coordinates=new int[12][2];
         for(int i=0;i<12;i++){
             coordinates[i][0]=86+29*(i%3);

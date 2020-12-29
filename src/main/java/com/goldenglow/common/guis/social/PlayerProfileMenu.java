@@ -7,6 +7,7 @@ import com.goldenglow.common.util.Reference;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.pixelmonessentials.common.api.gui.bases.EssentialsGuiBase;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.wrapper.PlayerWrapper;
@@ -17,32 +18,20 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 
-public class PlayerProfileMenu implements EssentialsGuis {
-    private static final int id=6004;
-    private ArrayList<EssentialsButton> buttons = new ArrayList<EssentialsButton>();
+public class PlayerProfileMenu extends EssentialsGuiBase {
     private EntityPlayerMP otherPlayer;
 
     public PlayerProfileMenu(EntityPlayerMP otherPlayer){
+        super(6004);
         this.otherPlayer=otherPlayer;
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    public ArrayList<EssentialsButton> getButtons() {
-        return this.buttons;
-    }
-
-    public void addButton(EssentialsButton button) {
-        this.buttons.add(button);
-    }
-
-    public void init(EntityPlayerMP player, EntityNPCInterface npc) {
+    @Override
+    public void init(EntityPlayerMP player) {
         IPlayerData otherPlayerData = this.otherPlayer.getCapability(OOPlayerProvider.OO_DATA, null);
         IPlayerData playerData = player.getCapability(OOPlayerProvider.OO_DATA, null);
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
-        CustomGuiWrapper gui = new CustomGuiWrapper(id, 256, 256, false);
+        CustomGuiWrapper gui = new CustomGuiWrapper(this.getId(), 256, 256, false);
         gui.setBackgroundTexture("obscureobsidian:textures/gui/black_square.png");
         gui.addLabel(201, this.otherPlayer.getName(), 25, 20, 128, 20);
         gui.addLabel(202, GoldenGlow.permissionUtils.getPrefix(this.otherPlayer), 25, 35, 128, 20);

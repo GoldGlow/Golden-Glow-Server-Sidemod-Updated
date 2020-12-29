@@ -1,18 +1,17 @@
 package com.goldenglow.common.guis.pokehelper.social;
 
 import com.goldenglow.common.data.player.IPlayerData;
-import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
-import com.goldenglow.common.inventory.CustomItem;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionIdData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
-import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.pixelmonessentials.common.api.gui.EssentialsScrollGui;
+import com.pixelmonessentials.common.api.gui.bases.EssentialsScrollGuiBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-import noppes.npcs.api.wrapper.gui.CustomGuiButtonWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiComponentWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiScrollWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiWrapper;
@@ -22,30 +21,17 @@ import noppes.npcs.entity.EntityNPCInterface;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class FriendRequestsMenu implements EssentialsGuis {
-    private static final int id=6005;
-    private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
+public class FriendRequestsMenu extends EssentialsScrollGuiBase {
     private int index;
     private String[] requestNames;
 
     public FriendRequestsMenu(){
-        this.addButton(new EssentialsButton(502, new ActionData("ACCEPT_FRIEND", "")));
-        this.addButton(new EssentialsButton(503, new ActionData("SCROLL", "-1")));
+        super(6005);
+        this.addButton(new EssentialsButton(502, new ActionData("ACCEPT_FRIEND")));
+        this.addButton(new EssentialsButton(503, new ActionIdData("SCROLL", -1)));
     }
 
-    public int getId(){
-        return this.id;
-    }
-
-    public ArrayList<EssentialsButton> getButtons(){
-        return this.buttons;
-    }
-
-    public void addButton(EssentialsButton button){
-        this.buttons.add(button);
-    }
-
-    public void setIndex(String name){
+    public void setIndex(int id, String name){
         for(int i=0;i<this.requestNames.length;i++){
             if(name.equals(this.requestNames[i])){
                 this.index=i;
@@ -66,7 +52,7 @@ public class FriendRequestsMenu implements EssentialsGuis {
         return this.requestNames;
     }
 
-    public void init(EntityPlayerMP player, EntityNPCInterface npc){
+    public void init(EntityPlayerMP player){
         this.index=-1;
         IPlayerData playerData = player.getCapability(OOPlayerProvider.OO_DATA, null);
         String[] requestNames=new String[playerData.getFriendRequests().size()];
@@ -90,7 +76,7 @@ public class FriendRequestsMenu implements EssentialsGuis {
         playerWrapper.showCustomGui(gui);
     }
 
-    public void updateScroll(EntityPlayerMP player){
+    public void updateScroll(int id, EntityPlayerMP player){
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
         CustomGuiWrapper gui= CustomGuiController.getOpenGui(player);
         if(this.index==-1){

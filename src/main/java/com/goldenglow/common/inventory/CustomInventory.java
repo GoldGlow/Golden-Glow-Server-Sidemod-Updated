@@ -2,8 +2,7 @@ package com.goldenglow.common.inventory;
 
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.gyms.GymInventories;
-import com.goldenglow.common.inventory.BetterTrading.OfferMakingInventory;
-import com.goldenglow.common.inventory.BetterTrading.Trade;
+import com.goldenglow.common.trading.Trade;
 import com.goldenglow.common.inventory.social.FriendList;
 import com.goldenglow.common.inventory.social.FriendRequests;
 import com.pixelmonessentials.PixelmonEssentials;
@@ -46,9 +45,6 @@ public class CustomInventory extends ContainerChest {
             BagInventories.openKeyItems(player);
             return;
         }
-        else if(inventoryName.equalsIgnoreCase("TMCase")){
-            BagInventories.openTMCase(player);
-        }
         else if(inventoryName.equalsIgnoreCase("Party")){
             CustomInventory.openPartyInventoryTest(player);
             return;
@@ -74,7 +70,6 @@ public class CustomInventory extends ContainerChest {
                 playerTrade = new Trade(player, player);
                 GoldenGlow.tradeManager.activeTrades.add(playerTrade);
             }
-            OfferMakingInventory.openInventory(player, playerTrade.getOffers()[0]);
             return;
         }
         for(CustomInventoryData inventoryData: GoldenGlow.customInventoryHandler.inventories) {
@@ -114,7 +109,7 @@ public class CustomInventory extends ContainerChest {
                     for (ActionData actionData : item.leftClickActions) {
                         if (PixelmonEssentials.requirementHandler.checkRequirements(actionData.requirements, (EntityPlayerMP) player)) {
                             Action action= PixelmonEssentials.actionHandler.getType(actionData);
-                            action.doAction(actionData.value, (EntityPlayerMP) player);
+                            action.doAction((EntityPlayerMP) player, actionData);
                             return null;
                         }
                     }
@@ -122,7 +117,7 @@ public class CustomInventory extends ContainerChest {
                     for (ActionData actionData : item.rightClickActions) {
                         if (PixelmonEssentials.requirementHandler.checkRequirements(actionData.requirements, (EntityPlayerMP) player)) {
                             Action action=PixelmonEssentials.actionHandler.getType(actionData);
-                            action.doAction(actionData.value, (EntityPlayerMP) player);
+                            action.doAction((EntityPlayerMP) player, actionData);
                             return null;
                         }
                     }

@@ -8,6 +8,7 @@ import com.goldenglow.common.util.scripting.OtherFunctions;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.Action;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
 import net.minecraft.command.ICommandManager;
@@ -64,23 +65,25 @@ public class CustomShop extends CustomInventory {
                 if (dragType == 0) {
                         boolean didAction=false;
                         for (ActionData action : item.getLeftClickActions()) {
-                            if (PixelmonEssentials.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
-                                IPixelmonBankAccount bankAccount = (IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount((EntityPlayerMP) player).orElse(null);
-                                if (action.value.startsWith("pokegive")) {
-                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.value.split(" ")[2] + "!"));
-                                    Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
-                                    bankAccount.changeMoney(-1 * item.buyPrice);
-                                    actionFinal.doAction(action.value, (EntityPlayerMP)player);
-                                    didAction=true;
-                                    break;
-                                }
-                                else if(action.name.equals("DEPOSITORY_POKEMON")){
-                                    ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + action.value.split(" ")[0] + "!"));
-                                    bankAccount.changeMoney(-1 * item.buyPrice);
-                                    Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
-                                    actionFinal.doAction(action.value, (EntityPlayerMP)player);
-                                    didAction=true;
-                                    break;
+                            if(action instanceof ActionStringData){
+                                if (PixelmonEssentials.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                                    IPixelmonBankAccount bankAccount = (IPixelmonBankAccount) Pixelmon.moneyManager.getBankAccount((EntityPlayerMP) player).orElse(null);
+                                    if (((ActionStringData) action).getValue().startsWith("pokegive")) {
+                                        ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + ((ActionStringData) action).getValue().split(" ")[2] + "!"));
+                                        Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
+                                        bankAccount.changeMoney(-1 * item.buyPrice);
+                                        actionFinal.doAction((EntityPlayerMP)player, action);
+                                        didAction=true;
+                                        break;
+                                    }
+                                    else if(action.name.equals("DEPOSITORY_POKEMON")){
+                                        ((EntityPlayerMP) player).sendMessage(new TextComponentString("Successfully bought " + ((ActionStringData) action).getValue().split(" ")[0] + "!"));
+                                        bankAccount.changeMoney(-1 * item.buyPrice);
+                                        Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
+                                        actionFinal.doAction((EntityPlayerMP)player, action);
+                                        didAction=true;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -99,13 +102,15 @@ public class CustomShop extends CustomInventory {
                         return null;
                 } else if (dragType == 1) {
                     for (ActionData action : item.getRightClickActions()) {
-                        if (PixelmonEssentials.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
-                            PlayerWrapper playerWrapper=new PlayerWrapper((EntityPlayerMP) player);
-                            IItemStack iItemStack= NpcAPI.Instance().getIItemStack(item.getItem());
-                            playerWrapper.removeItem(iItemStack, 1);
-                            Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
-                            actionFinal.doAction(action.value, (EntityPlayerMP)player);
-                            return null;
+                        if(action instanceof ActionStringData){
+                            if (PixelmonEssentials.requirementHandler.checkRequirements(action.requirements, (EntityPlayerMP) player)) {
+                                PlayerWrapper playerWrapper=new PlayerWrapper((EntityPlayerMP) player);
+                                IItemStack iItemStack= NpcAPI.Instance().getIItemStack(item.getItem());
+                                playerWrapper.removeItem(iItemStack, 1);
+                                Action actionFinal=PixelmonEssentials.actionHandler.getType(action);
+                                actionFinal.doAction( (EntityPlayerMP)player, action);
+                                return null;
+                            }
                         }
                     }
                 }

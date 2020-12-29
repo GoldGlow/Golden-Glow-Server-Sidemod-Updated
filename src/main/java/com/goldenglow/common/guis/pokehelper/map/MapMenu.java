@@ -4,8 +4,10 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.routes.Route;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.pixelmonessentials.common.api.gui.bases.EssentialsGuiBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiWrapper;
@@ -13,43 +15,30 @@ import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
 
-public class MapMenu implements EssentialsGuis {
-    private static final int id = 6008;
-    private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
+public class MapMenu extends EssentialsGuiBase {
     private Route route;
 
     public MapMenu() {
-        ActionData waterlilButtonAction = new ActionData("SET_LOCATION", "waterlil");
+        super(6008);
+        ActionData waterlilButtonAction = new ActionStringData("SET_LOCATION", "waterlil");
         EssentialsButton waterlilButton = new EssentialsButton(501, waterlilButtonAction);
         this.addButton(waterlilButton);
-        ActionData valleyhillButtonAction = new ActionData("SET_LOCATION", "valleyhill");
+        ActionData valleyhillButtonAction = new ActionStringData("SET_LOCATION", "valleyhill");
         EssentialsButton valleyhillButton = new EssentialsButton(505, valleyhillButtonAction);
         this.addButton(valleyhillButton);
-        ActionData acanthusButtonAction = new ActionData("SET_LOCATION", "acanthus");
+        ActionData acanthusButtonAction = new ActionStringData("SET_LOCATION", "acanthus");
         EssentialsButton acanthusButton = new EssentialsButton(502, acanthusButtonAction);
         this.addButton(acanthusButton);
-        ActionData chateauButtonAction = new ActionData("SET_LOCATION", "chateau");
+        ActionData chateauButtonAction = new ActionStringData("SET_LOCATION", "chateau");
         EssentialsButton chateauButton = new EssentialsButton(503, chateauButtonAction);
         this.addButton(chateauButton);
-        ActionData sakuraButtonAction = new ActionData("SET_LOCATION", "sakura");
+        ActionData sakuraButtonAction = new ActionStringData("SET_LOCATION", "sakura");
         EssentialsButton sakuraButton = new EssentialsButton(504, sakuraButtonAction);
         this.addButton(sakuraButton);
 
-        ActionData foundPokemonAction = new ActionData("OPEN_SPAWNS", "");
+        ActionData foundPokemonAction = new ActionStringData("OPEN_SPAWNS", "");
         EssentialsButton foundPokemonButton = new EssentialsButton(512, foundPokemonAction);
         this.addButton(foundPokemonButton);
-    }
-
-    public int getId(){
-        return this.id;
-    }
-
-    public ArrayList<EssentialsButton> getButtons(){
-        return this.buttons;
-    }
-
-    public void addButton(EssentialsButton button) {
-        this.buttons.add(button);
     }
 
     public Route getRoute(){
@@ -74,9 +63,9 @@ public class MapMenu implements EssentialsGuis {
         }
     }
 
-    public void init(EntityPlayerMP player, EntityNPCInterface npc) {
+    public void init(EntityPlayerMP player) {
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
-        CustomGuiWrapper gui = new CustomGuiWrapper(id, 256, 256, false);
+        CustomGuiWrapper gui = new CustomGuiWrapper(this.getId(), 256, 256, false);
         gui.setBackgroundTexture("obscureobsidian:textures/gui/first_part_map.png");
         gui.addTexturedButton(501, "", 44, 88, 16, 16, "obscureobsidian:textures/gui/oobuttons.png", 160, 208);
         gui.addTexturedButton(502, "", 124, 116, 16, 16, "obscureobsidian:textures/gui/oobuttons.png", 160, 208);

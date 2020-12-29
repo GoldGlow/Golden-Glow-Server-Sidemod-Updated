@@ -1,5 +1,7 @@
 package com.goldenglow.common.data.player;
 
+        import com.goldenglow.common.keyItems.OOItem;
+        import com.goldenglow.common.keyItems.OOTMDummy;
         import com.goldenglow.common.routes.Route;
         import com.goldenglow.common.seals.Seal;
         import com.goldenglow.common.util.FullPos;
@@ -50,24 +52,33 @@ public interface IPlayerData {
     void unlockSeal(String name);
     void setPlayerSeals(String[] seals);
 
-    List<ItemStack> getKeyItems();
-    void addKeyItem(ItemStack item);
+    List<String> getKeyItems();
+    void addKeyItem(String item);
     void removeKeyItem(String displayName);
-    void removeKeyItem(ItemStack item);
 
-    List<ItemStack> getTMs();
-    boolean unlockTM(ItemStack tm);
+    List<OOTMDummy> getTMs();
+    boolean unlockTM(OOTMDummy tm);
 
-    List<ItemStack> getAWItems();
-    void addAWItem(ItemStack item);
+    List<String> getAWItems();
     void addAWItem(String itemName);
     void clearAWItems();
 
-    List<ItemStack> getBagItems();
-    void addBagItem(ItemStack item);
-    void removeBagItem(String displayName);
-    void removeBagItem(ItemStack item);
-    void consumeBagItem(ItemStack item, int count);
+    List<OOItem> getBagItems();
+    void addBagItem(OOItem item);
+    void removeBagItem(OOItem item);
+    void consumeBagItem(OOItem item);
+
+    List<OOItem> getBerries();
+    void addBerries(OOItem berries);
+    void removeBerries(OOItem berries);
+
+    List<OOItem> getMedicine();
+    void addMedicine(OOItem item);
+    void removeMedicine(OOItem item);
+
+    List<OOItem> getPokeballs();
+    void addPokeball(OOItem item);
+    void removePokeball(OOItem item);
 
     int getCaptureChain();
     int increaseCaptureChain(int i);

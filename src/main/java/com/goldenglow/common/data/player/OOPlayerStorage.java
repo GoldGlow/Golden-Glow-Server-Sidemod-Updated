@@ -1,9 +1,13 @@
 package com.goldenglow.common.data.player;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.keyItems.OOItem;
+import com.goldenglow.common.keyItems.OOTMDummy;
 import com.goldenglow.common.seals.SealManager;
 import com.goldenglow.common.util.FullPos;
+import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.Scoreboards;
+import com.pixelmonessentials.common.util.EssentialsLogger;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
@@ -49,18 +53,51 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(instance.getKeyItems()!=null){
             NBTTagList items=new NBTTagList();
-            for(ItemStack item:instance.getKeyItems()){
-                if(item!=null)
-                    items.appendTag(item.serializeNBT());
+            for(String item:instance.getKeyItems()){
+                items.appendTag(new NBTTagString(item));
             }
             tag.setTag("KeyItems", items);
         }
 
+        if(instance.getBagItems()!=null){
+            NBTTagList items=new NBTTagList();
+            for(OOItem item:instance.getBagItems()){
+                items.appendTag(item.toNBT());
+            }
+            tag.setTag("bagItems", items);
+        }
+
+        if(instance.getBerries()!=null){
+            NBTTagList berries=new NBTTagList();
+            for(OOItem item:instance.getBerries()){
+                berries.appendTag(item.toNBT());
+            }
+            tag.setTag("berries", berries);
+        }
+
+        if(instance.getMedicine()!=null){
+            NBTTagList medicine=new NBTTagList();
+            for(OOItem item:instance.getMedicine()){
+                NBTTagCompound itemNbt=item.toNBT();
+                medicine.appendTag(itemNbt);
+            }
+            tag.setTag("medicine", medicine);
+        }
+
+        if(instance.getPokeballs()!=null){
+            NBTTagList pokeballs=new NBTTagList();
+            for(OOItem item:instance.getPokeballs()){
+                NBTTagCompound itemNbt=item.toNBT();
+                pokeballs.appendTag(itemNbt);
+            }
+            tag.setTag("pokeballs", pokeballs);
+        }
+
         if(instance.getAWItems()!=null){
             NBTTagList items=new NBTTagList();
-            for(ItemStack item:instance.getAWItems()){
+            for(String item:instance.getAWItems()){
                 if(item!=null)
-                    items.appendTag(item.serializeNBT());
+                    items.appendTag(new NBTTagString(item));
             }
             tag.setTag("AWItems", items);
         }
@@ -69,9 +106,9 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
 
         if(instance.getTMs()!=null){
             NBTTagList items=new NBTTagList();
-            for(ItemStack item:instance.getTMs()){
+            for(OOTMDummy item:instance.getTMs()){
                 if(item!=null)
-                    items.appendTag(item.serializeNBT());
+                    items.appendTag(item.writeNBT());
             }
             tag.setTag("TMs", items);
         }
@@ -204,33 +241,55 @@ public class OOPlayerStorage implements Capability.IStorage<IPlayerData> {
         if(tag.hasKey("KeyItems")){
             NBTTagList items=tag.getTagList("KeyItems", Constants.NBT.TAG_COMPOUND);
             for(NBTBase item: items){
-                try {
-                    instance.addKeyItem(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
-                } catch (NBTException e) {
-                    e.printStackTrace();
-                }
+                if(item instanceof NBTTagString)
+                    instance.addKeyItem(((NBTTagString) item).getString());
             }
         }
 
         if(tag.hasKey("AWItems")){
             NBTTagList items=tag.getTagList("AWItems", Constants.NBT.TAG_COMPOUND);
             for(NBTBase item: items){
-                try {
-                    instance.addAWItem(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
-                } catch (NBTException e) {
-                    e.printStackTrace();
-                }
+                instance.addAWItem(item.toString());
             }
         }
 
         if(tag.hasKey("TMs")){
             NBTTagList items=tag.getTagList("TMs", Constants.NBT.TAG_COMPOUND);
             for(NBTBase item: items){
-                try {
-                    instance.unlockTM(new ItemStack(JsonToNBT.getTagFromJson(item.toString())));
-                } catch (NBTException e) {
-                    e.printStackTrace();
-                }
+                NBTTagCompound tagCompound=(NBTTagCompound)item;
+                instance.unlockTM(OOTMDummy.fromNBT(tagCompound));
+            }
+        }
+
+        if(tag.hasKey("bagItems")){
+            NBTTagList items=tag.getTagList("bagItems", Constants.NBT.TAG_COMPOUND);
+            for(NBTBase item: items){
+                NBTTagCompound tagCompound=(NBTTagCompound)item;
+                instance.addBagItem(OOItem.fromNBT(tagCompound));
+            }
+        }
+
+        if(tag.hasKey("berries")){
+            NBTTagList items=tag.getTagList("berries", Constants.NBT.TAG_COMPOUND);
+            for(NBTBase item: items){
+                NBTTagCompound tagCompound=(NBTTagCompound)item;
+                instance.addBerries(OOItem.fromNBT(tagCompound));
+            }
+        }
+
+        if(tag.hasKey("pokeballs")){
+            NBTTagList items=tag.getTagList("pokeballs", Constants.NBT.TAG_COMPOUND);
+            for(NBTBase item: items){
+                NBTTagCompound tagCompound=(NBTTagCompound)item;
+                instance.addPokeball(OOItem.fromNBT(tagCompound));
+            }
+        }
+
+        if(tag.hasKey("medicine")){
+            NBTTagList items=tag.getTagList("medicine", Constants.NBT.TAG_COMPOUND);
+            for(NBTBase item: items){
+                NBTTagCompound tagCompound=(NBTTagCompound)item;
+                instance.addMedicine(OOItem.fromNBT(tagCompound));
             }
         }
 

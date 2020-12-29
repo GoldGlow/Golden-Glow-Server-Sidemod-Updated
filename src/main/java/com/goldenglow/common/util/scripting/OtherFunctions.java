@@ -179,7 +179,7 @@ public class OtherFunctions {
         for(int i=0;i<playerMP.inventory.getSizeInventory();i++){
             ItemStack item=playerMP.inventory.getStackInSlot(i);
             if(item!=null){
-                if(Item.getIdFromItem(item.getItem())==Item.getIdFromItem(shopItemWithVariation.getItem().getItem())){
+                if(Item.getIdFromItem(item.getItem())==Item.getIdFromItem(shopItemWithVariation.getItemStack().getItem())){
                     return true;
                 }
             }

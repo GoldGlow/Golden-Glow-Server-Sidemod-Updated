@@ -3,6 +3,7 @@ package com.goldenglow.common.inventory;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsPokeballs;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
@@ -35,7 +36,7 @@ public class SealsInventory {
             if(partyStorage.get(i)!=null)
                 stack = ItemPixelmonSprite.getPhoto(partyStorage.get(i));
             inventory.setInventorySlotContents(i+1, stack.setStackDisplayName(TextFormatting.RESET+"Slot "+(i+1)+": "+name));
-            data.items[i] = new CustomItem[]{ new CustomItem(stack, null).setLeftClickActions(new ActionData[]{ new ActionData("OPEN_INV", "sealChoice "+i) }) };
+            data.items[i] = new CustomItem[]{ new CustomItem(stack, null).setLeftClickActions(new ActionData[]{ new ActionStringData("OPEN_INV", "sealChoice "+i) }) };
         }
         player.getNextWindowId();
         player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString(TextFormatting.GOLD+"Seals"), 9));
@@ -61,12 +62,12 @@ public class SealsInventory {
             if(!Arrays.asList(playerData.getEquippedSeals()).contains(unlockedSeals.get(i))) {
                 ItemStack stack = new ItemStack(PixelmonItemsPokeballs.getPokeballListNoMaster().get(r.nextInt(PixelmonItemsPokeballs.getPokeballListNoMaster().size()))).setStackDisplayName(unlockedSeals.get(i));
                 inventory.setInventorySlotContents(s, stack);
-                data.items[s] = new CustomItem[]{new CustomItem(stack, null).setLeftClickActions(new ActionData[]{new ActionData("SEAL_SET", unlockedSeals.get(i) + ":" + i)})};
+                data.items[s] = new CustomItem[]{new CustomItem(stack, null).setLeftClickActions(new ActionData[]{new ActionStringData("SEAL_SET", unlockedSeals.get(i) + ":" + i)})};
             }
         }
         ItemStack stack = new ItemStack(Blocks.BARRIER).setStackDisplayName("Back");
         inventory.setInventorySlotContents(8, stack);
-        data.items[8] = new CustomItem[]{new CustomItem(stack, null).setLeftClickActions(new ActionData[]{new ActionData("OPEN_INV", "seals")})};
+        data.items[8] = new CustomItem[]{new CustomItem(stack, null).setLeftClickActions(new ActionData[]{new ActionStringData("OPEN_INV", "seals")})};
 
         player.getNextWindowId();
         player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:container", new TextComponentString(TextFormatting.GOLD+"Seal Choice: Slot "+slot), rows*9));

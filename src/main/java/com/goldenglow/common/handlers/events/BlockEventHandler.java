@@ -16,7 +16,6 @@ import com.pixelmonmod.pixelmon.blocks.apricornTrees.BlockApricornTree;
 import com.pixelmonmod.pixelmon.blocks.enums.EnumBlockPos;
 import com.pixelmonmod.pixelmon.blocks.enums.EnumMultiPos;
 import com.pixelmonmod.pixelmon.blocks.multiBlocks.BlockFridge;
-import moe.plushie.armourers_workshop.common.blocks.BlockSkinnable;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,14 +53,6 @@ public class BlockEventHandler {
     @SubscribeEvent
     public void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
-        if(!blockState.getBlock().onBlockActivated(event.getWorld(), event.getPos(), blockState, event.getEntityPlayer(), event.getHand(), event.getFace(), (float)event.getHitVec().x, (float)event.getHitVec().y, (float)event.getHitVec().z)) {
-            if ((event.getItemStack().getItem().getRegistryName() + "").equals("variedcommodities:diamond_dagger")) {
-                if (event.getItemStack().getItemDamage() >= 100 && event.getItemStack().getItemDamage() < 200) {
-                    event.setCanceled(true);
-                    CustomInventory.openInventory("PokeHelper", (EntityPlayerMP) event.getEntityPlayer());
-                }
-            }
-        }
         if(event.getHand()== EnumHand.MAIN_HAND && event.getUseBlock()!= Event.Result.DENY ) {
             TileEntity tile = null;
             if(blockState.getBlock() instanceof BlockApricornTree || blockState.getBlock() instanceof BlockBerryTree) {
@@ -79,9 +70,9 @@ public class BlockEventHandler {
                     tile = event.getWorld().getTileEntity(event.getPos());
                 }
             }
-            else if(blockState.getBlock() instanceof BlockSkinnable){
+            /*else if(blockState.getBlock() instanceof BlockSkinnable){
                 tile = event.getWorld().getTileEntity(event.getPos());
-            }
+            }*/
             if(tile instanceof ICustomScript) {
                 ICustomScript customTile = (ICustomScript) tile;
                 if (event.getItemStack().getItem() instanceof ItemScripted && !event.getEntityPlayer().isSneaking()) { // && new PlayerWrapper((EntityPlayerMP)event.getEntityPlayer()).hasPermission("goldglow.scripting")) {
@@ -115,7 +106,7 @@ public class BlockEventHandler {
                 return;
             }
         }
-        else if((GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString()) || blockState.getBlock() instanceof BlockContainer) /*&& !(PermissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder"))*/) {
+        else if((GoldenGlow.rightClickBlacklistHandler.blacklistedItems.contains(blockState.getBlock().getRegistryName().toString()) || blockState.getBlock() instanceof BlockContainer) && !(GoldenGlow.permissionUtils.checkPermission((EntityPlayerMP) event.getEntityPlayer(), "builder"))) {
             event.setCanceled(true);
         }
         else{

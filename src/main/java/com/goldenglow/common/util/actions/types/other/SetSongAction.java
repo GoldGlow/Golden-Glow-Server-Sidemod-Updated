@@ -2,16 +2,20 @@ package com.goldenglow.common.util.actions.types.other;
 
 import com.goldenglow.common.music.SongManager;
 import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionBase;
+import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class SetSongAction implements Action {
-    public final String name="SET_SONG";
-
-    public String getName(){
-        return this.name;
+public class SetSongAction extends ActionBase {
+    public SetSongAction(){
+        super("SET_SONG");
     }
 
-    public void doAction(String value, EntityPlayerMP playerMP){
-        SongManager.setCurrentSong(playerMP, value);
+    @Override
+    public void doAction(EntityPlayerMP playerMP, ActionData data){
+        if(data instanceof ActionStringData){
+            SongManager.setCurrentSong(playerMP, ((ActionStringData) data).getValue());
+        }
     }
 }

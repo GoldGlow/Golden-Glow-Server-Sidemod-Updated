@@ -2,6 +2,7 @@ package com.goldenglow.common.inventory.shops;
 
 import com.goldenglow.common.inventory.CustomItem;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import com.pixelmonessentials.common.api.requirement.RequirementData;
 import net.minecraft.item.ItemStack;
 
@@ -18,21 +19,19 @@ public class CustomShopItem extends CustomItem {
         RequirementData amountRequirement=new RequirementData();
         amountRequirement.name="MONEY";
         amountRequirement.value=buyPrice+"";
-        ActionData buyItem=new ActionData();
+        ActionStringData buyItem;
         if(boughtCommand.startsWith("giveitem")){
+            buyItem=new ActionStringData("GIVEITEM", boughtCommand.replace("giveitem ",""));
             buyItem.requirements=new RequirementData[]{amountRequirement};
-            buyItem.name="GIVEITEM";
-            buyItem.value=boughtCommand.replace("giveitem ","");
         }
         else if(boughtCommand.startsWith("depository")){
             String[] args=boughtCommand.split(" ");
+            buyItem=new ActionStringData("DEPOSITORY_POKEMON", boughtCommand.replace("depository ",""));
             buyItem.requirements=new RequirementData[]{amountRequirement};
-            buyItem.name= "DEPOSITORY_POKEMON";
-            buyItem.value=boughtCommand.replace("depository ","");
         }
         else {
+            buyItem=new ActionStringData("", boughtCommand);
             buyItem.requirements=new RequirementData[]{amountRequirement};
-            buyItem.value=boughtCommand;
         }
         buyItem.closeInv=false;
         this.setLeftClickActions(new ActionData[]{buyItem});
@@ -43,12 +42,10 @@ public class CustomShopItem extends CustomItem {
         RequirementData itemRequirement=new RequirementData();
         itemRequirement.name="ITEM";
         itemRequirement.value=item;
-        ActionData sellItem=new ActionData();
+        ActionData sellItem=new ActionStringData("", "givemoney @dp "+sellPrice);
         sellItem.requirements=new RequirementData[]{itemRequirement};
-        sellItem.value="givemoney @dp "+sellPrice;
         sellItem.closeInv=false;
-        ActionData notEnough=new ActionData();
-        notEnough.value="tellraw @dp [\"\",{\"text\":\"You do not have the items to sell!\",\"color\":\"dark_red\"}]";
+        ActionStringData notEnough=new ActionStringData("", "tellraw @dp [\"\",{\"text\":\"You do not have the items to sell!\",\"color\":\"dark_red\"}]");
         notEnough.closeInv=false;
         this.setRightClickActions(new ActionData[]{sellItem, notEnough});
     }

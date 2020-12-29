@@ -21,18 +21,19 @@ import com.goldenglow.common.guis.pokehelper.config.optionsTypes.visual.RouteNot
 import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionBase;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionIdData;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class SaveOptionAction implements Action {
-    private final String name="SAVE_OPTION";
-
-    public String getName(){
-        return this.name;
+public class SaveOptionAction extends ActionBase {
+    public SaveOptionAction(){
+        super("SAVE_OPTION");
     }
 
-    public void doAction(String actionValue, EntityPlayerMP player){
+    @Override
+    public void doAction(EntityPlayerMP player, ActionData actionData){
         EssentialsGuis gui=PixelmonEssentials.essentialsGuisHandler.getGui(player);
         OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
         if(gui instanceof OptionListMenu){
@@ -79,7 +80,7 @@ public class SaveOptionAction implements Action {
                 default:
                     break;
             }
-            PixelmonEssentials.actionHandler.doAction(new ActionData("OPEN_GUI", "null@"+6100), player);
+            PixelmonEssentials.actionHandler.doAction(new ActionIdData("OPEN_GUI", 6100), player);
         }
     }
 }

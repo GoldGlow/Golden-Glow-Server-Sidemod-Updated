@@ -1,6 +1,7 @@
 package com.goldenglow.common.guis.pokehelper.config;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.guis.GuiTemplates;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionType;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionTypeManager;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.SingleOptionData;
@@ -12,8 +13,11 @@ import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionIdData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.pixelmonessentials.common.api.gui.EssentialsScrollGui;
+import com.pixelmonessentials.common.api.gui.bases.EssentialsScrollGuiBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.gui.*;
@@ -22,35 +26,23 @@ import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
 
-public class OptionListMenu implements EssentialsGuis {
-    private static final int id=6101;
-    private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
+public class OptionListMenu extends EssentialsScrollGuiBase {;
     private OptionTypeManager.EnumOptionType optionType;
     private String[] items=new String[0];
     private int index=-1;
 
     public OptionListMenu(){
-        this.addButton(new EssentialsButton(501, new ActionData("SAVE_OPTION", "")));
-        this.addButton(new EssentialsButton(502, new ActionData("OPEN_GUI", "null@"+6100)));
-    }
-
-    public int getId(){
-        return this.id;
-    }
-
-    public ArrayList<EssentialsButton> getButtons(){
-        return this.buttons;
-    }
-
-    public void addButton(EssentialsButton button) {
-        this.buttons.add(button);
+        super(6101);
+        this.addButton(new EssentialsButton(501, new ActionData("SAVE_OPTION")));
+        this.addButton(new EssentialsButton(502, new ActionIdData("OPEN_GUI", 6100)));
     }
 
     public void setIndex(int index){
         this.index=index;
     }
 
-    public void setIndex(String index){
+    @Override
+    public void setIndex(int id, String index){
         for(int i=0;i<this.items.length;i++){
             if(items[i].equals(index)){
                 this.index=i;
@@ -75,7 +67,8 @@ public class OptionListMenu implements EssentialsGuis {
         this.optionType=optionType;
     }
 
-    public void init(EntityPlayerMP player, EntityNPCInterface npc){
+    @Override
+    public void init(EntityPlayerMP player){
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
         ArrayList<SingleOptionData> optionData=this.getOptions(player);
         if(this.optionType== OptionTypeManager.EnumOptionType.TITLE){
@@ -85,11 +78,8 @@ public class OptionListMenu implements EssentialsGuis {
         else {
             this.items = OptionTypeManager.getOptionNames(optionData);
         }
-        CustomGuiWrapper gui = new CustomGuiWrapper(id, 256, 256, false);
-        gui.setBackgroundTexture("obscureobsidian:textures/gui/black_square.png");
-        gui.addLabel(201, this.getOptionName(), 100, 0, 128, 20);
-        gui.addScroll(300, 128, 30, 118, 216, this.items);
-        gui.addTexturedRect(100, "obscureobsidian:textures/gui/grey_square.png", 5, 30, 118, 98);
+        CustomGuiWrapper gui = GuiTemplates.getListGui(this.getId(), this.getOptionName());
+        ((CustomGuiScrollWrapper)gui.getComponent(300)).setList(this.items);
         PixelmonEssentials.essentialsGuisHandler.addOrReplaceGui(player, this);
         playerWrapper.showCustomGui(gui);
     }
@@ -104,7 +94,8 @@ public class OptionListMenu implements EssentialsGuis {
         return optionData;
     }
 
-    public void updateScroll(EntityPlayerMP player){
+    @Override
+    public void updateScroll(int id, EntityPlayerMP player){
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
         CustomGuiWrapper gui=CustomGuiController.getOpenGui(player);
         gui.removeComponent(501);

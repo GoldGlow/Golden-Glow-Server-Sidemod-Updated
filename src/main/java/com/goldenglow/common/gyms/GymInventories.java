@@ -6,6 +6,7 @@ import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomItem;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -36,19 +37,19 @@ public class GymInventories extends CustomInventory {
             ItemStack closeGym=new ItemStack(Item.getByNameOrId("minecraft:barrier"));
             closeGym.setStackDisplayName("Close gym");
             CustomItem item=new CustomItem(closeGym, null);
-            item.setBothClickActions(new ActionData[]{new ActionData("CLOSE_GYM", gym.name)});
+            item.setBothClickActions(new ActionData[]{new ActionStringData("CLOSE_GYM", gym.name)});
             items.add(item);
             if(gym.currentLeader==null&&gym.queue.size()>0){
                 ItemStack takeChallengers=new ItemStack(Item.getByNameOrId("pixelmon:poke_ball"));
                 takeChallengers.setStackDisplayName("Take on challengers");
                 CustomItem takeOnChallengers=new CustomItem(takeChallengers, null);
-                takeOnChallengers.setBothClickActions(new ActionData[]{new ActionData("TAKE_CHALLENGERS", gym.name)});
+                takeOnChallengers.setBothClickActions(new ActionData[]{new ActionStringData("TAKE_CHALLENGERS", gym.name)});
                 items.add(takeOnChallengers);
             }else if(gym.currentLeader.getName().equals(player.getName())){
                 ItemStack takeChallengers=new ItemStack(Item.getByNameOrId("pixelmon:hive_badge"));
                 takeChallengers.setStackDisplayName("Stop taking challengers");
                 CustomItem takeOnChallengers=new CustomItem(takeChallengers, null);
-                takeOnChallengers.setBothClickActions(new ActionData[]{new ActionData("STOP_CHALLENGERS", gym.name)});
+                takeOnChallengers.setBothClickActions(new ActionData[]{new ActionStringData("STOP_CHALLENGERS", gym.name)});
                 items.add(takeOnChallengers);
 
                 ItemStack nextChallenger=new ItemStack(Item.getByNameOrId("variedcommodities:diamond_dagger"));
@@ -56,27 +57,27 @@ public class GymInventories extends CustomInventory {
                 nextChallenger.setItemDamage(18);
                 nextChallenger.setTagInfo("Unbreakable", new NBTTagInt(1));
                 CustomItem nextChallengerCustom=new CustomItem(nextChallenger, null);
-                nextChallengerCustom.setBothClickActions(new ActionData[]{new ActionData("NEXT_CHALLENGER", gym.name)});
+                nextChallengerCustom.setBothClickActions(new ActionData[]{new ActionStringData("NEXT_CHALLENGER", gym.name)});
                 items.add(nextChallengerCustom);
 
                 ItemStack startBattle=new ItemStack(Item.getByNameOrId("minecraft:diamond_sword"));
                 startBattle.setStackDisplayName(Reference.resetText+"Start the battle");
                 CustomItem startBattleCustom= new CustomItem(startBattle, null);
-                startBattleCustom.setBothClickActions(new ActionData[]{new ActionData("START_BATTLE", gym.name)});
+                startBattleCustom.setBothClickActions(new ActionData[]{new ActionStringData("START_BATTLE", gym.name)});
                 items.add(startBattleCustom);
             }
             ItemStack viewQueue=new ItemStack(Item.getByNameOrId("minecraft:skull"));
             viewQueue.setItemDamage(3);
             viewQueue.setStackDisplayName(Reference.resetText+"View queue");
             CustomItem viewQueueCustom=new CustomItem(viewQueue, null);
-            viewQueueCustom.setBothClickActions(new ActionData[]{new ActionData("OPEN_INV", "QUEUE:"+gym.name)});
+            viewQueueCustom.setBothClickActions(new ActionData[]{new ActionStringData("OPEN_INV", "QUEUE:"+gym.name)});
             items.add(viewQueueCustom);
         }
         else{
             ItemStack openGym=new ItemStack(Item.getByNameOrId("pixelmon:green_clock"));
             openGym.setStackDisplayName("Open gym");
             CustomItem item=new CustomItem(openGym, null);
-            item.setBothClickActions(new ActionData[]{new ActionData("OPEN_GYM", gym.name)});
+            item.setBothClickActions(new ActionData[]{new ActionStringData("OPEN_GYM", gym.name)});
             items.add(item);
         }
         CustomItem[][] customItems=new CustomItem[9][];
@@ -85,7 +86,7 @@ public class GymInventories extends CustomInventory {
         }
         if(!gym.currentLeader.getName().equals(player.getName())){
             CustomItem returnButton=CustomItem.returnButton();
-            returnButton.setBothClickActions(new ActionData[]{new ActionData("OPEN_INV", "GymTools")});
+            returnButton.setBothClickActions(new ActionData[]{new ActionStringData("OPEN_INV", "GymTools")});
             customItems[8]=new CustomItem[]{returnButton};
         }
     }

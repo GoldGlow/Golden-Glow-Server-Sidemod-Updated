@@ -6,8 +6,11 @@ import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionIdData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.pixelmonessentials.common.api.gui.bases.EssentialsGuiBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiWrapper;
@@ -15,38 +18,35 @@ import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
 
-public class GeneralConfig implements EssentialsGuis {
-    private static final int id=6102;
-    private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
+public class GeneralConfig extends EssentialsGuiBase {
+    private EntityPlayerMP player;
 
     public GeneralConfig(){
-        ActionData backButtonAction=new ActionData("OPEN_GUI", "null@"+6100);
+        super(6102);
+        ActionData backButtonAction=new ActionIdData("OPEN_GUI", 6100);
         this.addButton(new EssentialsButton(500, backButtonAction));
-        ActionData scoreboardButtonAction=new ActionData("OPEN_OPTION", "SCOREBOARD");
+        ActionData scoreboardButtonAction=new ActionStringData("OPEN_OPTION", "SCOREBOARD");
         this.addButton(new EssentialsButton(501, scoreboardButtonAction));
-        ActionData reloadGuiAction=new ActionData("OPEN_GUI", "null@"+6102);
-        ActionData hardButtonAction = new ActionData("COMMAND", "lp user @dp permission unset hard");
+        ActionData reloadGuiAction=new ActionData("RELOAD");
+        ActionData hardButtonAction = new ActionStringData("COMMAND", "lp user @dp permission unset hard");
         this.addButton(new EssentialsButton(502, new ActionData[]{hardButtonAction, reloadGuiAction}));
-        ActionData normalButtonAction = new ActionData("COMMAND", "lp user @dp permission set hard");
+        ActionData normalButtonAction = new ActionStringData("COMMAND", "lp user @dp permission set hard");
         this.addButton(new EssentialsButton(521, new ActionData[]{normalButtonAction, reloadGuiAction}));
     }
 
-    public int getId(){
-        return this.id;
-    }
-
-    public ArrayList<EssentialsButton> getButtons(){
-        return this.buttons;
-    }
-
-    public void addButton(EssentialsButton button) {
-        this.buttons.add(button);
-    }
-
-    public void init(EntityPlayerMP player, EntityNPCInterface npc){
+    @Override
+    public void init(EntityPlayerMP player){
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
+        this.player=player;
+        CustomGuiWrapper gui=this.getGui();
+        PixelmonEssentials.essentialsGuisHandler.addOrReplaceGui(player, this);
+        playerWrapper.showCustomGui(gui);
+    }
+
+    @Override
+    public CustomGuiWrapper getGui(){
         OOPlayerData data = (OOPlayerData)player.getCapability(OOPlayerProvider.OO_DATA, null);
-        CustomGuiWrapper gui= new CustomGuiWrapper(id, 256, 256, false);
+        CustomGuiWrapper gui= new CustomGuiWrapper(this.getId(), 256, 256, false);
         gui.setBackgroundTexture("customnpcs:textures/gui/bgfilled.png");
         gui.addLabel(100, "General Settings", 85, 4, 128, 20);
         gui.addLabel(101, "Scoreboard", 52, 30, 128, 20);
@@ -59,8 +59,7 @@ public class GeneralConfig implements EssentialsGuis {
             gui.addTexturedButton(521, "Normal", 122, 55, 64, 20, "obscureobsidian:textures/gui/dark_grey_square.png");
         }
         gui.addButton(500, "Back", 30, 216, 64, 20);
-        PixelmonEssentials.essentialsGuisHandler.addOrReplaceGui(player, this);
-        playerWrapper.showCustomGui(gui);
+        return gui;
     }
 
     public static String getNameFromEnum(Scoreboards.EnumScoreboardType scoreboardType){

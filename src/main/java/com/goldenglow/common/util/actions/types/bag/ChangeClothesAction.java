@@ -6,9 +6,11 @@ import com.goldenglow.common.guis.pokehelper.bag.BagMenu;
 import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionBase;
+import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import moe.plushie.armourers_workshop.api.common.skin.type.ISkinType;
-import moe.plushie.armourers_workshop.common.items.ItemSkin;
+import moe.plushie.armourers_workshop.common.init.items.ItemSkin;
 import moe.plushie.armourers_workshop.common.skin.type.chest.SkinChest;
 import moe.plushie.armourers_workshop.common.skin.type.feet.SkinFeet;
 import moe.plushie.armourers_workshop.common.skin.type.head.SkinHead;
@@ -19,16 +21,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ChangeClothesAction implements Action {
-    private final String name="CHANGE_CLOTHES";
-
-    public String getName(){
-        return this.name;
+public class ChangeClothesAction extends ActionBase {
+    public ChangeClothesAction(){
+        super("CHANGE_CLOTHES");
     }
 
-    public void doAction(String value, EntityPlayerMP player){
+    @Override
+    public void doAction(EntityPlayerMP player, ActionData actionData){
         EssentialsGuis gui=PixelmonEssentials.essentialsGuisHandler.getGui(player);
-        if(gui instanceof BagMenu){
+        /*if(gui instanceof BagMenu){
             IPlayerData data=player.getCapability(OOPlayerProvider.OO_DATA, null);
             ItemStack item=data.getAWItems().get(((BagMenu) gui).getIndex());
             if(item.getItem() instanceof ItemSkin){
@@ -67,7 +68,7 @@ public class ChangeClothesAction implements Action {
                     player.setItemStackToSlot(slot, armor);
                 }
             }
-        }
+        }*/
     }
 
     public static ItemStack getItemBySlot(EntityEquipmentSlot slot){

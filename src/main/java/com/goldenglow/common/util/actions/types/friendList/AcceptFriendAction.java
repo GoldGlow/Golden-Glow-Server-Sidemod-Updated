@@ -6,19 +6,20 @@ import com.goldenglow.common.guis.pokehelper.social.FriendRequestsMenu;
 import com.goldenglow.common.util.Reference;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionBase;
+import com.pixelmonessentials.common.api.action.ActionData;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class AcceptFriendAction implements Action {
-    private final String name="ACCEPT_FRIEND";
-
-    public String getName(){
-        return this.name;
+public class AcceptFriendAction extends ActionBase {
+    public AcceptFriendAction(){
+        super("ACCEPT_FRIEND");
     }
 
-    public void doAction(String value, EntityPlayerMP player){
+    @Override
+    public void doAction(EntityPlayerMP player, ActionData data){
         EssentialsGuis gui=PixelmonEssentials.essentialsGuisHandler.getGui(player);
         if(gui instanceof FriendRequestsMenu) {
             IPlayerData playerData = player.getCapability(OOPlayerProvider.OO_DATA, null);
@@ -28,7 +29,7 @@ public class AcceptFriendAction implements Action {
             playerData.acceptFriendRequest(otherPlayer.getUniqueID());
             otherPlayer.sendMessage(new TextComponentString(Reference.darkGreen + player.getName() + " accepted your friendList request!"));
             player.sendMessage(new TextComponentString(Reference.darkGreen + "You are now friends with " + otherPlayer.getName() + "!"));
-            gui.init(player, null);
+            gui.init(player);
         }
     }
 }

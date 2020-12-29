@@ -41,7 +41,7 @@ public class ItemEventHandler {
             }
         }
         else if((event.getItemStack().getItem().getRegistryName()+"").equals("variedcommodities:phone")){
-            PixelmonEssentials.essentialsGuisHandler.getGui(6000).init((EntityPlayerMP) event.getEntityPlayer(), null);
+            PixelmonEssentials.essentialsGuisHandler.getGui(6000).init((EntityPlayerMP) event.getEntityPlayer());
         }
     }
 }

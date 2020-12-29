@@ -17,7 +17,6 @@ public class LoginLogoutEventHandler {
         event.player.getCapability(OOPlayerProvider.OO_DATA, null).setLoginTime(Instant.now());
         if(!event.player.getEntityData().hasKey("playtime")) {
             event.player.getEntityData().setLong("playtime", 0);
-            //DataManager.getDataFor(event.player.getUniqueID()).addBackpack(Backpack.of(Text.of("Pocket1"), event.player.getUniqueID(), 6));
         }
     }
 

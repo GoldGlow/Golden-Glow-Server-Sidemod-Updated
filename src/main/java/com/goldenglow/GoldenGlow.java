@@ -8,16 +8,19 @@ import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerStorage;
 import com.goldenglow.common.guis.GuiHandler;
+import com.goldenglow.common.guis.pokehelper.bag.CategoryManager;
 import com.goldenglow.common.guis.pokehelper.config.optionsTypes.OptionTypeManager;
+import com.goldenglow.common.guis.pokehelper.helperSkins.Phone;
 import com.goldenglow.common.guis.pokehelper.map.data.LocationList;
 import com.goldenglow.common.guis.pokehelper.info.data.TutorialsManager;
 import com.goldenglow.common.gyms.GymManager;
 import com.goldenglow.common.handlers.*;
 import com.goldenglow.common.handlers.events.*;
-import com.goldenglow.common.inventory.BetterTrading.TradeManager;
+import com.goldenglow.common.trading.TradeManager;
 import com.goldenglow.common.inventory.CustomInventoryData;
 import com.goldenglow.common.inventory.CustomInventoryHandler;
 import com.goldenglow.common.inventory.shops.CustomShopHandler;
+import com.goldenglow.common.keyItems.CustomItemManager;
 import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.routes.RouteManager;
@@ -28,6 +31,7 @@ import com.goldenglow.common.util.GGLogger;
 import com.goldenglow.common.util.PermissionUtils;
 import com.goldenglow.common.util.ShopPacketHandler;
 import com.goldenglow.common.util.actions.ActionHandler;
+import com.goldenglow.common.util.objectives.ObjectiveHandler;
 import com.goldenglow.common.util.requirements.RequirementHandler;
 import com.goldenglow.http.OOStatsServer;
 import com.mojang.brigadier.CommandDispatcher;
@@ -70,6 +74,7 @@ public class GoldenGlow{
     public RaidEventHandler raidEventHandler = new RaidEventHandler();
     public TickHandler tickHandler=new TickHandler();
     public static PermissionUtils permissionUtils=null;
+    public static CustomItemManager customItemManager =new CustomItemManager();
 
     public static GGLogger logger = new GGLogger();
     public static ConfigHandler configHandler = new ConfigHandler();
@@ -80,12 +85,12 @@ public class GoldenGlow{
     public static TeamManager teamManager = new TeamManager();
     public static GymManager gymManager=new GymManager();
     public static RouteManager routeManager = new RouteManager();
-    public static PixelmonSpawnerHandler pixelmonSpawnerHandler = new PixelmonSpawnerHandler();
     public static TradeManager tradeManager=new TradeManager();
     public static CustomInventoryHandler customInventoryHandler=new CustomInventoryHandler();
     public static CustomShopHandler customShopHandler=new CustomShopHandler();
     public static LocationList locationList=new LocationList();
     public static TutorialsManager tutorialsManager=new TutorialsManager();
+    public static CategoryManager categoryManager=new CategoryManager();
 
     public static CommandDispatcher<ICommandSender> commandDispatcher = new CommandDispatcher<>();
 
@@ -102,10 +107,13 @@ public class GoldenGlow{
         ActionHandler.init();
         RequirementHandler.init();
         GuiHandler.init();
+        ObjectiveHandler.init();
         configHandler.init();
         rightClickBlacklistHandler.init();
         locationList.init();
         tutorialsManager.init();
+        customItemManager.init();
+        categoryManager.init();
 
         GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
@@ -148,8 +156,8 @@ public class GoldenGlow{
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         teamManager.init();
-        pixelmonSpawnerHandler.init();
         songManager.init();
+        Phone.init();
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRouteNotificationOption());
         event.registerServerCommand(new CommandSetPvpMusicOption());
@@ -160,6 +168,7 @@ public class GoldenGlow{
         event.registerServerCommand(new CommandShop());
         event.registerServerCommand(new CommandTradeTest());
         event.registerServerCommand(new CommandShare());
+        event.registerServerCommand(new CommandKeyItem());
 
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
@@ -202,5 +211,6 @@ public class GoldenGlow{
     @Mod.EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
         routeManager.saveRoutes();
+        customItemManager.saveKeyItems();
     }
 }

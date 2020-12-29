@@ -1,7 +1,6 @@
 package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.battles.npc.CustomNPCBattle;
 import com.goldenglow.common.battles.npc.DoubleNPCBattle;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.events.CNPCBattleEvent;
@@ -10,6 +9,8 @@ import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.teams.PlayerParty;
 import com.goldenglow.common.util.PixelmonBattleUtils;
 import com.goldenglow.common.util.scripting.WorldFunctions;
+import com.pixelmonessentials.common.battles.CustomNPCBattle;
+import com.pixelmonessentials.common.util.NpcScriptDataManipulator;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
@@ -20,6 +21,7 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.comm.packetHandlers.PlayerDeath;
 import com.pixelmonmod.pixelmon.enums.battle.BattleResults;
 import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -53,11 +55,11 @@ public class BattleEventHandler {
         }
         else if(event.bc.rules instanceof CustomNPCBattle) {
             CustomNPCBattle battle=(CustomNPCBattle)event.bc.rules;
-            NBTTagCompound data=battle.getNpc().getEntityData();
+            ScriptObjectMirror object = NpcScriptDataManipulator.getJavascriptObject(new NPCWrapper(battle.getNpc()), "trainerData");
             for (BattleParticipant participant : participants) {
                 if (participant instanceof PlayerParticipant) {
-                    if(data.hasKey("battleTheme")){
-                        SongManager.setCurrentSong(((PlayerParticipant) participant).player, data.getString("battleTheme"));
+                    if(object.get("battleTheme")!=null){
+                        SongManager.setCurrentSong(((PlayerParticipant) participant).player, (String) object.get("battleTheme"));
                     }
                     else {
                         SongManager.setToTrainerMusic(((PlayerParticipant) participant).player);
@@ -106,7 +108,7 @@ public class BattleEventHandler {
         if(event.bc.rules instanceof GymBattleRules){
             BattleResults results=event.results.get(event.bc.participants.get(0));
             if (results == BattleResults.VICTORY && event.cause!= EnumBattleEndCause.FORCE) {
-                //PermissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, "badge."+((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
+                GoldenGlow.permissionUtils.addPermissionNode(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player, "badge."+((GymBattleRules) event.bc.rules).getGym().getName().replace(" ","_").toLowerCase()+".player");
                 SongManager.setRouteSong(((PlayerParticipant)event.bc.participants.get(0).getParticipantList()[0]).player);
             }
             else{
@@ -124,12 +126,6 @@ public class BattleEventHandler {
             CustomNPCBattle battle = (CustomNPCBattle) event.bc.rules;
             BattleRegistry.deRegisterBattle(event.bc);
             if (results == BattleResults.VICTORY) {
-                if(battle.getNpc().getEntityData().hasKey("victoryTheme")){
-                    SongManager.setCurrentSong(mcPlayer, battle.getNpc().getEntityData().getString("victoryTheme"));
-                }
-                else{
-                    SongManager.setCurrentSong(mcPlayer, GoldenGlow.songManager.victoryDefault);
-                }
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getWinDialog());
             }
             if (results == BattleResults.DEFEAT) {

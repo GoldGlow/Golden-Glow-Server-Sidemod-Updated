@@ -65,11 +65,11 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
                         while (var8.hasNext()) {
                             s = (ShopItemWithVariation) var8.next();
                             if (s.getBaseShopItem().id.equals(itemID) && account.getMoney() >= s.getBuyCost() * amount) {
-                                ItemStack item = s.getItem();
+                                ItemStack item = s.getItemStack();
                                 sStack = item.copy();
                                 initialAmount = amount;
                                 sStack.setCount(amount);
-                                if (Pixelmon.EVENT_BUS.post(new ShopkeeperEvent.Purchase(p, sStack, EnumBuySell.Buy))) {
+                                if (Pixelmon.EVENT_BUS.post(new ShopkeeperEvent.Purchase(p, npcOptional.get(), sStack, EnumBuySell.Buy))) {
                                     return;
                                 }
 
@@ -115,7 +115,7 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
                                 } while (!s.getBaseShopItem().id.equals(itemID));
 
                                 count = 0;
-                                sStack = s.getItem();
+                                sStack = s.getItemStack();
 
                                 for (initialAmount = 0; initialAmount < p.inventory.mainInventory.size(); ++initialAmount) {
                                     ItemStack item = (ItemStack) p.inventory.mainInventory.get(initialAmount);
@@ -127,7 +127,7 @@ public class ShopPacketHandler implements ISyncHandler<ShopKeeperPacket> {
                                 ItemStack copy = sStack.copy();
                                 copy.setCount(amount);
                                 if(count>0) {
-                                    if (Pixelmon.EVENT_BUS.post(new ShopkeeperEvent.Sell(p, EnumBuySell.Sell, copy))) {
+                                    if (Pixelmon.EVENT_BUS.post(new ShopkeeperEvent.Sell(p, npcOptional.get(), EnumBuySell.Sell, copy))) {
                                         return;
                                     }
                                 }

@@ -5,8 +5,10 @@ import com.goldenglow.common.guis.pokehelper.info.data.TutorialData;
 import com.goldenglow.common.guis.pokehelper.info.data.TutorialsInfo;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionIdData;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.pixelmonessentials.common.api.gui.bases.EssentialsGuiBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import noppes.npcs.api.wrapper.gui.CustomGuiWrapper;
@@ -14,29 +16,16 @@ import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.ArrayList;
 
-public class TutorialMenu implements EssentialsGuis {
-    private static final int id=6003;
-    private ArrayList<EssentialsButton> buttons = new ArrayList<EssentialsButton>();
+public class TutorialMenu extends EssentialsGuiBase {
     private String tutorialName;
     private int tutorialPage;
 
-    public TutorialMenu(){
-        this.tutorialName="";
-        this.tutorialPage=1;
-        this.addButton(new EssentialsButton(501, new ActionData("CHANGE_PAGE", "-1")));
-        this.addButton(new EssentialsButton(502, new ActionData("CHANGE_PAGE", "1")));
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public ArrayList<EssentialsButton> getButtons() {
-        return this.buttons;
-    }
-
-    public void addButton(EssentialsButton button) {
-        this.buttons.add(button);
+    public TutorialMenu() {
+        super(6003);
+        this.tutorialName = "";
+        this.tutorialPage = 1;
+        this.addButton(new EssentialsButton(501, new ActionIdData("CHANGE_PAGE", -1)));
+        this.addButton(new EssentialsButton(502, new ActionIdData("CHANGE_PAGE", 1)));
     }
 
     public TutorialData getTutorial(){
@@ -59,9 +48,9 @@ public class TutorialMenu implements EssentialsGuis {
         this.tutorialPage=page;
     }
 
-    public void init(EntityPlayerMP player, EntityNPCInterface npc) {
+    public void init(EntityPlayerMP player) {
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
-        CustomGuiWrapper gui = new CustomGuiWrapper(id, 256, 256, false);
+        CustomGuiWrapper gui = new CustomGuiWrapper(this.getId(), 256, 256, false);
         TutorialsInfo info= GoldenGlow.tutorialsManager.getTutorial(this.tutorialName).getTutorialPage(this.tutorialPage);
         gui.setBackgroundTexture("customnpcs:textures/gui/bgfilled.png");
         gui.addLabel(200, "Marks", 116, 10, 32, 20);

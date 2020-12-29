@@ -4,6 +4,7 @@ import com.goldenglow.common.routes.SpawnPokemon;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import com.pixelmonessentials.common.api.requirement.RequirementData;
 
 /**
@@ -20,8 +21,12 @@ public class ParseJson {
 
     public static ActionData parseAction(JsonObject o){
         ActionData a = new ActionData();
-        a.name = o.getAsJsonObject().get("actionType").getAsString();
-        a.value = o.get("value").getAsString();
+        if(o.has("value")){
+            a=new ActionStringData(o.getAsJsonObject().get("actionType").getAsString(), o.get("value").getAsString());
+        }
+        else{
+            a.name = o.getAsJsonObject().get("actionType").getAsString();
+        }
         if(o.has("requirements")){
             JsonArray requirementArray=o.getAsJsonArray("requirements");
             RequirementData[] requirements=new RequirementData[requirementArray.size()];

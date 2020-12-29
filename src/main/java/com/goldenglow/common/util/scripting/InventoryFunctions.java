@@ -4,45 +4,22 @@ import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.inventory.CustomInventoryData;
-import com.goldenglow.common.inventory.InstancedContainer;
-import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.keyItems.OOTMDummy;
+import com.pixelmonmod.pixelmon.items.ItemTM;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
-import net.minecraft.network.play.server.SPacketOpenWindow;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-import noppes.npcs.controllers.data.PlayerData;
-import noppes.npcs.controllers.data.QuestData;
-
-import java.util.HashMap;
 
 public class InventoryFunctions {
 
     //Add a key item to the player's Key Items Pocket. Used for different main and side quests
     public static void addKeyItem(PlayerWrapper playerWrapper, String itemStack){
         IPlayerData playerData = playerWrapper.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
-        ItemStack item=null;
-        try {
-            item=new ItemStack(JsonToNBT.getTagFromJson(itemStack));
-        } catch (NBTException e) {
-            e.printStackTrace();
-        }
-        if(item!=null) {
-            GGLogger.info(item.getItemDamage());
-            playerData.addKeyItem(item);
-            /*IQuest[] quests=playerWrapper.getActiveQuests();
-            for(IQuest quest: quests){
-                if((QuestInterface)quest instanceof QuestItem){
-                    for(ItemStack questItem:((QuestItem) quest).items.items){
-                        if(questItem.equals(item)){
-                            quest.
-                        }
-                    }
-                }
-            }*/
+        if(GoldenGlow.customItemManager.getKeyItem(itemStack)!=null){
+            playerData.addKeyItem(itemStack);
         }
     }
 
@@ -72,7 +49,7 @@ public class InventoryFunctions {
             e.printStackTrace();
         }
         if(itemStack!=null)
-            playerData.addAWItem(itemStack);
+            playerData.addAWItem(item);
     }
 
     public static void addAwFromName(PlayerWrapper player, String name){
@@ -88,7 +65,11 @@ public class InventoryFunctions {
     //Used at a few pokeloots, probably for a quest too
     public static boolean unlockTM(PlayerWrapper player, String ItemID) {
         ItemStack tm=new ItemStack(Item.getByNameOrId(ItemID));
-        IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
-        return playerData.unlockTM(tm);
+        if(tm.getItem() instanceof ItemTM){
+            IPlayerData playerData = player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null);
+            OOTMDummy ooTM=new OOTMDummy((ItemTM) tm.getItem());
+            return playerData.unlockTM(ooTM);
+        }
+        return false;
     }
 }

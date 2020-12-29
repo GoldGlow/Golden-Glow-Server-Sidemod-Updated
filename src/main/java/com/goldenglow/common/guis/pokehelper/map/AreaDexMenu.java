@@ -14,6 +14,8 @@ import com.goldenglow.common.util.GGLogger;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.gui.EssentialsButton;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.pixelmonessentials.common.api.gui.EssentialsScrollGui;
+import com.pixelmonessentials.common.api.gui.bases.EssentialsScrollGuiBase;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.pokedex.EnumPokedexRegisterStatus;
@@ -27,33 +29,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class AreaDexMenu implements EssentialsGuis {
-    private static final int id=6009;
-    private ArrayList<EssentialsButton> buttons=new ArrayList<EssentialsButton>();
+public class AreaDexMenu extends EssentialsScrollGuiBase {
     private Route route;
     private String[] items=new String[0];
     private int index=-1;
 
     public AreaDexMenu(){
-    }
-
-    public int getId(){
-        return this.id;
-    }
-
-    public ArrayList<EssentialsButton> getButtons(){
-        return this.buttons;
-    }
-
-    public void addButton(EssentialsButton button) {
-        this.buttons.add(button);
+        super(6009);
     }
 
     public void setIndex(int index){
         this.index=index;
     }
 
-    public void setIndex(String index){
+    public void setIndex(int id, String index){
         for(int i=0;i<this.items.length;i++){
             if(items[i].equals(index)){
                 this.index=i;
@@ -78,9 +67,9 @@ public class AreaDexMenu implements EssentialsGuis {
         return this.items;
     }
 
-    public void init(EntityPlayerMP player, EntityNPCInterface npc){
+    public void init(EntityPlayerMP player){
         PlayerWrapper playerWrapper = new PlayerWrapper(player);
-        CustomGuiWrapper gui = new CustomGuiWrapper(id, 256, 256, false);
+        CustomGuiWrapper gui = new CustomGuiWrapper(this.getId(), 256, 256, false);
         this.items=this.getFullSpawnsList(player);
         gui.setBackgroundTexture("obscureobsidian:textures/gui/black_square.png");
         gui.addLabel(201, "Area Dex - "+this.route.displayName, 50, 0, 200, 20);
@@ -90,7 +79,7 @@ public class AreaDexMenu implements EssentialsGuis {
         PixelmonEssentials.essentialsGuisHandler.addOrReplaceGui(player, this);
     }
 
-    public void updateScroll(EntityPlayerMP player){
+    public void updateScroll(int id, EntityPlayerMP player){
         PlayerWrapper playerWrapper=new PlayerWrapper(player);
         CustomGuiWrapper gui= CustomGuiController.getOpenGui(player);
         gui.removeComponent(202);
@@ -103,13 +92,13 @@ public class AreaDexMenu implements EssentialsGuis {
         }
         else{
             String speciesName=this.getItems()[this.index];
-            gui.addLabel(202, speciesName, 26, 83, 118, 20);
+            gui.addLabel(202, speciesName, 25, 83, 118, 20);
             if(!speciesName.equals("???")){
                 gui.addTexturedRect(101, "pixelmon:textures/sprites/pokemon/"+EnumSpecies.getFromName(speciesName).get().getNationalPokedexNumber()+".png", 30, 20, 256, 256).setScale(0.25F);
                 EnumSpawnMethod spawnMethod=this.getMethodFromName(speciesName);
                 String methodName=this.getNameFromEnum(spawnMethod);
-                gui.addLabel(203, methodName, 26, 95, 118, 20);
-                gui.addLabel(204, this.getLevelRange(speciesName, spawnMethod), 26, 107, 118, 20);
+                gui.addLabel(203, methodName, 25, 95, 118, 20);
+                gui.addLabel(204, this.getLevelRange(speciesName, spawnMethod), 25, 107, 118, 20);
             }
             gui.addScroll(300, 128, 30, 118, 216, this.items).setDefaultSelection(this.index);
             gui.update(playerWrapper);
@@ -189,7 +178,7 @@ public class AreaDexMenu implements EssentialsGuis {
             case SPECIAL:
                 return "Special encounter";
             case APRICORN:
-                return "Apricorn encounter";
+                return "Apricorn enounter";
             case STANDARD:
                 return "Normal encounter";
             default:

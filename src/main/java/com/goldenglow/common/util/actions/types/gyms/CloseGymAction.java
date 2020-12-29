@@ -6,16 +6,21 @@ import com.goldenglow.common.gyms.GymLeaderUtils;
 import com.goldenglow.common.inventory.BagInventories;
 import com.goldenglow.common.util.Scoreboards;
 import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionBase;
+import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
+import com.pixelmonessentials.common.api.action.types.guiActions.CloseGuiAction;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class CloseGymAction implements Action {
-    public final String name="CLOSE_GYM";
-
-    public String getName(){
-        return this.name;
+public class CloseGymAction extends ActionBase {
+    public CloseGymAction(){
+        super("CLOSE_GYM");
     }
 
-    public void doAction(String value, EntityPlayerMP player){
-        GymLeaderUtils.closeGym(value);
+    @Override
+    public void doAction(EntityPlayerMP player, ActionData data){
+        if(data instanceof ActionStringData){
+            GymLeaderUtils.closeGym(((ActionStringData) data).getValue());
+        }
     }
 }

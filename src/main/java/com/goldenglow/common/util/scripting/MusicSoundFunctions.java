@@ -12,20 +12,6 @@ public class MusicSoundFunctions {
         SongManager.playSound(player, source, path);
     }
 
-    public static void setThemes(NPCWrapper npc, String encounterTheme, String battleTheme, String victoryTheme){
-        NBTTagCompound data=npc.getMCEntity().getEntityData();
-        if(!encounterTheme.equals("")){
-            data.setString("encounterTheme", encounterTheme);
-        }
-        if(!battleTheme.equals("")){
-            data.setString("battleTheme", battleTheme);
-        }
-        if(!victoryTheme.equals("")){
-            data.setString("victoryTheme", victoryTheme);
-        }
-    }
-
-
     //pretty much used to loop music, in the player tick scripts with the route checks
     public static void playSong(EntityPlayerMP player){
         SongManager.setCurrentSong(player, player.getCapability(OOPlayerProvider.OO_DATA, null).getCurrentSong());

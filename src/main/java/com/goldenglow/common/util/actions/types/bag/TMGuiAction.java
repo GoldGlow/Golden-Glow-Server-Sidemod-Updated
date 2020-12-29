@@ -2,17 +2,21 @@ package com.goldenglow.common.util.actions.types.bag;
 
 import com.goldenglow.common.guis.pokehelper.bag.TeachTMMenu;
 import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionBase;
+import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class TMGuiAction implements Action {
-    public final String name="TM_GUI";
-
-    public String getName(){
-        return this.name;
+public class TMGuiAction extends ActionBase {
+    public TMGuiAction(){
+        super("TM_GUI");
     }
 
-    public void doAction(String value, EntityPlayerMP player){
-        TeachTMMenu menu=new TeachTMMenu(value);
-        menu.init(player, null);
+    @Override
+    public void doAction(EntityPlayerMP player, ActionData data){
+        if(data instanceof ActionStringData){
+            TeachTMMenu menu=new TeachTMMenu(((ActionStringData) data).getValue());
+            menu.init(player);
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.goldenglow.common.data.player;
 
 import com.goldenglow.GoldenGlow;
+import com.goldenglow.common.keyItems.OOItem;
+import com.goldenglow.common.keyItems.OOTMDummy;
 import com.goldenglow.common.routes.Route;
 import com.goldenglow.common.util.FullPos;
 import com.goldenglow.common.util.Scoreboards;
@@ -33,10 +35,13 @@ public class OOPlayerData implements IPlayerData {
     private int pvpThemeOption=0;
     private String shopName="";
 
-    private List<ItemStack> keyItems=new ArrayList<>();
-    private List<ItemStack> tms=new ArrayList<>();
-    private List<ItemStack> awItems=new ArrayList<>();
-    private List<ItemStack> bagItems=new ArrayList<>();
+    private List<String> keyItems=new ArrayList<>();
+    private List<OOTMDummy> tms=new ArrayList<>();
+    private List<String> awItems=new ArrayList<>();
+    private List<OOItem> bagItems=new ArrayList<>();
+    private List<OOItem> berries=new ArrayList<>();
+    private List<OOItem> medicine=new ArrayList<>();
+    private List<OOItem> pokeballs=new ArrayList<>();
 
     private int notification_scheme = 0;
     private Scoreboards.EnumScoreboardType scoreboardType= Scoreboards.EnumScoreboardType.NONE;
@@ -144,10 +149,19 @@ public class OOPlayerData implements IPlayerData {
     public List<String> getUnlockedSeals() {
         return this.unlocked_seals;
     }
-    public List<ItemStack> getAWItems(){return this.awItems;}
-    public List<ItemStack> getBagItems(){return this.bagItems;}
-    public List<ItemStack> getKeyItems(){return this.keyItems;}
-    public List<ItemStack> getTMs(){return this.tms;}
+    public List<String> getAWItems(){return this.awItems;}
+    public List<OOItem> getBagItems(){return this.bagItems;}
+    public List<String> getKeyItems(){return this.keyItems;}
+    public List<OOTMDummy> getTMs(){return this.tms;}
+    public List<OOItem> getBerries(){
+        return this.berries;
+    }
+    public List<OOItem> getMedicine(){
+        return this.medicine;
+    }
+    public List<OOItem> getPokeballs(){
+        return this.pokeballs;
+    }
 
     public void setPlayerSeals(String[] seals) {
         this.player_seals = seals;
@@ -156,100 +170,157 @@ public class OOPlayerData implements IPlayerData {
     public void unlockSeal(String name) {
         this.unlocked_seals.add(name);
     }
-    public void addKeyItem(ItemStack item){this.keyItems.add(item);}
-    public void removeKeyItem(ItemStack item){this.keyItems.remove(item);}
-    public void removeKeyItem(String displayName){
-        for(ItemStack item:this.keyItems){
-            if(item.getDisplayName().equals(displayName)){
-                this.keyItems.remove(item);
-                return;
-            }
-        }
-    }
+    public void addKeyItem(String item){this.keyItems.add(item);}
+    public void removeKeyItem(String item){this.keyItems.remove(item);}
     public void addAWItem(String awItem){
         LibraryFile file=new LibraryFile(awItem);
         Skin skin = SkinIOUtils.loadSkinFromLibraryFile(file);
         CommonSkinCache.INSTANCE.addEquipmentDataToCache(skin, file);
         SkinIdentifier identifier = new SkinIdentifier(0, file, 0, skin.getSkinType());
         ItemStack itemStack = SkinNBTHelper.makeEquipmentSkinStack(new SkinDescriptor(identifier));
-        for(ItemStack item: this.awItems){
-            if(itemStack.getTagCompound().equals(item.getTagCompound())){
-                return;
+        if(itemStack!=null){
+            if(!this.awItems.contains(awItem)){
+                this.awItems.add(awItem);
             }
         }
-        this.awItems.add(itemStack);
-    }
-    public void addAWItem(ItemStack awItem){
-        this.awItems.add(awItem);
     }
     public void clearAWItems(){
         this.awItems.clear();
     }
-    public void addBagItem(ItemStack item){
-        for(ItemStack bagItem:this.bagItems){
-            if(bagItem.getItem().getRegistryName().equals(item.getItem().getRegistryName())){
-                bagItem.setCount(bagItem.getCount()+item.getCount());
-                item.setCount(0);
+    public void addBagItem(OOItem item){
+        for(OOItem bagItem:this.bagItems){
+            if(bagItem.getItemId().equals(item.getItemId())){
+                bagItem.changeQuantity(item.getQuantity());
                 return;
             }
         }
-        item.setCount(0);
         this.bagItems.add(item);
     }
-    public void removeBagItem(String displayName){
-        for(ItemStack bagItem:this.bagItems){
-            if(bagItem.getDisplayName().equals(displayName)){
-                this.bagItems.remove(bagItem);
-                return;
-            }
-        }
-    }
-    public void removeBagItem(ItemStack itemStack){
-        for(ItemStack bagItem:this.bagItems){
-            if(bagItem.equals(itemStack)){
-                this.bagItems.remove(bagItem);
-                return;
-            }
-        }
-    }
-    public void consumeBagItem(ItemStack item, int count){
-        for(ItemStack bagItem: this.bagItems){
-            if(bagItem.equals(item)){
-                bagItem.setCount(bagItem.getCount()-count);
-            }
-        }
-    }
-    public boolean unlockTM(ItemStack tm){
-        if(tm.getItem() instanceof ItemTM) {
-            ItemTM newTM = (ItemTM) tm.getItem();
-            if (this.tms.size() == 0) {
-                this.tms.add(tm);
-                return true;
-            }
-            for (int i = 0; i < this.tms.size(); i++) {
-                ItemTM tmOriginal = (ItemTM) this.tms.get(i).getItem();
-                if (tmOriginal.isHM && newTM.isHM) {
-                    if (newTM.index < tmOriginal.index) {
-                        this.tms.add(i, tm);
-                        return true;
-                    } else if (newTM.index == tmOriginal.index) {
-                        return false;
-                    }
-                } else if (tmOriginal.isHM) {
-                    this.tms.add(i, tm);
-                } else if (!newTM.isHM) {
-                    if (newTM.index < tmOriginal.index) {
-                        this.tms.add(i, tm);
-                        return true;
-                    } else if (newTM.index == tmOriginal.index) {
-                        return false;
-                    }
+    public void removeBagItem(OOItem item){
+        for(int i=0;i<this.bagItems.size();i++){
+            if(bagItems.get(i).getItemId().equals(item.getItemId())){
+                if(item.getQuantity()==bagItems.get(i).getQuantity()){
+                    this.bagItems.remove(bagItems.get(i));
                 }
+                else{
+                    OOItem newItem=new OOItem(item.getItemId(), this.bagItems.get(i).getQuantity()-item.getQuantity());
+                    this.bagItems.remove(i);
+                    this.bagItems.add(newItem);
+                }
+                return;
             }
+        }
+    }
+    public void consumeBagItem(OOItem item){
+        for(OOItem bagItem: this.bagItems){
+            if(bagItem.equals(item)){
+                bagItem.changeQuantity(-1*item.getQuantity());
+                return;
+            }
+        }
+    }
+    public boolean unlockTM(OOTMDummy tm){
+        if (this.tms.size() == 0) {
             this.tms.add(tm);
             return true;
         }
-        return false;
+        for (int i = 0; i < this.tms.size(); i++) {
+            OOTMDummy tmOriginal = this.tms.get(i);
+            if (tmOriginal.isHm() && tm.isHm()) {
+                if (tm.getTmIndex() < tmOriginal.getTmIndex()) {
+                        this.tms.add(i, tm);
+                        return true;
+                } else if (tm.getTmIndex() == tmOriginal.getTmIndex()) {
+                    return false;
+                }
+            } else if (tmOriginal.isHm()) {
+                this.tms.add(i, tm);
+            } else if (!tm.isHm()) {
+                if (tm.getTmIndex() < tmOriginal.getTmIndex()) {
+                    this.tms.add(i, tm);
+                    return true;
+                } else if (tm.getTmIndex() == tmOriginal.getTmIndex()) {
+                    return false;
+                }
+            }
+        }
+        this.tms.add(tm);
+        return true;
+    }
+
+    public void addBerries(OOItem berries){
+        for(int i=0;i<this.berries.size();i++){
+            if(this.berries.get(i).getItemId().equals(berries.getItemId())){
+                this.berries.get(i).changeQuantity(berries.getQuantity());
+                return;
+            }
+        }
+        this.berries.add(berries);
+    }
+    public void removeBerries(OOItem berries){
+        for(int i=0;i<this.berries.size();i++){
+            if(this.berries.get(i).getItemId().equals(berries.getItemId())){
+                if(berries.getQuantity()==this.berries.get(i).getQuantity()){
+                    this.berries.remove(i);
+                }
+                else{
+                    OOItem newItem=new OOItem(berries.getItemId(), this.berries.get(i).getQuantity()-berries.getQuantity());
+                    this.medicine.remove(i);
+                    this.medicine.add(newItem);
+                }
+                return;
+            }
+        }
+    }
+
+    public void addMedicine(OOItem item){
+        for(int i=0;i<this.medicine.size();i++){
+            if(this.medicine.get(i).getItemId().equals(item.getItemId())){
+                this.medicine.get(i).changeQuantity(item.getQuantity());
+                return;
+            }
+        }
+        this.medicine.add(item);
+    }
+    public void removeMedicine(OOItem medicine){
+        for(int i=0;i<this.medicine.size();i++){
+            if(this.medicine.get(i).getItemId().equals(medicine.getItemId())){
+                if(medicine.getQuantity()==this.medicine.get(i).getQuantity()){
+                    this.medicine.remove(i);
+                }
+                else{
+                    OOItem newItem=new OOItem(medicine.getItemId(), this.medicine.get(i).getQuantity()-medicine.getQuantity());
+                    this.medicine.remove(i);
+                    this.medicine.add(newItem);
+                }
+                return;
+            }
+        }
+    }
+
+    public void addPokeball(OOItem item){
+        for(int i=0;i<this.pokeballs.size();i++){
+            if(this.pokeballs.get(i).getItemId().equals(item.getItemId())){
+                this.pokeballs.get(i).changeQuantity(item.getQuantity());
+                return;
+            }
+        }
+        this.pokeballs.add(item);
+    }
+    public void removePokeball(OOItem pokeballs){
+        for(int i=0;i<this.pokeballs.size();i++){
+            if(this.pokeballs.get(i).getItemId().equals(pokeballs.getItemId())){
+                if(pokeballs.getQuantity()==this.pokeballs.get(i).getQuantity()){
+                    this.pokeballs.remove(i);
+                }
+                else{
+                    OOItem newItem=new OOItem(pokeballs.getItemId(), this.pokeballs.get(i).getQuantity()-pokeballs.getQuantity());
+                    this.pokeballs.remove(i);
+                    this.pokeballs.add(newItem);
+                }
+                return;
+            }
+        }
     }
 
     //chain methods

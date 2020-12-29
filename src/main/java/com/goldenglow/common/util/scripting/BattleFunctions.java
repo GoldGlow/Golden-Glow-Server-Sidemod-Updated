@@ -3,30 +3,20 @@ package com.goldenglow.common.util.scripting;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.bosses.BossManager;
 import com.goldenglow.common.battles.npc.CustomBattleHandler;
-import com.goldenglow.common.battles.npc.CustomNPCBattle;
-import com.goldenglow.common.data.player.OOPlayerProvider;
-import com.goldenglow.common.handlers.TickHandler;
-import com.goldenglow.common.music.SongManager;
 import com.goldenglow.common.routes.SpawnPokemon;
+import com.pixelmonessentials.common.battles.CustomNPCBattle;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.RandomHelper;
-import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
-import noppes.npcs.controllers.DialogController;
-import noppes.npcs.controllers.data.Dialog;
 import noppes.npcs.entity.EntityNPCInterface;
 
 public class BattleFunctions {
@@ -38,13 +28,10 @@ public class BattleFunctions {
     }
 
     //Used for Trainer Battles, doesn't include LoS
-    public static void createCustomBattle(PlayerWrapper playerWrapper, String teamName, int initDialogID, int winDialogID, int loseDialogID, NPCWrapper npcWrapper) {
+    public static void createCustomBattle(PlayerWrapper playerWrapper, NPCWrapper npcWrapper) {
         EntityNPCInterface npc=(EntityNPCInterface) npcWrapper.getMCEntity();
         EntityPlayerMP player=(EntityPlayerMP)playerWrapper.getMCEntity();
-        if(GoldenGlow.permissionUtils.checkPermission(player,"hard")){
-            teamName+="-hard";
-        }
-        CustomBattleHandler.createCustomBattle(player, teamName, initDialogID, winDialogID, loseDialogID, npc);
+        CustomBattleHandler.createCustomBattle(player, npc);
     }
 
     //Used to start a Boss Battle for a Player
@@ -69,26 +56,6 @@ public class BattleFunctions {
         pixelmon.setPosition(playerMP.posX, playerMP.posY, playerMP.posZ);
         pixelmon.setSpawnLocation(pixelmon.getDefaultSpawnLocation());
         BattleRegistry.startBattle(new PlayerParticipant(playerMP, Pixelmon.storageManager.getParty(playerMP).getAndSendOutFirstAblePokemon(playerMP)), new WildPixelmonParticipant(pixelmon));
-    }
-
-    //Used to set a dialog as a battle start dialog, sets the song to the encounter theme
-    public static void battleInitDialog(PlayerWrapper player, NPCWrapper npc, int dialogId){
-        NBTTagCompound data=npc.getMCEntity().getEntityData();
-        if(data.hasKey("encounterTheme")){
-            SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), data.getString("encounterTheme"));
-        }
-        else{
-            SongManager.setCurrentSong((EntityPlayerMP) player.getMCEntity(), GoldenGlow.songManager.encounterDefault);
-        }
-        NoppesUtilServer.openDialog((EntityPlayerMP) player.getMCEntity(), (EntityNPCInterface)npc.getMCEntity(), (Dialog) DialogController.instance.get(dialogId));
-    }
-
-    public static void battleDialog(PlayerWrapper player, NPCWrapper npc, String[] lines, int time) {
-        ItemStack stack = OtherFunctions.getNPCDialogItem(npc);
-        Pixelmon.network.sendTo(new CustomNoticePacket().setEnabled(true)
-                .setLines(lines)
-                .setItemStack(stack, EnumOverlayLayout.LEFT), (EntityPlayerMP)player.getMCEntity());
-        player.getMCEntity().getCapability(OOPlayerProvider.OO_DATA, null).setDialogTicks(time);
     }
 
     public static boolean pokemonKOd(BattleControllerBase bcb){

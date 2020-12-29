@@ -3,7 +3,7 @@ package com.goldenglow.common.handlers.events;
 import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
-import com.goldenglow.common.inventory.BetterTrading.TradeManager;
+import com.goldenglow.common.trading.TradeManager;
 import com.goldenglow.common.music.SongManager;
 import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
 import com.pixelmonmod.pixelmon.api.events.LevelUpEvent;

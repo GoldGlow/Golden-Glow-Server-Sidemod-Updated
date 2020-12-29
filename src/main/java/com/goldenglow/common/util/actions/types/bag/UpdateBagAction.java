@@ -1,40 +1,35 @@
 package com.goldenglow.common.util.actions.types.bag;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.guis.pokehelper.bag.BagMenu;
+import com.goldenglow.common.guis.trading.TradeItemGui;
 import com.pixelmonessentials.PixelmonEssentials;
 import com.pixelmonessentials.common.api.action.Action;
+import com.pixelmonessentials.common.api.action.ActionBase;
+import com.pixelmonessentials.common.api.action.ActionData;
+import com.pixelmonessentials.common.api.action.datatypes.ActionStringData;
 import com.pixelmonessentials.common.api.gui.EssentialsGuis;
+import com.sk89q.worldedit.util.command.binding.Switch;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class UpdateBagAction implements Action {
-    public final String name="UPDATE_BAG";
-
-    public String getName(){
-        return this.name;
+public class UpdateBagAction extends ActionBase {
+    public UpdateBagAction(){
+        super("UPDATE_BAG");
     }
 
-    public void doAction(String value, EntityPlayerMP player){
-        EssentialsGuis gui= PixelmonEssentials.essentialsGuisHandler.getGui(player);
-        if(gui instanceof BagMenu){
-            if(value.equals("ITEMS")){
-                ((BagMenu) gui).setCategory(BagMenu.EnumCategory.ITEMS);
+    @Override
+    public void doAction(EntityPlayerMP player, ActionData data){
+        if(data instanceof ActionStringData){
+            EssentialsGuis gui= PixelmonEssentials.essentialsGuisHandler.getGui(player);
+            if(gui instanceof BagMenu){
+                String value=((ActionStringData) data).getValue();
+                ((BagMenu) gui).setCategory(GoldenGlow.categoryManager.getCategory(value));
                 ((BagMenu) gui).update(player);
             }
-            else if(value.equals("TM_HM")){
-                ((BagMenu) gui).setCategory(BagMenu.EnumCategory.TM_HM);
-                ((BagMenu) gui).update(player);
-            }
-            else if(value.equals("KEY_ITEMS")){
-                ((BagMenu) gui).setCategory(BagMenu.EnumCategory.KEY_ITEMS);
-                ((BagMenu) gui).update(player);
-            }
-            else if(value.equals("BADGES")){
-                ((BagMenu) gui).setCategory(BagMenu.EnumCategory.BADGES);
-                ((BagMenu) gui).update(player);
-            }
-            else if(value.equals("ARMOURERS_WORKSHOP")){
-                ((BagMenu) gui).setCategory(BagMenu.EnumCategory.ARMOURERS_WORKSHOP);
-                ((BagMenu) gui).update(player);
+            else if(gui instanceof TradeItemGui){
+                String value=((ActionStringData) data).getValue();
+                ((TradeItemGui) gui).setCategory(GoldenGlow.categoryManager.getCategory(value));
+                ((TradeItemGui) gui).update(player);
             }
         }
     }
