@@ -66,6 +66,11 @@ public class BattleEventHandler {
                     }
                 }
             }
+            //Send CNPC Scripting Event
+            CNPCBattleEvent.BattleStart npcEvent = new CNPCBattleEvent.BattleStart(new NPCWrapper(battle.getNpc()), new PlayerWrapper(event.bc.getPlayers().get(0).player), event.bc);
+            for(ScriptContainer s : ((CustomNPCBattle)event.bc.rules).getNpc().script.getScripts()) {
+                s.run("battleStart", npcEvent);
+            }
         }
         else{
             boolean wildBattle= PixelmonBattleUtils.isWildBattle(opponents);
@@ -93,6 +98,7 @@ public class BattleEventHandler {
 
     @SubscribeEvent
     public void onTurnEnd(TurnEndEvent event) {
+        //Send CNPC Scripting Event
         if(event.bcb.rules instanceof CustomNPCBattle) {
             CustomNPCBattle rules = (CustomNPCBattle)event.bcb.rules;
             CNPCBattleEvent.TurnEnd npcEvent = new CNPCBattleEvent.TurnEnd(new NPCWrapper(rules.getNpc()), new PlayerWrapper(event.bcb.getPlayers().get(0).player), event.bcb);
@@ -131,6 +137,11 @@ public class BattleEventHandler {
             if (results == BattleResults.DEFEAT) {
                 SongManager.setRouteSong(mcPlayer);
                 NoppesUtilServer.openDialog(mcPlayer, battle.getNpc(), battle.getLoseDialog());
+            }
+            //Send CNPC Scripting Event
+            CNPCBattleEvent.BattleEnd npcEvent = new CNPCBattleEvent.BattleEnd(new NPCWrapper(battle.getNpc()), new PlayerWrapper(event.bc.getPlayers().get(0).player), event.bc);
+            for(ScriptContainer s : ((CustomNPCBattle)event.bc.rules).getNpc().script.getScripts()) {
+                s.run("battleEnd", npcEvent);
             }
         }
         else if(event.bc.rules instanceof DoubleNPCBattle){

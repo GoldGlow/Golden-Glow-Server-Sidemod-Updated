@@ -11,8 +11,24 @@ public class CNPCBattleEvent extends Event {
     public PlayerWrapper player;
     public BattleControllerBase bcb;
 
+    public static class BattleStart extends CNPCBattleEvent {
+        public BattleStart(NPCWrapper npc, PlayerWrapper player, BattleControllerBase bcb) {
+            this.npc = npc;
+            this.player = player;
+            this.bcb = bcb;
+        }
+    }
+
     public static class TurnEnd extends CNPCBattleEvent {
         public TurnEnd(NPCWrapper npc, PlayerWrapper player, BattleControllerBase bcb) {
+            this.npc = npc;
+            this.player = player;
+            this.bcb = bcb;
+        }
+    }
+
+    public static class BattleEnd extends CNPCBattleEvent {
+        public BattleEnd(NPCWrapper npc, PlayerWrapper player, BattleControllerBase bcb) {
             this.npc = npc;
             this.player = player;
             this.bcb = bcb;

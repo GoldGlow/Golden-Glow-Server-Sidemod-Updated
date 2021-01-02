@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import noppes.npcs.api.entity.data.IData;
 import noppes.npcs.api.wrapper.BlockScriptedWrapper;
 import noppes.npcs.api.wrapper.NPCWrapper;
@@ -29,7 +30,7 @@ public class WorldFunctions {
 
     //World script
     public static void checkRoute(EntityPlayerMP playerMP, int lastPosX, int lastPosY, int lastPosZ) {
-        MinecraftServer.getServerInst().profiler.startSection("OO-CheckRoute");
+        FMLCommonHandler.instance().getMinecraftServerInstance().profiler.startSection("OO-CheckRoute");
         IPlayerData playerData = playerMP.getCapability(OOPlayerProvider.OO_DATA, null);
         Route currentRoute = null;
         Route actualRoute = GoldenGlow.routeManager.getRoute(playerMP);
@@ -72,7 +73,7 @@ public class WorldFunctions {
             playerMP.sendMessage(new TextComponentString("You can't go this way!").setStyle(new Style().setBold(true)));
 	         */
         }
-        MinecraftServer.getServerInst().profiler.endSection();
+        FMLCommonHandler.instance().getMinecraftServerInstance().profiler.endSection();
     }
 
     public static int getCurrentDay(WorldWrapper world) {
