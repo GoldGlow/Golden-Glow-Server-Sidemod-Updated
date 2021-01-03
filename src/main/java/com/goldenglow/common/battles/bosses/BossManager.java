@@ -51,7 +51,7 @@ public class BossManager {
         if(bosses.containsKey(bossName)) {
             BossParticipant bossParticipant = new BossParticipant(bosses.get(bossName), player);
             PlayerParticipant playerParticipant = new PlayerParticipant(player, new EntityPixelmon[]{Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player)});
-            BattleControllerBase bc = BattleRegistry.startBattle(new BattleParticipant[]{playerParticipant}, new BattleParticipant[]{bossParticipant}, new BossBattleRules(bossParticipant));
+            return BattleRegistry.startBattle(new BattleParticipant[]{playerParticipant}, new BattleParticipant[]{bossParticipant}, new BossBattleRules(bossParticipant));
         }
         return null;
     }

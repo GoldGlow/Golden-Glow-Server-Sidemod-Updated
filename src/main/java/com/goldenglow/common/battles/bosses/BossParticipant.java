@@ -7,14 +7,13 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonPart
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-
 public class BossParticipant extends WildPixelmonParticipant {
 
     BossBase bossBase;
     Phase currentPhase;
 
     public BossParticipant(BossBase bossBase, EntityPlayerMP player) {
-        super(new EntityPixelmon[] {bossBase.getPokemon().getOrSpawnPixelmon(player.world, player.posX, player.posY, player.posZ)});
+        super(new EntityPixelmon[] {bossBase.getSpec().create().getOrSpawnPixelmon(player.world, player.posX, player.posY, player.posZ)});
         this.bossBase = bossBase;
     }
 
