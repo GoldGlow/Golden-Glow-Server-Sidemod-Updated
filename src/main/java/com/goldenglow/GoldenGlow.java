@@ -167,7 +167,6 @@ public class GoldenGlow{
         event.registerServerCommand(new CommandCustomChest());
         event.registerServerCommand(new CommandShop());
         event.registerServerCommand(new CommandTradeTest());
-        event.registerServerCommand(new CommandShare());
         event.registerServerCommand(new CommandKeyItem());
 
         event.registerServerCommand(new CommandRaidDebug());
