@@ -16,7 +16,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class BossManager {
 
@@ -54,10 +56,14 @@ public class BossManager {
     public static BattleControllerBase startBossBattle(EntityPlayerMP player, String bossName, double x, double y, double z) {
         if(bosses.containsKey(bossName)) {
             BossParticipant bossParticipant = new BossParticipant(bosses.get(bossName), player, x, y, z);
-            PlayerParticipant playerParticipant = new PlayerParticipant(player, new EntityPixelmon[]{Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player)});
+            PlayerParticipant playerParticipant = new PlayerParticipant(player, Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player));
             return BattleRegistry.startBattle(new BattleParticipant[]{playerParticipant}, new BattleParticipant[]{bossParticipant}, new BossBattleRules(bossParticipant));
         }
         return null;
+    }
+
+    public static List<BossBase> getBossList() {
+        return new ArrayList<>(bosses.values());
     }
 
     public static String getBosses() {

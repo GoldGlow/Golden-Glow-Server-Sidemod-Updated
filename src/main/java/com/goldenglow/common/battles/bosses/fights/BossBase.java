@@ -58,6 +58,10 @@ public class BossBase {
         return this.spec;
     }
 
+    public Stats getStats() {
+        return this.stats;
+    }
+
     public static BossBase loadFromFile(File file) throws FileNotFoundException {
         BossBase boss = new BossBase();
 
