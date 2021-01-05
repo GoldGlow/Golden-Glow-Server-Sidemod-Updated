@@ -29,7 +29,7 @@ public class BossManager {
 
     public static void init() {
         GGLogger.info("Loading Bosses...");
-        //Load and Register json Boss files
+        /**Load and Register json Boss files**/
         File dir = new File(Reference.bossDir);
         if(!dir.exists())
             dir.mkdir();
@@ -43,13 +43,17 @@ public class BossManager {
                 }
             }
         }
-        //Register hard-coded bosses here
-        bosses.put("bird_bear", new BossBirdBear());
+        /**Register hard-coded bosses here**/
+        //bosses.put("bird_bear", new BossBirdBear());
     }
 
     public static BattleControllerBase startBossBattle(EntityPlayerMP player, String bossName) {
+        return startBossBattle(player, bossName, player.posX, player.posY, player.posZ);
+    }
+
+    public static BattleControllerBase startBossBattle(EntityPlayerMP player, String bossName, double x, double y, double z) {
         if(bosses.containsKey(bossName)) {
-            BossParticipant bossParticipant = new BossParticipant(bosses.get(bossName), player);
+            BossParticipant bossParticipant = new BossParticipant(bosses.get(bossName), player, x, y, z);
             PlayerParticipant playerParticipant = new PlayerParticipant(player, new EntityPixelmon[]{Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player)});
             return BattleRegistry.startBattle(new BattleParticipant[]{playerParticipant}, new BattleParticipant[]{bossParticipant}, new BossBattleRules(bossParticipant));
         }

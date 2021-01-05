@@ -1,6 +1,7 @@
 package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
+import com.goldenglow.common.battles.bosses.BossManager;
 import com.goldenglow.common.battles.raids.CommandRaidDebug;
 import com.goldenglow.common.battles.raids.RaidEventHandler;
 import com.goldenglow.common.command.*;
@@ -114,6 +115,7 @@ public class GoldenGlow{
         tutorialsManager.init();
         customItemManager.init();
         categoryManager.init();
+        BossManager.init();
 
         GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
@@ -141,6 +143,7 @@ public class GoldenGlow{
         Pixelmon.EVENT_BUS.register(raidEventHandler);
         Pixelmon.EVENT_BUS.register(soundEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
+        Pixelmon.EVENT_BUS.register(BossManager.class);
         WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
         WrapperNpcAPI.EVENT_BUS.register(otherEventHandler);
     }
@@ -158,6 +161,7 @@ public class GoldenGlow{
         teamManager.init();
         songManager.init();
         Phone.init();
+
         event.registerServerCommand(new CommandPhone());
         event.registerServerCommand(new CommandRouteNotificationOption());
         event.registerServerCommand(new CommandSetPvpMusicOption());
@@ -168,11 +172,10 @@ public class GoldenGlow{
         event.registerServerCommand(new CommandShop());
         event.registerServerCommand(new CommandTradeTest());
         event.registerServerCommand(new CommandKeyItem());
-
         event.registerServerCommand(new CommandRaidDebug());
         event.registerServerCommand(new CommandDebug());
         event.registerServerCommand(new CommandScriptable());
-
+        event.registerServerCommand(new CommandBoss());
         event.registerServerCommand(new CommandRoutes());
         CommandRoutes.register(commandDispatcher);
 

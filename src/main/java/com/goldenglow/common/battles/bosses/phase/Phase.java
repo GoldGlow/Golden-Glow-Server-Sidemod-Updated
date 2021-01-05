@@ -30,7 +30,6 @@ public class Phase {
     }
 
     public void onPhaseChange(BossParticipant bossParticipant, PixelmonWrapper activePokemon) {
-        GGLogger.info("Phase Change");
         if(nickname!=null)
             activePokemon.pokemon.setNickname(nickname);
         if(type!=null)

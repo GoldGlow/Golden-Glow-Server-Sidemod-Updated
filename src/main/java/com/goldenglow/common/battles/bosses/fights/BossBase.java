@@ -1,13 +1,14 @@
 package com.goldenglow.common.battles.bosses.fights;
 
+import com.goldenglow.GoldenGlow;
 import com.goldenglow.common.battles.bosses.BossParticipant;
 import com.goldenglow.common.battles.bosses.phase.Phase;
 import com.goldenglow.common.battles.bosses.phase.Trigger;
+import com.goldenglow.common.util.GGLogger;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.api.pokemon.SpecValue;
@@ -15,21 +16,20 @@ import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.status.StatusType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
-import com.pixelmonmod.pixelmon.entities.pixelmon.specs.Type1Spec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.*;
 import com.pixelmonmod.pixelmon.enums.EnumGrowth;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.EnumType;
-import com.pixelmonmod.pixelmon.enums.forms.EnumGenesect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class BossBase {
 
@@ -104,6 +104,7 @@ public class BossBase {
                 boss.heldItem = new ItemStack(Item.getByNameOrId(p.get("heldItem").getAsString()));
             if (p.has("type")) {
                 JsonArray array = p.getAsJsonArray("type");
+                boss.types = new EnumType[array.size()];
                 boss.types[0] = EnumType.parseType(array.get(0).getAsString());
                 if(array.size()>1)
                     boss.types[1] = EnumType.parseType(array.get(1).getAsString());
@@ -231,6 +232,30 @@ public class BossBase {
             }
         }
         return boss;
+    }
+
+    public Pokemon createPokemon() {
+        Pokemon p = this.spec.create();
+        if(!nickname.isEmpty())
+            p.setNickname(this.nickname);
+        if(stats!=null) {
+            NBTTagCompound c = new NBTTagCompound();
+            stats.writeToNBT(c);
+            p.getStats().readFromNBT(c);
+        }
+        if(heldItem!=null && !heldItem.isEmpty())
+            p.setHeldItem(heldItem);
+        if(moveset!=null && !moveset.isEmpty()) {
+            p.getMoveset().clear();
+            p.getMoveset().addAll(Arrays.asList(moveset.attacks));
+        }
+        if(types!=null && types.length>0) {
+            p.getBaseStats().types.clear();
+            p.getBaseStats().types.add(0, types[0]);
+            if(types.length>1)
+                p.getBaseStats().types.add(1, types[1]);
+        }
+        return p;
     }
 
     static void createStats(BossBase boss) {
