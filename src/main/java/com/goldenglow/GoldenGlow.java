@@ -1,9 +1,9 @@
 package com.goldenglow;
 
 import com.goldenglow.common.CommonProxy;
-import com.goldenglow.common.battles.bosses.BossManager;
-import com.goldenglow.common.battles.raids.CommandRaidDebug;
-import com.goldenglow.common.battles.raids.RaidEventHandler;
+import com.goldenglow.common.battles.BattleManager;
+import com.goldenglow.common.battles.raid.CommandRaidDebug;
+import com.goldenglow.common.battles.raid.RaidEventHandler;
 import com.goldenglow.common.command.*;
 import com.goldenglow.common.data.player.IPlayerData;
 import com.goldenglow.common.data.player.OOPlayerData;
@@ -115,7 +115,7 @@ public class GoldenGlow{
         tutorialsManager.init();
         customItemManager.init();
         categoryManager.init();
-        BossManager.init();
+        BattleManager.init();
 
         GameRegistry.registerTileEntity(TileEntityCustomApricornTree.class, new ResourceLocation("obscureobsidian", "custom_apricorn_tree"));
         GameRegistry.registerTileEntity(TileEntityCustomBerryTree.class, new ResourceLocation("obscureobsidian", "custom_berry_tree"));
@@ -143,7 +143,7 @@ public class GoldenGlow{
         Pixelmon.EVENT_BUS.register(raidEventHandler);
         Pixelmon.EVENT_BUS.register(soundEventHandler);
         Pixelmon.EVENT_BUS.register(HuntHandler.class);
-        Pixelmon.EVENT_BUS.register(BossManager.class);
+        Pixelmon.EVENT_BUS.register(BattleManager.class);
         WrapperNpcAPI.EVENT_BUS.register(TickHandler.class);
         WrapperNpcAPI.EVENT_BUS.register(otherEventHandler);
     }

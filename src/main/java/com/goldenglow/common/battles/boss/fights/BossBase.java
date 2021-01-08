@@ -1,10 +1,8 @@
-package com.goldenglow.common.battles.bosses.fights;
+package com.goldenglow.common.battles.boss.fights;
 
-import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.battles.bosses.BossParticipant;
-import com.goldenglow.common.battles.bosses.phase.Phase;
-import com.goldenglow.common.battles.bosses.phase.Trigger;
-import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.battles.boss.BossParticipant;
+import com.goldenglow.common.battles.boss.phase.Phase;
+import com.goldenglow.common.battles.boss.phase.Trigger;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

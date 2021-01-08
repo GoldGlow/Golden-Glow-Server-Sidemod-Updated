@@ -1,7 +1,6 @@
-package com.goldenglow.common.battles.bosses.phase;
+package com.goldenglow.common.battles.boss.phase;
 
-import com.goldenglow.common.battles.bosses.BossParticipant;
-import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.battles.boss.BossParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;

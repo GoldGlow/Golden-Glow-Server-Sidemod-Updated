@@ -1,6 +1,6 @@
-package com.goldenglow.common.battles.bosses.phase;
+package com.goldenglow.common.battles.boss.phase;
 
-import com.goldenglow.common.battles.bosses.BossParticipant;
+import com.goldenglow.common.battles.boss.BossParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.log.AttackAction;
 import com.pixelmonmod.pixelmon.battles.controller.log.AttackResult;
 import com.pixelmonmod.pixelmon.battles.controller.log.BattleActionBase;

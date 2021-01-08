@@ -1,4 +1,4 @@
-package com.goldenglow.common.battles.bosses.fights;
+package com.goldenglow.common.battles.boss.fights;
 
 public class BossBirdBear extends BossBase {
 
