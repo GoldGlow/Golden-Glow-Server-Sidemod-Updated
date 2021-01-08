@@ -1,7 +1,6 @@
 package com.goldenglow.common.util.scripting;
 
-import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.battles.bosses.BossManager;
+import com.goldenglow.common.battles.BattleManager;
 import com.goldenglow.common.battles.npc.CustomBattleHandler;
 import com.goldenglow.common.handlers.TickHandler;
 import com.goldenglow.common.routes.SpawnPokemon;
@@ -37,7 +36,7 @@ public class BattleFunctions {
 
     //Used to start a Boss Battle for a Player
     public static void createBossBattle(PlayerWrapper playerWrapper, String bossName) {
-        BossManager.startBossBattle((EntityPlayerMP)playerWrapper.getMCEntity(), bossName);
+        BattleManager.startBossBattle((EntityPlayerMP)playerWrapper.getMCEntity(), bossName);
     }
 
     // Line of sight code, used for sneaking portions and trainers

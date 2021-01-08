@@ -1,7 +1,6 @@
-package com.goldenglow.common.battles.bosses.phase;
+package com.goldenglow.common.battles.boss.phase;
 
-import com.goldenglow.common.battles.bosses.BossParticipant;
-import com.goldenglow.common.util.GGLogger;
+import com.goldenglow.common.battles.boss.BossParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
@@ -9,6 +8,7 @@ import com.pixelmonmod.pixelmon.enums.EnumGrowth;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ public class Phase {
     }
 
     public void onPhaseChange(BossParticipant bossParticipant, PixelmonWrapper activePokemon) {
-        GGLogger.info("Phase Change");
+        int hp = activePokemon.getHealth();
         if(nickname!=null)
             activePokemon.pokemon.setNickname(nickname);
         if(type!=null)
@@ -49,6 +49,11 @@ public class Phase {
             activePokemon.pokemon.setGrowth(growth);
         if(heldItem!=null)
             activePokemon.setHeldItem(heldItem);
+        NBTTagCompound c = new NBTTagCompound();
+        bossParticipant.getBossBase().getStats().writeToNBT(c);
+        activePokemon.getStats().readFromNBT(c);
+        activePokemon.setHealth(hp);
+        activePokemon.updateHPIncrease();
     }
 
     public boolean checkTriggers(BossParticipant participant, PixelmonWrapper activePokemon) {

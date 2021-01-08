@@ -1,7 +1,7 @@
 package com.goldenglow.common.handlers.events;
 
 import com.goldenglow.GoldenGlow;
-import com.goldenglow.common.battles.raids.RaidBattleRules;
+import com.goldenglow.common.battles.boss.raid.RaidBattleRules;
 import com.goldenglow.common.data.player.OOPlayerData;
 import com.goldenglow.common.data.player.OOPlayerProvider;
 import com.goldenglow.common.music.SongManager;
