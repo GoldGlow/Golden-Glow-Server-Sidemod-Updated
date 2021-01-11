@@ -17,6 +17,7 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
@@ -76,6 +77,12 @@ public class BattleManager {
             return BattleRegistry.startBattle(new BattleParticipant[]{playerParticipant}, new BattleParticipant[]{bossParticipant}, new BossBattleRules(bossParticipant));
         }
         return null;
+    }
+
+    public static RaidBattle createRaidBattle(String bossName, World world, double x, double y, double z, int timer) {
+        if(raid_bosses.containsKey(bossName))
+            currentRaid = new RaidBattle(raid_bosses.get(bossName), world, x, y, z, timer);
+        return currentRaid;
     }
 
     public static List<BossBase> getBossList() {

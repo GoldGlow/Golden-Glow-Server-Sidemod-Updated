@@ -10,9 +10,11 @@ import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
+import com.pixelmonmod.pixelmon.entities.EntityWormhole;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.ArrayList;
@@ -22,16 +24,19 @@ public class RaidBattle {
 
     BossBase bossBase;
     EntityPixelmon bossEntity;
-    PixelmonWrapper bossWrapper;
+
+    EntityRaidWormhole wormhole;
+
     List<EntityPlayerMP> players = new ArrayList<>();
     List<BattleControllerBase> playerBattles = new ArrayList<>();
 
-    public RaidBattle(BossBase bossBase, double x, double y, double z) {
+    public RaidBattle(BossBase bossBase, World world, double x, double y, double z, int timer) {
         this.bossBase = bossBase;
-        this.bossEntity = bossBase.createPokemon().getOrSpawnPixelmon(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0), x,y,z);
+        wormhole = new EntityRaidWormhole(world, x, y, z, timer);
     }
 
     public void startBattles() {
+        this.bossEntity = bossBase.createPokemon().getOrSpawnPixelmon(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0), wormhole.posX, wormhole.posY, wormhole.posZ);
         for(EntityPlayerMP p : players) {
             BossParticipant bossParticipant = new BossParticipant(bossBase, bossEntity);
             playerBattles.add(BattleRegistry.startBattle(new BattleParticipant[]{new PlayerParticipant(p, Pixelmon.storageManager.getParty(p).getAndSendOutFirstAblePokemon(p))}, new BattleParticipant[]{bossParticipant}, new RaidBattleRules(bossParticipant, this)));
